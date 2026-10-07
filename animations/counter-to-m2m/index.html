@@ -1,0 +1,212 @@
+<!doctype html>
+<!--
+  Showpiece clip 3 (slide 28): a counter can't remember who voted.
+  The number "3" morphs into three voter avatars; then a questions table and
+  a users table appear and the join table slides in between them, with lines
+  connecting rows.
+  13 s seamless loop: the last frame equals the first (the card with "3").
+  Shown at 752 px wide on the slide (scale 0.39), so text here is >= 42 px.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1920, height=1080" />
+  <link rel="stylesheet" href="../shared/clip.css" />
+  <script src="../shared/gsap.min.js"></script>
+  <style>
+    .card { left: 440px; top: 210px; width: 1040px; height: 300px; }
+    .card .q { position: absolute; left: 50px; top: 116px; font-size: 64px; font-weight: 800; }
+    .card .vl { position: absolute; left: 790px; top: 30px; font-size: 44px; font-weight: 700; color: var(--text-muted); }
+    .count { left: 1210px; top: 300px; width: 160px; text-align: center; font-family: var(--mono); font-size: 170px; font-weight: 800; line-height: 1; transform-origin: 50% 50%; }
+
+    .avatar { left: 0; top: 0; width: 56px; height: 56px; border-radius: 50%; display: grid; place-items: center; font-size: 30px; font-weight: 800; color: var(--bg); transform-origin: 0 0; opacity: 0; }
+    .who { top: 726px; width: 260px; text-align: center; font-size: 46px; font-weight: 700; opacity: 0; }
+
+    .tname { font-family: var(--mono); font-size: 42px; font-weight: 800; color: var(--accent); }
+    .tbl { width: 0; }
+    .row { position: absolute; left: 0; height: 80px; border: 4px solid var(--border); border-top: 0; background: var(--bg); }
+    .row.head { top: 0; border: 4px solid var(--accent); border-radius: 14px 14px 0 0; background: var(--surface); }
+    .row.last { border-radius: 0 0 14px 14px; }
+    .cell { position: absolute; top: 0; height: 72px; display: flex; align-items: center; gap: 14px; padding: 0 20px; font-size: 42px; font-weight: 600; white-space: nowrap; border-right: 4px solid var(--border); }
+    .cell:last-child { border-right: 0; }
+    .head .cell { font-family: var(--mono); font-weight: 700; color: var(--accent); }
+    .num { font-family: var(--mono); }
+    .slot { width: 56px; height: 56px; flex: none; }
+
+    svg.links { position: absolute; left: 0; top: 0; width: 1920px; height: 1080px; overflow: visible; }
+    svg.links line { stroke: var(--accent-2); stroke-width: 6; stroke-linecap: round; }
+
+    .caption { left: 0; width: 1920px; top: 900px; text-align: center; font-size: 56px; font-weight: 800; color: var(--accent-2); opacity: 0; }
+  </style>
+</head>
+<body>
+  <div id="root" data-composition-id="main" data-start="0" data-duration="13" data-width="1920" data-height="1080">
+    <div class="clip abs" data-start="0" data-duration="13" style="inset:0">
+      <div class="abs box card" id="card">
+        <div class="q">Is REST hard?</div>
+        <div class="vl">votes</div>
+      </div>
+      <div class="abs count" id="count">3</div>
+
+      <div class="abs" id="tables"></div>
+      <svg class="links" id="links"></svg>
+
+      <div class="abs who" id="who0">sam</div>
+      <div class="abs who" id="who1">ana</div>
+      <div class="abs who" id="who2">lee</div>
+      <div class="abs avatar" id="av0" style="background:var(--get)">S</div>
+      <div class="abs avatar" id="av1" style="background:var(--post)">A</div>
+      <div class="abs avatar" id="av2" style="background:var(--patch)">L</div>
+
+      <div class="abs caption" id="cap0">votes is just a number</div>
+      <div class="abs caption" id="cap1">Did Sam already vote? A number can't say.</div>
+      <div class="abs caption" id="cap2">A list of voters can</div>
+      <div class="abs caption" id="cap3">Question ↔ User is many-to-many</div>
+      <div class="abs caption" id="cap4">Django builds the join table</div>
+    </div>
+  </div>
+
+  <script>
+    // ---------- tables ----------
+    const TOP = 250 // header row top
+    const ROW = 80
+    const TABLES = {
+      questions: { x: 40, cols: [['id', 90], ['text', 400]], rows: [['1', 'Is REST hard?'], ['2', 'Do I need SQL?']] },
+      join: { x: 650, title: 'questions_question_voters', cols: [['question_id', 320], ['user_id', 320]], rows: [['1', '1'], ['1', '2'], ['1', '3'], ['2', '1']] },
+      users: { x: 1450, cols: [['id', 90], ['username', 340]], rows: [['1', 'sam'], ['2', 'ana'], ['3', 'lee']] },
+    }
+    const host = document.getElementById('tables')
+    for (const [name, t] of Object.entries(TABLES)) {
+      const w = t.cols.reduce((s, c) => s + c[1], 0)
+      t.w = w
+      const wrap = document.createElement('div')
+      wrap.className = 'abs'
+      wrap.id = `t-${name}`
+      wrap.style.cssText = `left:${t.x}px;top:${TOP - 62}px`
+      const title = document.createElement('div')
+      title.className = 'tname'
+      title.textContent = t.title ?? name
+      wrap.appendChild(title)
+      const body = document.createElement('div')
+      body.className = 'abs tbl'
+      body.style.cssText = 'left:0;top:62px'
+      const mkRow = (vals, i, head) => {
+        const r = document.createElement('div')
+        r.className = `row${head ? ' head' : ''}${!head && i === t.rows.length - 1 ? ' last' : ''}`
+        r.style.cssText = `top:${head ? 0 : ROW * (i + 1)}px;width:${w}px;height:${ROW}px`
+        if (!head)
+          r.id = `${name}-r${i}`
+        let x = 0
+        vals.forEach((v, ci) => {
+          const c = document.createElement('div')
+          c.className = 'cell'
+          c.style.cssText = `left:${x}px;width:${t.cols[ci][1]}px`
+          if (!head && name === 'users' && ci === 1) {
+            const slot = document.createElement('span')
+            slot.className = 'slot'
+            c.appendChild(slot)
+          }
+          const span = document.createElement('span')
+          span.textContent = v
+          if (!head && (ci === 0 || name === 'join'))
+            span.className = 'num'
+          c.appendChild(span)
+          r.appendChild(c)
+          x += t.cols[ci][1]
+        })
+        body.appendChild(r)
+      }
+      mkRow(t.cols.map(c => c[0]), 0, true)
+      t.rows.forEach((v, i) => mkRow(v, i))
+      wrap.appendChild(body)
+      host.appendChild(wrap)
+    }
+    const rowCY = i => TOP + ROW * (i + 1) + ROW / 2
+    const right = t => TABLES[t].x + TABLES[t].w
+    const left = t => TABLES[t].x
+
+    // links: question row → join row → user row
+    const LINKS = [[0, 0, 0], [0, 1, 1], [0, 2, 2], [1, 3, 0]] // [question row, join row, user row]
+    const svg = document.getElementById('links')
+    const NS = 'http://www.w3.org/2000/svg'
+    const lines = []
+    LINKS.forEach(([q, j, u], k) => {
+      for (const [x1, y1, x2, y2] of [[right('questions'), rowCY(q), left('join'), rowCY(j)], [right('join'), rowCY(j), left('users'), rowCY(u)]]) {
+        const l = document.createElementNS(NS, 'line')
+        l.setAttribute('x1', x1); l.setAttribute('y1', y1); l.setAttribute('x2', x2); l.setAttribute('y2', y2)
+        const len = Math.hypot(x2 - x1, y2 - y1)
+        l.style.strokeDasharray = `${len}`
+        l.style.strokeDashoffset = `${len}`
+        l.dataset.k = k
+        svg.appendChild(l)
+        lines.push(l)
+      }
+    })
+
+    // ---------- avatars: base position = their slot in the users table ----------
+    const AV_SCALE = 130 / 56
+    const avatarHome = i => ({ x: left('users') + 90 + 20, y: TOP + ROW * (i + 1) + 8 })
+    const avatarRow = i => ({ x: 760 + 200 * i - 65, y: 580 }) // phase B: a row under the card
+    ;[0, 1, 2].forEach((i) => {
+      const h = avatarHome(i)
+      gsap.set(`#av${i}`, { left: h.x, top: h.y })
+      gsap.set(`#who${i}`, { left: 760 + 200 * i - 130 })
+    })
+
+    // ---------- timeline ----------
+    const tl = gsap.timeline({ paused: true })
+    const cap = (id, at, out) => {
+      // immediateRender: false, or late fromTo tweens would hide things on frame 0
+      tl.fromTo(id, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out', immediateRender: false }, at)
+      if (out != null)
+        tl.to(id, { opacity: 0, duration: 0.3, ease: 'power1.in' }, out)
+    }
+    gsap.set(['#t-questions', '#t-users'], { autoAlpha: 0, y: 30 })
+    gsap.set('#t-join', { autoAlpha: 0, y: 160 })
+    gsap.set('#cap0', { opacity: 1 })
+
+    // A. a number (frame 0: card, "3", first caption)
+    tl.to('#cap0', { opacity: 0, duration: 0.3 }, 1.2)
+    cap('#cap1', 1.4, 3.0)
+
+    // B. the 3 becomes three voters
+    tl.to('#count', { scale: 0.3, opacity: 0, duration: 0.45, ease: 'power2.in' }, 3.1)
+    ;[0, 1, 2].forEach((i) => {
+      const h = avatarHome(i)
+      const r = avatarRow(i)
+      tl.fromTo(`#av${i}`,
+        { x: 1290 - 65 - h.x, y: 385 - 65 - h.y, scale: AV_SCALE * 0.4, opacity: 0 },
+        { x: r.x - h.x, y: r.y - h.y, scale: AV_SCALE, opacity: 1, duration: 0.6, ease: 'power2.out' }, 3.3 + i * 0.08)
+      tl.fromTo(`#who${i}`, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.4 }, 3.6 + i * 0.08)
+    })
+    cap('#cap2', 3.5, 5.0)
+
+    // C. two tables; voters slot into users; the join table slides in between
+    tl.to('#card', { autoAlpha: 0, scale: 0.9, duration: 0.45, ease: 'power1.in' }, 5.0)
+    tl.to(['#who0', '#who1', '#who2'], { opacity: 0, duration: 0.3 }, 5.0)
+    tl.to(['#t-questions', '#t-users'], { autoAlpha: 1, y: 0, duration: 0.55, ease: 'power2.out', stagger: 0.1 }, 5.2)
+    ;[0, 1, 2].forEach(i => tl.to(`#av${i}`, { x: 0, y: 0, scale: 1, duration: 0.65, ease: 'power2.inOut' }, 5.35 + i * 0.08))
+    cap('#cap3', 5.6, 7.3)
+    tl.to('#t-join', { autoAlpha: 1, y: 0, duration: 0.6, ease: 'power2.out' }, 6.6)
+    LINKS.forEach((_, k) => {
+      const pair = lines.filter(l => +l.dataset.k === k)
+      tl.to(pair, { strokeDashoffset: 0, duration: 0.45, ease: 'power2.out' }, 7.3 + k * 0.35)
+    })
+    cap('#cap4', 7.5, 11.0)
+
+    // D. back to the start
+    tl.to(['#t-questions', '#t-users', '#t-join', '#links', '#av0', '#av1', '#av2'], { opacity: 0, duration: 0.5, ease: 'power1.in' }, 11.0)
+    tl.fromTo('#card', { autoAlpha: 0, scale: 0.96 }, { autoAlpha: 1, scale: 1, duration: 0.5, ease: 'power2.out', immediateRender: false }, 11.6)
+    tl.fromTo('#count', { scale: 0.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.5, ease: 'power2.out', immediateRender: false }, 11.75)
+    cap('#cap0', 12.0)
+    tl.set(['#t-questions', '#t-users'], { autoAlpha: 0, y: 30 }, 12.6)
+    tl.set('#t-join', { autoAlpha: 0, y: 160 }, 12.6)
+    tl.set('#links', { opacity: 1 }, 12.6)
+    tl.set(lines, { strokeDashoffset: (i, l) => l.style.strokeDasharray }, 12.6)
+    tl.set(['#av0', '#av1', '#av2'], { opacity: 0 }, 12.6)
+    tl.set({}, {}, 13)
+
+    window.__timelines['main'] = tl
+  </script>
+</body>
+</html>

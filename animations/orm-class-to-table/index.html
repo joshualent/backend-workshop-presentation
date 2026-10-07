@@ -1,0 +1,197 @@
+<!doctype html>
+<!--
+  Showpiece clip 2 (slide 14): the ORM.
+  The Question class's fields fly into a table's column headers ("an
+  attribute is a column"), three objects drop in as rows ("an object is a
+  row"), then migration files line up like commits.
+  13 s seamless loop: the last frame equals the first (the class on screen).
+  Shown at 752 px wide on the slide (scale 0.39): text >= 42 px, code 46 px.
+  The code is a character-for-character slice of Appendix A (checked by
+  slides/scripts/check-code.mjs via data-code-check).
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1920, height=1080" />
+  <link rel="stylesheet" href="../shared/clip.css" />
+  <script src="../shared/gsap.min.js"></script>
+  <style>
+    .code-panel { left: 157px; top: 44px; width: 1606px; height: 380px; padding: 30px; }
+    pre.code { font-family: var(--mono); font-size: 46px; line-height: 64px; font-weight: 600; color: var(--text); white-space: pre; }
+    .kw { color: var(--accent-2); }
+    .cls { color: var(--get); }
+    .fn { color: var(--post); }
+    .arg { color: var(--text-muted); }
+    .val { color: var(--get); }
+    .hl { position: absolute; left: 0; height: 64px; border-radius: 8px; background: var(--accent); opacity: 0; }
+
+    .table-name { left: 125px; top: 478px; font-family: var(--mono); font-size: 42px; font-weight: 800; color: var(--accent); }
+    .table { left: 125px; top: 536px; width: 1670px; }
+    .cell { position: absolute; height: 86px; display: flex; align-items: center; padding: 0 22px; font-size: 44px; font-weight: 600; white-space: nowrap; overflow: hidden; border-right: 4px solid var(--border); }
+    .head-row { position: absolute; left: 0; top: 0; width: 1670px; height: 86px; background: var(--surface); border: 4px solid var(--accent); border-radius: 14px 14px 0 0; }
+    .data-row { position: absolute; left: 0; width: 1670px; height: 86px; background: var(--bg); border: 4px solid var(--border); border-top: 0; }
+    .data-row .cell { font-family: var(--sans); }
+    .mono-cell { font-family: var(--mono) !important; }
+    .flyer { position: absolute; font-family: var(--mono); font-size: 46px; line-height: 64px; font-weight: 700; color: var(--accent); white-space: pre; opacity: 0; }
+    .id-head { position: absolute; font-family: var(--mono); font-size: 44px; line-height: 64px; font-weight: 700; color: var(--accent); opacity: 0; }
+
+    .caption { left: 0; width: 1920px; top: 920px; text-align: center; font-size: 56px; font-weight: 800; color: var(--accent-2); opacity: 0; }
+
+    .mig-line { left: 400px; top: 136px; width: 1120px; height: 6px; border-radius: 3px; background: var(--border); opacity: 0; }
+    .mig { top: 106px; display: flex; flex-direction: column; align-items: center; gap: 22px; opacity: 0; }
+    .mig .dot { width: 64px; height: 64px; border-radius: 50%; background: var(--surface); border: 6px solid var(--accent); }
+    .mig .file { font-family: var(--mono); font-size: 42px; font-weight: 700; background: var(--surface); border: 4px solid var(--border); border-radius: 12px; padding: 10px 22px; }
+  </style>
+</head>
+<body>
+  <div id="root" data-composition-id="main" data-start="0" data-duration="13" data-width="1920" data-height="1080">
+    <div class="clip abs" data-start="0" data-duration="13" style="inset:0">
+
+      <div class="abs box code-panel" id="code">
+        <div style="position:relative">
+          <div class="hl" id="hl-class" style="top:0;width:443px"></div>
+<pre class="code" data-code-check><span class="kw">class</span> <span class="cls">Question</span>(models.Model):
+    text = models.<span class="fn">CharField</span>(<span class="arg">max_length</span>=<span class="val">300</span>)
+    votes = models.<span class="fn">IntegerField</span>(<span class="arg">default</span>=<span class="val">0</span>)
+    answered = models.<span class="fn">BooleanField</span>(<span class="arg">default</span>=<span class="val">False</span>)
+    created_at = models.<span class="fn">DateTimeField</span>(<span class="arg">auto_now_add</span>=<span class="val">True</span>)</pre>
+        </div>
+      </div>
+
+      <div class="abs table-name" id="tname">questions_question</div>
+      <div class="abs table" id="table">
+        <div class="head-row" id="head"></div>
+      </div>
+
+      <div class="abs mig-line" id="migline"></div>
+      <div class="abs mig" id="m0" style="left:400px"><div class="dot"></div><div class="file">0001_initial.py</div></div>
+      <div class="abs mig" id="m1" style="left:960px"><div class="dot"></div><div class="file">0002_….py</div></div>
+      <div class="abs mig" id="m2" style="left:1520px"><div class="dot"></div><div class="file">0003_….py</div></div>
+
+      <div class="abs caption" id="cap0">A class is a table</div>
+      <div class="abs caption" id="cap1">An attribute is a column</div>
+      <div class="abs caption" id="cap2">An object is a row</div>
+      <div class="abs caption" id="cap3">Migrations: version control for your database</div>
+    </div>
+  </div>
+
+  <script>
+    // ---------- layout (monospace math: JetBrains Mono advance = 0.6 em) ----------
+    const CH = 46 * 0.6
+    const CODE_X = 157 + 4 + 30 // panel left + border + padding
+    const CODE_Y = 44 + 4 + 30
+    const TABLE_X = 125
+    const TABLE_Y = 536
+    const COLS = [
+      { name: 'id', w: 150 },
+      { name: 'text', w: 640 },
+      { name: 'votes', w: 230 },
+      { name: 'answered', w: 290 },
+      { name: 'created_at', w: 360 },
+    ]
+    const ROWS = [
+      ['1', 'Is REST hard?', '3', 'False', '19:02'],
+      ['2', 'Do I need SQL?', '7', 'False', '19:05'],
+      ['3', 'How do I deploy?', '4', 'True', '19:09'],
+    ]
+    const colX = []
+    COLS.reduce((x, c) => (colX.push(x), x + c.w), 0)
+
+    const root = document.querySelector('.clip')
+    const table = document.getElementById('table')
+    const head = document.getElementById('head')
+
+    // header cells (labels arrive by flying in from the code)
+    COLS.forEach((c, i) => {
+      const cell = document.createElement('div')
+      cell.className = 'cell'
+      cell.style.cssText = `left:${colX[i]}px;top:0;width:${c.w}px;${i === COLS.length - 1 ? 'border-right:0' : ''}`
+      head.appendChild(cell)
+    })
+    // data rows
+    ROWS.forEach((r, ri) => {
+      const row = document.createElement('div')
+      row.className = 'data-row'
+      row.id = `row${ri}`
+      row.style.top = `${86 * (ri + 1)}px`
+      if (ri === ROWS.length - 1)
+        row.style.borderRadius = '0 0 14px 14px'
+      r.forEach((v, ci) => {
+        const cell = document.createElement('div')
+        cell.className = `cell${ci === 1 ? '' : ' mono-cell'}`
+        cell.style.cssText += `left:${colX[ci]}px;top:0;width:${COLS[ci].w}px;${ci === COLS.length - 1 ? 'border-right:0' : ''}`
+        cell.textContent = v
+        row.appendChild(cell)
+      })
+      table.appendChild(row)
+    })
+    // "id" isn't in the class: Django adds it
+    const idHead = document.createElement('div')
+    idHead.className = 'id-head'
+    idHead.textContent = 'id'
+    idHead.style.cssText = `left:${TABLE_X + colX[0] + 24}px;top:${TABLE_Y + 11}px`
+    root.appendChild(idHead)
+
+    // flyers: one per field, starting exactly over the field name in the code
+    const FIELDS = ['text', 'votes', 'answered', 'created_at']
+    const flyers = FIELDS.map((f, i) => {
+      const el = document.createElement('div')
+      el.className = 'flyer'
+      el.textContent = f
+      const col = i + 1
+      const endX = TABLE_X + colX[col] + 24
+      const endY = TABLE_Y + 11
+      el.style.left = `${endX}px`
+      el.style.top = `${endY}px`
+      root.appendChild(el)
+      return { el, dx: CODE_X + 4 * CH - endX, dy: CODE_Y + (i + 1) * 64 - endY }
+    })
+
+    // ---------- timeline ----------
+    const tl = gsap.timeline({ paused: true })
+    const cap = (id, at, out) => {
+      tl.fromTo(id, { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }, at)
+      tl.to(id, { opacity: 0, duration: 0.3, ease: 'power1.in' }, out)
+    }
+    gsap.set(['#tname', '#table'], { autoAlpha: 0, y: 30 })
+    gsap.set('.data-row', { autoAlpha: 0, y: -50 })
+    gsap.set('.mig', { xPercent: -50 })
+
+    // 1. a class is a table
+    tl.to('#hl-class', { opacity: 0.28, duration: 0.3 }, 0.5)
+    cap('#cap0', 0.6, 2.3)
+    tl.to(['#tname', '#table'], { autoAlpha: 1, y: 0, duration: 0.55, ease: 'power2.out', stagger: 0.08 }, 0.9)
+    tl.to('#hl-class', { opacity: 0, duration: 0.3 }, 2.3)
+
+    // 2. an attribute is a column
+    cap('#cap1', 2.5, 4.8)
+    flyers.forEach(({ el, dx, dy }, i) => {
+      const at = 2.7 + i * 0.32
+      tl.fromTo(el, { x: dx, y: dy, opacity: 0, scale: 1 }, { opacity: 1, duration: 0.12 }, at)
+      tl.to(el, { x: 0, y: 0, scale: 44 / 46, duration: 0.6, ease: 'power2.inOut' }, at + 0.1)
+    })
+    tl.to('.id-head', { opacity: 1, duration: 0.4 }, 4.05)
+
+    // 3. an object is a row
+    cap('#cap2', 5.0, 7.5)
+    ROWS.forEach((_, i) => tl.to(`#row${i}`, { autoAlpha: 1, y: 0, duration: 0.45, ease: 'power2.out' }, 5.25 + i * 0.5))
+
+    // 4. migrations stack like commits (the code makes room)
+    tl.to('#code', { autoAlpha: 0, duration: 0.4, ease: 'power1.in' }, 7.6)
+    cap('#cap3', 7.8, 11.2)
+    tl.to('#migline', { opacity: 1, duration: 0.4 }, 7.95)
+    ;['#m0', '#m1', '#m2'].forEach((m, i) => tl.fromTo(m, { opacity: 0, y: -30 }, { opacity: 1, y: 0, duration: 0.45, ease: 'power2.out' }, 8.1 + i * 0.45))
+
+    // 5. back to the start: everything out, the class back in
+    const outAll = ['#tname', '#table', '.flyer', '.id-head', '#migline', '#m0', '#m1', '#m2']
+    tl.to(outAll, { opacity: 0, duration: 0.5, ease: 'power1.in' }, 11.3)
+    tl.to('#code', { autoAlpha: 1, duration: 0.5, ease: 'power2.out' }, 11.9)
+    tl.set('.data-row', { autoAlpha: 0, y: -50 }, 12.5)
+    tl.set(['#tname', '#table'], { autoAlpha: 0, y: 30, opacity: 1 }, 12.5)
+    tl.set(['.flyer', '.id-head'], { opacity: 0 }, 12.5)
+    tl.set({}, {}, 13)
+
+    window.__timelines['main'] = tl
+  </script>
+</body>
+</html>

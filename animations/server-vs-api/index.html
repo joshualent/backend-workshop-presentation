@@ -1,0 +1,161 @@
+<!doctype html>
+<!--
+  Showpiece clip 1 (slide 7): server-rendered pages vs. an API.
+  Left: a heavy HTML page crosses to one browser, which flashes and reloads.
+  Right: light JSON packets fan out to four different clients at once.
+  12 s seamless loop: the last frame equals the first.
+  Shown at 752 px wide on the slide (scale 0.39), so text here is >= 42 px.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=1920, height=1080" />
+  <link rel="stylesheet" href="../shared/clip.css" />
+  <script src="../shared/gsap.min.js"></script>
+  <style>
+    .head { font-size: 66px; font-weight: 800; letter-spacing: -0.01em; }
+    .sub { font-size: 44px; font-weight: 600; color: var(--text-muted); }
+    .divider { left: 956px; top: 40px; width: 6px; height: 1000px; background: var(--border); border-radius: 3px; }
+    .server { width: 230px; height: 280px; display: grid; place-items: center; }
+    .server svg { width: 130px; height: 150px; }
+    .cap { font-size: 44px; font-weight: 700; text-align: center; width: 300px; }
+    .icon { fill: none; stroke: var(--text); stroke-width: 8; stroke-linecap: round; stroke-linejoin: round; }
+    .dot { fill: var(--text); stroke: none; }
+
+    /* left: browser + heavy page */
+    .browser { left: 560px; top: 280px; width: 360px; height: 640px; overflow: hidden; }
+    .titlebar { position: absolute; left: 0; right: 0; top: 0; height: 62px; border-bottom: 4px solid var(--border); }
+    .titlebar i { position: absolute; top: 20px; width: 18px; height: 18px; border-radius: 50%; background: var(--border); }
+    .viewport { position: absolute; left: 0; right: 0; top: 62px; bottom: 0; }
+    .flash { position: absolute; inset: 0; background: var(--text); opacity: 0; }
+    .loading { position: absolute; left: 0; top: 0; height: 12px; width: 100%; background: var(--accent); transform-origin: 0 50%; transform: scaleX(0); }
+    .bar { position: absolute; left: 30px; height: 22px; border-radius: 6px; background: var(--text-muted); }
+    .hero { position: absolute; left: 30px; top: 92px; width: 292px; height: 150px; border-radius: 10px; border: 5px solid var(--text-muted); }
+    .page { left: 330px; top: 460px; width: 220px; height: 300px; background: var(--text); border-radius: 12px; border: 6px solid var(--accent-2); }
+    .page .tag { position: absolute; left: 20px; top: 16px; font-size: 44px; font-weight: 800; color: var(--bg); font-family: var(--mono); }
+    .page .ln { position: absolute; left: 20px; height: 16px; border-radius: 5px; background: var(--border); }
+
+    /* right: API + clients */
+    .client { left: 1500px; width: 384px; height: 168px; display: flex; align-items: center; gap: 22px; padding: 0 26px; }
+    .client svg { width: 78px; height: 78px; flex: none; }
+    .client .name { font-size: 44px; font-weight: 700; white-space: nowrap; }
+    .client .ping { position: absolute; right: 22px; top: 22px; width: 22px; height: 22px; border-radius: 50%; background: var(--accent); opacity: 0; }
+    .packet { left: 0; top: 0; width: 150px; height: 70px; display: grid; place-items: center; background: var(--surface); border: 6px solid var(--accent); border-radius: 14px; font-family: var(--mono); font-size: 44px; font-weight: 800; opacity: 0; }
+  </style>
+</head>
+<body>
+  <div id="root" data-composition-id="main" data-start="0" data-duration="12" data-width="1920" data-height="1080">
+    <div class="clip abs" data-start="0" data-duration="12" style="inset:0">
+      <div class="abs divider"></div>
+
+      <!-- ===== Left: server-rendered ===== -->
+      <div class="abs head" style="left:80px;top:52px">Server-rendered</div>
+      <div class="abs sub" style="left:80px;top:136px">whole page → one browser</div>
+
+      <div class="abs box server" style="left:80px;top:460px">
+        <svg viewBox="0 0 130 150"><rect class="icon" x="8" y="8" width="114" height="56" rx="12" /><rect class="icon" x="8" y="86" width="114" height="56" rx="12" /><circle class="dot" cx="96" cy="36" r="9" /><circle class="dot" cx="96" cy="114" r="9" /></svg>
+      </div>
+      <div class="abs cap" style="left:45px;top:764px">server</div>
+
+      <div class="abs box browser">
+        <div class="titlebar"><i style="left:24px"></i><i style="left:54px"></i><i style="left:84px"></i></div>
+        <div class="viewport">
+          <div id="content">
+            <div class="bar" style="top:30px;width:150px;background:var(--accent)"></div>
+            <div class="hero"></div>
+            <div class="bar" style="top:278px;width:280px"></div>
+            <div class="bar" style="top:322px;width:250px"></div>
+            <div class="bar" style="top:366px;width:288px"></div>
+            <div class="bar" style="top:410px;width:200px"></div>
+            <div class="bar" style="top:478px;width:120px;background:var(--accent-2)"></div>
+          </div>
+          <div class="loading" id="loading"></div>
+          <div class="flash" id="flash"></div>
+        </div>
+      </div>
+      <div class="abs cap" style="left:590px;top:936px">browser</div>
+
+      <div class="abs page" id="page">
+        <div class="tag">HTML</div>
+        <div class="ln" style="top:92px;width:170px;background:var(--accent)"></div>
+        <div class="ln" style="top:130px;width:176px"></div>
+        <div class="ln" style="top:162px;width:150px"></div>
+        <div class="ln" style="top:194px;width:176px"></div>
+        <div class="ln" style="top:226px;width:120px"></div>
+        <div class="ln" style="top:258px;width:160px"></div>
+      </div>
+
+      <!-- ===== Right: API ===== -->
+      <div class="abs head" style="left:1030px;top:52px">API</div>
+      <div class="abs sub" style="left:1030px;top:136px">small JSON → any client</div>
+
+      <div class="abs box server" style="left:1030px;top:460px">
+        <svg viewBox="0 0 130 150"><rect class="icon" x="8" y="8" width="114" height="56" rx="12" /><rect class="icon" x="8" y="86" width="114" height="56" rx="12" /><circle class="dot" cx="96" cy="36" r="9" /><circle class="dot" cx="96" cy="114" r="9" /></svg>
+      </div>
+      <div class="abs cap" style="left:995px;top:764px">server</div>
+
+      <div class="abs box client" id="c0" style="top:226px">
+        <svg viewBox="0 0 80 80"><rect class="icon" x="6" y="12" width="68" height="56" rx="8" /><line class="icon" x1="6" y1="28" x2="74" y2="28" /></svg>
+        <span class="name">web app</span><span class="ping"></span>
+      </div>
+      <div class="abs box client" id="c1" style="top:422px">
+        <svg viewBox="0 0 80 80"><rect class="icon" x="22" y="4" width="36" height="72" rx="8" /><circle class="dot" cx="40" cy="64" r="5" /></svg>
+        <span class="name">phone</span><span class="ping"></span>
+      </div>
+      <div class="abs box client" id="c2" style="top:618px">
+        <svg viewBox="0 0 80 80"><rect class="icon" x="4" y="10" width="72" height="60" rx="8" /><polyline class="icon" points="18,30 30,40 18,50" /><line class="icon" x1="36" y1="52" x2="56" y2="52" /></svg>
+        <span class="name">terminal</span><span class="ping"></span>
+      </div>
+      <div class="abs box client" id="c3" style="top:814px">
+        <svg viewBox="0 0 80 80"><rect class="icon" x="8" y="8" width="64" height="28" rx="6" /><rect class="icon" x="8" y="44" width="64" height="28" rx="6" /><circle class="dot" cx="58" cy="22" r="5" /><circle class="dot" cx="58" cy="58" r="5" /></svg>
+        <span class="name">service</span><span class="ping"></span>
+      </div>
+
+      <div class="abs packet" id="p0">{…}</div>
+      <div class="abs packet" id="p1">{…}</div>
+      <div class="abs packet" id="p2">{…}</div>
+      <div class="abs packet" id="p3">{…}</div>
+    </div>
+  </div>
+
+  <script>
+    const tl = gsap.timeline({ paused: true })
+
+    // ---- Left: a heavy page every 6 s. Frame 0 = card waiting by the server, page shown.
+    const PAGE_START = { x: 0, y: 0, scale: 1, autoAlpha: 1 }
+    gsap.set('#page', PAGE_START)
+    for (const t0 of [0, 6]) {
+      tl.to('#page', { x: 300, y: -30, scale: 0.92, duration: 1.4, ease: 'power2.inOut' }, t0 + 0.4)
+      tl.to('#content', { autoAlpha: 0, duration: 0.2, ease: 'power1.out' }, t0 + 1.6)
+      tl.to('#flash', { opacity: 0.35, duration: 0.12, ease: 'power1.out' }, t0 + 1.7)
+      tl.to('#flash', { opacity: 0, duration: 0.35, ease: 'power1.in' }, t0 + 1.82)
+      tl.to('#page', { autoAlpha: 0, duration: 0.2, ease: 'power1.out' }, t0 + 1.75)
+      tl.fromTo('#loading', { scaleX: 0, autoAlpha: 1 }, { scaleX: 1, duration: 0.8, ease: 'none' }, t0 + 1.85)
+      tl.to('#loading', { autoAlpha: 0, duration: 0.2 }, t0 + 2.65)
+      tl.to('#content', { autoAlpha: 1, duration: 0.4, ease: 'power2.out' }, t0 + 2.7)
+      // next page appears by the server (and is back in place at 12 s)
+      tl.set('#page', { x: -40, y: 0, scale: 0.85 }, t0 + 5.0)
+      tl.to('#page', { x: 0, scale: 1, autoAlpha: 1, duration: 0.6, ease: 'power2.out' }, t0 + 5.1)
+    }
+
+    // ---- Right: four light packets fan out every 3 s
+    const FROM = { x: 1270, y: 565 }
+    const clientY = [226, 422, 618, 814]
+    for (const t0 of [0.5, 3.5, 6.5, 9.5]) {
+      clientY.forEach((cy, i) => {
+        const p = `#p${i}`
+        tl.fromTo(p, { x: FROM.x, y: FROM.y, autoAlpha: 0 }, { autoAlpha: 1, duration: 0.12, ease: 'none' }, t0)
+        tl.to(p, { x: 1330, y: cy + 49, duration: 0.7, ease: 'power2.out' }, t0)
+        tl.to(p, { autoAlpha: 0, duration: 0.2, ease: 'power1.in' }, t0 + 0.68)
+        tl.fromTo(`#c${i}`, { borderColor: '#3a404a' }, { borderColor: '#4fd1b5', duration: 0.15, ease: 'power1.out' }, t0 + 0.7)
+        tl.to(`#c${i}`, { borderColor: '#3a404a', duration: 0.6, ease: 'power1.in' }, t0 + 1.0)
+        tl.fromTo(`#c${i} .ping`, { opacity: 0 }, { opacity: 1, duration: 0.15 }, t0 + 0.7)
+        tl.to(`#c${i} .ping`, { opacity: 0, duration: 0.6 }, t0 + 1.0)
+      })
+    }
+
+    tl.set({}, {}, 12)
+    window.__timelines['main'] = tl
+  </script>
+</body>
+</html>

@@ -112,7 +112,7 @@ backstageTitle: "Clip still: server-rendered vs. API (slide 7)"
 
 # Server-rendered pages vs. an API
 
-<ClipPlayer still name="server-vs-api" alt="Poster frame: a full page to one browser on the left, JSON packets to four clients on the right." width="760px" class="mx-auto" />
+<ClipPlayer still name="server-vs-api" alt="Poster frame: a full page to one browser on the left, JSON packets to four clients on the right." width="752px" class="mx-auto" />
 
 <!--
 [7:03 · 2 min] [MODE: SLIDES]
@@ -130,7 +130,7 @@ backstageTitle: "Clip still: class to table (slide 14)"
 
 # Step 1: the model
 
-<ClipPlayer still name="orm-class-to-table" alt="Poster frame: the Question class beside a questions table with three rows and a stack of migration files." width="760px" class="mx-auto" />
+<ClipPlayer still name="orm-class-to-table" alt="Poster frame: the Question class beside a questions table with three rows and a stack of migration files." width="752px" class="mx-auto" />
 
 <!--
 [7:15 · 1 min] [MODE: SLIDES]
@@ -148,7 +148,7 @@ backstageTitle: "Clip still: counter to many-to-many (slide 28)"
 
 # A counter can't remember who voted
 
-<ClipPlayer still name="counter-to-m2m" alt="Poster frame: a questions table and a users table joined by a votes table." width="760px" class="mx-auto" />
+<ClipPlayer still name="counter-to-m2m" alt="Poster frame: a questions table and a users table joined by a votes table." width="752px" class="mx-auto" />
 
 <!--
 [8:03 · 2 min] [MODE: SLIDES]

@@ -208,16 +208,7 @@ plan: 7
 
 # Server-rendered pages vs. an API
 
-<ClipPlayer name="server-vs-api" alt="Left: a full HTML page travels to one browser, which reloads. Right: small JSON packets fan out to a web app, a phone, a terminal, and another service." width="680px" class="mx-auto mt-2" />
-
-<div class="split-captions">
-  <span>Server builds the whole page, for one browser</span>
-  <span>Server sends small JSON, for any client</span>
-</div>
-
-<style>
-.split-captions { display: grid; grid-template-columns: 1fr 1fr; width: 680px; margin: 10px auto 0; text-align: center; font-size: 20px; font-weight: 700; color: var(--text-muted); }
-</style>
+<ClipPlayer name="server-vs-api" alt="Left: a full HTML page travels to one browser, which flashes and reloads. Right: small JSON packets fan out to a web app, a phone, a terminal, and another service." width="752px" class="mx-auto" />
 
 <!--
 [7:03 · 2 min] [MODE: SLIDES]

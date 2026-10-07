@@ -5,9 +5,12 @@
   "scripts": {
     "dev": "slidev --open=false",
     "build": "slidev build",
+    "serve": "node scripts/serve.mjs",
     "export": "slidev export --timeout 60000",
-    "export:clicks": "slidev export --with-clicks --timeout 60000 --output slides-with-clicks.pdf",
-    "check:code": "node scripts/check-code.mjs"
+    "export:clicks": "slidev export --with-clicks --timeout 60000 --output backend-workshop-slides-with-clicks.pdf",
+    "check:code": "node scripts/check-code.mjs",
+    "capture:board": "node scripts/capture-board.mjs",
+    "shots": "node scripts/screenshot.mjs"
   },
   "dependencies": {
     "@fontsource-variable/inter": "^5.3.0",

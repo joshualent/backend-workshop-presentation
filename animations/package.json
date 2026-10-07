@@ -1,0 +1,12 @@
+{
+  "name": "backend-workshop-clips",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "render": "node render.mjs",
+    "lint": "hyperframes lint ."
+  },
+  "devDependencies": {
+    "hyperframes": "0.8.139"
+  }
+}

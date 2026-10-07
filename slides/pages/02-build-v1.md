@@ -4,21 +4,7 @@ plan: 14
 
 # Step 1: the model
 
-<div class="orm">
-  <ClipPlayer name="orm-class-to-table" alt="The Question class morphs into a table: each field becomes a column header, three objects drop in as rows, then migration files stack like commits." width="600px" />
-  <div class="orm-points">
-    <p>A <strong>class</strong> is a table.</p>
-    <p>An <strong>attribute</strong> is a column.</p>
-    <p>An <strong>object</strong> is a row.</p>
-    <p class="orm-mig">Migrations are version control for your database.</p>
-  </div>
-</div>
-
-<style>
-.orm { display: grid; grid-template-columns: 600px 1fr; gap: 28px; align-items: center; margin-top: 12px; }
-.orm-points p { margin: 0 0 16px; font-size: 28px; font-weight: 600; }
-.orm-points .orm-mig { margin-top: 26px; font-size: 24px; color: var(--accent-2); font-weight: 700; }
-</style>
+<ClipPlayer name="orm-class-to-table" alt="The Question class: its fields fly into a table's column headers, three objects drop in as rows, then migration files line up like commits." width="752px" class="mx-auto" />
 
 <!--
 [7:15 · 1 min] [MODE: SLIDES]

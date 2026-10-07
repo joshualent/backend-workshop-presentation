@@ -164,20 +164,7 @@ plan: 28
 
 # A counter can't remember who voted
 
-<div class="m2m">
-  <ClipPlayer name="counter-to-m2m" alt="The number 3 morphs into three voter avatars; then a questions table and a users table appear with a join table sliding in between, lines connecting their rows." width="620px" />
-  <div class="m2m-points">
-    <p>An integer can't answer <strong>"did Sam already vote?"</strong></p>
-    <p>A list of voters can.</p>
-    <p class="m2m-rel">Question ↔ User is many-to-many. Django builds the join table.</p>
-  </div>
-</div>
-
-<style>
-.m2m { display: grid; grid-template-columns: 620px 1fr; gap: 26px; align-items: center; margin-top: 12px; }
-.m2m-points p { margin: 0 0 18px; font-size: 26px; font-weight: 600; }
-.m2m-points .m2m-rel { color: var(--accent-2); font-weight: 700; font-size: 24px; }
-</style>
+<ClipPlayer name="counter-to-m2m" alt="The number 3 turns into three voters; then a questions table and a users table appear, and a join table slides in between them with lines connecting their rows." width="752px" class="mx-auto" />
 
 <!--
 [8:03 · 2 min] [MODE: SLIDES]
