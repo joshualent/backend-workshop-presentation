@@ -117,6 +117,9 @@ backstageTitle: "Clip still: server-rendered vs. API (slide 7)"
 <!--
 [7:03 · 2 min] [MODE: SLIDES]
 
+Say:
+- "Left: the server builds the whole page and sends it to one browser. Right: the API sends small JSON that any client can use."
+
 Still of showpiece clip 1, for when video won't play. Same talk track as slide 7.
 
 → Press → to continue with slide 8.
@@ -135,6 +138,10 @@ backstageTitle: "Clip still: class to table (slide 14)"
 <!--
 [7:15 · 1 min] [MODE: SLIDES]
 
+Say:
+- "A class is a table, an attribute is a column, an object is a row."
+- "Migrations are version control for the database."
+
 Still of showpiece clip 2. Same talk track as slide 14: class = table, attribute = column, object = row; migrations = version control for the database.
 
 → Press → to continue with slide 15.
@@ -152,6 +159,9 @@ backstageTitle: "Clip still: counter to many-to-many (slide 28)"
 
 <!--
 [8:03 · 2 min] [MODE: SLIDES]
+
+Say:
+- "votes can't tell us who voted. A list of voters can. Question ↔ User is many-to-many, and Django builds the join table."
 
 Still of showpiece clip 3. Same talk track as slide 28.
 
@@ -183,6 +193,9 @@ class Question(models.Model):
 <!--
 [any · 0 min] [MODE: SLIDES]
 
+Say:
+- "Here's the whole model. Compare it with yours line by line; a typo in a field name is the usual culprit."
+
 Full v1 model (Appendix A.1). Show this if your editor dies or someone asks to see the whole file.
 
 → Return with `g` + the slide you came from.
@@ -210,6 +223,9 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 <!--
 [any · 0 min] [MODE: SLIDES]
+
+Say:
+- "Here's the whole serializer. read_only_fields is the line that stops the 9,999-votes trick."
 
 Full v1 serializer (Appendix A.1).
 
@@ -242,6 +258,9 @@ class QuestionViewSet(viewsets.ModelViewSet):
 
 <!--
 [any · 0 min] [MODE: SLIDES]
+
+Say:
+- "Top half of views.py: six imports, then the ViewSet with ordering switched on."
 
 Final v1 views.py, top half (Appendix A.1): imports, the ViewSet, ordering. Part 2 is the next backstage slide.
 
@@ -276,6 +295,9 @@ backstageTitle: "Reference v1: views.py (2/2)"
 <!--
 [any · 0 min] [MODE: SLIDES]
 
+Say:
+- "Bottom half: the two actions. Same shape: get the question, change one thing, save, return it."
+
 Final v1 views.py, bottom half (Appendix A.1): the two custom actions, indented inside QuestionViewSet.
 
 → Return with `g` + the slide you came from.
@@ -307,6 +329,9 @@ urlpatterns = [
 
 <!--
 [any · 0 min] [MODE: SLIDES]
+
+Say:
+- "The finished urls.py. In your starter repo you only uncomment these lines."
 
 Final v1 config/urls.py (Appendix A.1). In the starter repo every line except the admin ones is already there, commented out.
 
@@ -349,6 +374,9 @@ from rest_framework.permissions import IsAdminUser
 <!--
 [any · 0 min] [MODE: SLIDES]
 
+Say:
+- "Part A is three small changes, and two of them are already in your files, commented out."
+
 Appendix A.2. The admin-only change only touches the decorator line of mark_answered; the body stays the same.
 
 → Return with `g` + the slide you came from.
@@ -388,6 +416,9 @@ class Question(models.Model):
 <!--
 [any · 0 min] [MODE: SLIDES]
 
+Say:
+- "votes becomes voters: a many-to-many to User. vote_count counts them for display."
+
 Appendix A.3 model: votes (integer) becomes voters (many-to-many to User). vote_count is a property for display.
 
 → Return with `g` + the slide you came from.
@@ -416,6 +447,9 @@ class QuestionSerializer(serializers.ModelSerializer):
 <!--
 [any · 0 min] [MODE: SLIDES]
 
+Say:
+- "The serializer now shows vote_count and has_voted instead of votes."
+
 Appendix A.3 serializer, top. Replaces the v1 class; the v1 imports stay.
 
 → Press → for part 2, or return with `g` + the slide you came from.
@@ -442,6 +476,9 @@ backstageTitle: "Reference v2 Part B: serializers.py (2/2)"
 
 <!--
 [any · 0 min] [MODE: SLIDES]
+
+Say:
+- "has_voted answers: did whoever is logged in already vote? Logged out, it's always false."
 
 Appendix A.3 serializer, bottom. has_voted answers "did I already vote?" for whoever is logged in; logged out it's always false.
 
@@ -471,6 +508,9 @@ class QuestionViewSet(viewsets.ModelViewSet):
 
 <!--
 [any · 0 min] [MODE: SLIDES]
+
+Say:
+- "Three new imports, and the queryset counts voters so the list can be ordered by votes."
 
 Appendix A.3 views.py, top: three new imports (keep the v1 imports) and the annotated queryset, which makes ?ordering=-num_votes work.
 
@@ -502,6 +542,9 @@ backstageTitle: "Reference v2 Part B: views.py (2/3)"
 <!--
 [any · 0 min] [MODE: SLIDES]
 
+Say:
+- "upvote needs a login, refuses a second vote with a 400, otherwise adds you to voters."
+
 Appendix A.3 views.py, upvote: needs a login, refuses a second vote with 400, otherwise adds the user to voters.
 
 → Press → for part 3, or return with `g` + the slide you came from.
@@ -527,6 +570,9 @@ backstageTitle: "Reference v2 Part B: views.py (3/3)"
 
 <!--
 [any · 0 min] [MODE: SLIDES]
+
+Say:
+- "mark_answered is admin-only now; the body is the same as before."
 
 Appendix A.3 views.py, mark_answered: admin only. Same body as v1.
 
@@ -672,6 +718,9 @@ backstageTitle: "Title direction B: title + terminal"
 <!--
 [phase 1 review · 0 min] [MODE: SLIDES]
 
+Say:
+- Nothing; this is for choosing the title look, not for the audience.
+
 Alternative title direction B (title + terminal). Slide 1 uses direction A. To switch, change `variant="a"` to `variant="b"` in pages/01-opening.md.
 
 → Return with `g` + 2 for the title slide.
@@ -694,6 +743,9 @@ backstageTitle: "Title direction C: request line"
 
 <!--
 [phase 1 review · 0 min] [MODE: SLIDES]
+
+Say:
+- Nothing; this is for choosing the title look, not for the audience.
 
 Alternative title direction C (request line). Slide 1 uses direction A. To switch, change `variant="a"` to `variant="c"` in pages/01-opening.md.
 

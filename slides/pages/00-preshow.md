@@ -36,7 +36,7 @@ routeAlias: preshow
 
 Say:
 - Nothing to present yet. This loops on the projector while people eat and set up. Greet people at the door and point them at the screen.
-- Helpers circulate. Most common blocker: `uv` not installed. The install one-liners are on the troubleshooting slide (press `g`, type its number from notes/screen-setup.md).
+- Helpers circulate. Most common blocker: `uv` not installed. The install one-liners are on the troubleshooting slide: press `g`, type `56`, Enter (`g` `1` comes back here).
 - About 6:45, announce: "Ten minutes. If runserver works, scan the second QR code and post a question for the end of the night."
 
 Ask: (one-on-one) "Does http://127.0.0.1:8000/admin/ show a Django login page? Then you're ready." (It's a login page because there is no admin user yet. That's expected.)

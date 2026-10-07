@@ -8,8 +8,8 @@ One table for the whole night: every switch between the slides, VS Code, the bro
 
 | Clock | Slide(s) | Mode | What happens | Transition cue | Cut if behind |
 |---|---|---|---|---|---|
-| 6:00 | A21 (projector check) | SLIDES | Room check: swatches, 16 px text from the back row, clip plays, live board loads. Open the four browser tabs (screen-setup.md). | `g` `1` → P1 | — |
-| 6:30–6:55 | P1 | SLIDES | Pre-show loop: setup commands, two QR codes, countdown to 6:55. Helpers fix `uv` installs (A19). Announce at 6:45: "Ten minutes; post a question." | 6:55: `→` to slide 1 | Start at 6:55 regardless |
+| 6:00 | Projector check (`g` `58`) | SLIDES | Room check: swatches, 16 px text from the back row, clip plays, live board loads. Open the four browser tabs (screen-setup.md). | `g` `1` → P1 | — |
+| 6:30–6:55 | P1 | SLIDES | Pre-show loop: setup commands, two QR codes, countdown to 6:55. Helpers fix `uv` installs (troubleshooting: `g` `56`). Announce at 6:45: "Ten minutes; post a question." | 6:55: `→` to slide 1 | Start at 6:55 regardless |
 | 6:55 | 1 | SLIDES | Title. One-line intro. | `→` | — |
 | 6:56 | 2 | LIVE BOARD | The finished board with tonight's questions. | `b` if the frame fails | One sentence |
 | 6:57 | 3 | SLIDES | Show of hands · code along + checkpoint branches · stuck signal (3 clicks). | `→` | Skip the show of hands |
