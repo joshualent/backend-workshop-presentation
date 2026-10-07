@@ -18,4 +18,21 @@ Slides and presenter notes for the Developer Club backend workshop: a live code-
 
 ## Commands
 
-Add the exact commands here once the projects exist (Slidev dev, build, export; clip render).
+Deck (run in `slides/`):
+
+- `pnpm dev`: dev server on :3030 (`p` toggles projector simulation; `?projector` works anywhere)
+- `pnpm build`, then `pnpm serve`: offline build served on :3031
+- `pnpm export`: PDF backup (`backend-workshop-slides.pdf`), final click states
+- `pnpm check:code`: snippets on slides, in `notes/cheat-sheet.md`, and in clip sources must match Appendix A
+- `pnpm qa`: with `pnpm serve` running, walks the show offline and checks click counts vs. `[click]` notes, fallbacks, backstage, presenter view
+- `pnpm shots --slides 1-36 [--projector] [--clicks all]`: QA screenshots (dev server by default; `--url http://localhost:3031` for the build)
+- `pnpm capture:board`: refresh the live-board fallback screenshot
+
+Clips (run in `animations/`): `pnpm render` (all) or `node render.mjs <clip> [--sheet]`.
+
+## Conventions in this repo
+
+- Slidev number = plan number + 1 (P1 is slide 1). Every slide's frontmatter has `plan:`.
+- Appendix slides use `backstage: true` (not `hide: true`, which Slidev 53 drops from builds). Live-board slides pair with fallbacks via `fallback:` / `fallbackFor:` route aliases.
+- Click-driven components register their own steps with `useStepClicks`; keep each slide's `[click]` markers equal to its click count (`pnpm qa` checks).
+- Event inputs live only in `slides/workshop.config.ts`.

@@ -60,13 +60,15 @@ One table for the whole night: every switch between the slides, VS Code, the bro
 
 ## Section budgets (from the plan, section 3)
 
-| Block | Budget | Slides | Planned |
-|---|---|---|---|
-| Opening and concepts | 6:55–7:15 (20 min) | 1–13 | 20 min (sum of the per-slide notes) |
-| Build v1 | 7:15–7:55 (40 min) | 14–23 | 6 concept/card min + 34 coding min |
-| Checkpoint pause | 7:55–8:05 (10 min) | 24–28 | 10.5 min. Trim slide 25 to 2.5 min if needed |
-| Build v2 | 8:05–8:25 (20 min) | 29–31 | 3 slide min + 17 coding min |
-| Wrap-up | 8:25–8:30 (5 min) | 32–35 | 5 min |
+"Slide time" adds up the per-slide minutes in the notes. "Scripted talk" is the words in the notes' talking points at 140 words a minute: the notes are prompts, not a script, so the gap is room for asks, answers, and switching screens.
+
+| Block | Budget | Slides | Slide time | Scripted talk | Verdict |
+|---|---|---|---|---|---|
+| Opening and concepts | 6:55–7:15 (20 min) | 1–13 | 20 min | ~7 min | On budget |
+| Build v1 | 7:15–7:55 (40 min) | 14–23 | 13 min (incl. the 3-min exercise) | ~4 min | 27 min left for coding five steps |
+| Checkpoint pause | 7:55–8:05 (10 min) | 24–28 | 10.5 min | ~2 min | **0.5 min over:** keep slide 25 (vote now) to 2.5 min |
+| Build v2 | 8:05–8:25 (20 min) | 29–31 | 3 min | ~2 min | 17 min left for Parts A and B |
+| Wrap-up | 8:25–8:30 (5 min) | 32–35 | 5 min | ~1 min | On budget; slide 34's Q&A absorbs any slack |
 
 ## Backstage slides (Slidev numbers, reach with `g`)
 

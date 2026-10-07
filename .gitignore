@@ -20,3 +20,5 @@ animations/*/node_modules/
 # Clip render scratch (installed clips live in slides/public/media/clips)
 animations/renders/
 animations/node_modules/
+slides/shots/
+slides/backend-workshop-slides-with-clicks.pdf
