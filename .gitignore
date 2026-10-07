@@ -1,0 +1,18 @@
+# Separate repo (joshualent/questions-api), cloned here for reference only
+/questions-api/
+
+node_modules/
+dist/
+.slidev/
+*.local
+.DS_Store
+
+# Slidev / export scratch
+slides/components.d.ts
+slides/.slidev/
+slides/*-exported.pdf
+
+# HyperFrames render scratch (final clips are copied into slides/public/media)
+animations/*/renders/
+animations/*/.hyperframes/
+animations/*/node_modules/

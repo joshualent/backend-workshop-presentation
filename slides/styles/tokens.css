@@ -1,0 +1,50 @@
+/*
+ * Design tokens — the only colors, sizes, and timings components may use.
+ * Tuned for an average campus projector (plan section 5): no pure black,
+ * no thin weights, no low-contrast greys.
+ */
+:root {
+  /* Color */
+  --bg: #15171c;          /* near-black charcoal, never #000 */
+  --surface: #20242b;     /* cards, code blocks, diagram boxes */
+  --border: #3a404a;      /* box outlines, dividers */
+  --text: #f4f1ea;        /* warm off-white */
+  --text-muted: #c4c8cf;  /* dimmest allowed text color */
+  --accent: #4fd1b5;      /* teal */
+  --accent-2: #f5c451;    /* amber, secondary emphasis */
+
+  --get: #6cb6ff;
+  --post: #5fd68a;
+  --patch: #f5c451;
+  --delete: #ff7a7a;
+
+  --ok: #5fd68a;          /* 2xx */
+  --error: #ff7a7a;       /* 4xx / 5xx */
+
+  /* Type (minimums on the 980 px canvas) */
+  --font-sans: 'Inter Variable', 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
+  --font-display: 'Oswald Variable', 'Oswald', 'Inter Variable', sans-serif;
+
+  --fs-title: 40px;
+  --fs-display: 64px;     /* title + section dividers only */
+  --fs-body: 24px;
+  --fs-code: 18px;
+  --fs-label: 16px;       /* diagram labels, never smaller */
+
+  --fw-body: 500;
+  --fw-strong: 700;
+  --fw-heavy: 800;
+
+  /* Shape */
+  --radius: 10px;
+  --radius-sm: 6px;
+  --stroke: 2px;          /* minimum diagram stroke */
+  --stroke-bold: 3px;
+
+  /* Motion (plan section 6: ease-out, 300–700 ms per click step) */
+  --dur-fast: 300ms;
+  --dur-step: 500ms;
+  --dur-max: 700ms;
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}

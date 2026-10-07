@@ -1,0 +1,243 @@
+/* Global deck styles. Colors come from tokens.css only. */
+
+html:root,
+html.dark:root {
+  --slidev-theme-primary: var(--accent);
+  --slidev-slide-container-background: var(--bg);
+  --slidev-transition-duration: 0.3s;
+  --slidev-controls-foreground: var(--text);
+
+  --slidev-code-background: var(--surface);
+  --slidev-code-foreground: var(--text);
+  --slidev-code-font-family: var(--font-mono);
+  --slidev-code-font-size: var(--fs-code);
+  --slidev-code-line-height: 1.5;
+  --slidev-code-padding: 14px 20px;
+  --slidev-code-radius: var(--radius);
+  --slidev-code-margin: 0;
+  --slidev-code-tab-divider: var(--border);
+  --slidev-code-tab-text-color: var(--text-muted);
+  --slidev-code-tab-active-text-color: var(--text);
+}
+
+body {
+  background: var(--bg);
+}
+
+/* ---------- Slide base ---------- */
+
+.slidev-layout {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-body);
+  line-height: 1.35;
+  padding: 34px 52px 30px;
+}
+
+.slidev-layout h1 {
+  font-size: var(--fs-title);
+  font-weight: var(--fw-heavy);
+  line-height: 1.12;
+  letter-spacing: -0.01em;
+  margin: 0 0 20px;
+  color: var(--text);
+}
+
+/* The default theme dims the paragraph after h1 to 50% — far too faint on a projector. */
+.slidev-layout h1 + p {
+  opacity: 1;
+  margin-top: -10px;
+  margin-bottom: 18px;
+  color: var(--text-muted);
+}
+
+.slidev-layout h2 {
+  font-size: 30px;
+  font-weight: var(--fw-strong);
+  line-height: 1.2;
+}
+
+.slidev-layout h3 {
+  font-size: 26px;
+  font-weight: var(--fw-strong);
+}
+
+.slidev-layout p,
+.slidev-layout li {
+  font-size: var(--fs-body);
+  font-weight: var(--fw-body);
+}
+
+.slidev-layout strong {
+  color: var(--accent);
+  font-weight: var(--fw-strong);
+}
+
+.slidev-layout a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.slidev-layout ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.slidev-layout ul > li {
+  position: relative;
+  padding-left: 30px;
+  margin: 0 0 14px;
+}
+
+.slidev-layout ul > li::before {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 0.5em;
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  background: var(--accent);
+}
+
+/* Inline code */
+.slidev-layout :not(pre) > code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  font-weight: 600;
+  color: var(--text);
+  background: var(--surface);
+  border: 2px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0.02em 0.32em;
+  white-space: nowrap;
+}
+
+/* Code blocks */
+.slidev-layout pre.slidev-code,
+.slidev-layout .slidev-code {
+  background: var(--surface) !important;
+  border: 2px solid var(--border);
+  font-weight: 500;
+}
+
+.slidev-layout .slidev-code-block-title {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+/* Dimmed lines (line highlighting) must stay readable on a projector. */
+.slidev-code .line.highlighted.dishonored,
+.slidev-code .line.dishonored {
+  opacity: 0.45 !important;
+}
+
+/* ---------- Click reveals ---------- */
+
+.slidev-vclick-target {
+  transition:
+    opacity var(--dur-step) var(--ease-out),
+    translate var(--dur-step) var(--ease-out),
+    scale var(--dur-step) var(--ease-out);
+}
+
+.slidev-vclick-hidden.reveal-up {
+  translate: 0 12px;
+}
+
+/* ---------- Slide transitions ---------- */
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s var(--ease-out) !important;
+}
+
+/* ---------- Shared utilities ---------- */
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.muted {
+  color: var(--text-muted);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.display {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+}
+
+.card {
+  background: var(--surface);
+  border: var(--stroke) solid var(--border);
+  border-radius: var(--radius);
+  padding: 18px 22px;
+}
+
+.card.accent {
+  border-color: var(--accent);
+}
+
+.callout {
+  background: color-mix(in srgb, var(--accent-2) 20%, var(--surface));
+  border: var(--stroke-bold) solid var(--accent-2);
+  border-radius: var(--radius);
+  padding: 14px 22px;
+  font-weight: var(--fw-strong);
+}
+
+/* Anything still waiting on a presenter input (plan section 10). */
+.placeholder {
+  border: var(--stroke) dashed var(--accent-2);
+  border-radius: var(--radius);
+  color: var(--accent-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 10px;
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+}
+
+/* ---------- Projector simulation (dev toggle) ---------- */
+
+html.projector-sim body {
+  filter: contrast(0.75) brightness(1.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient * {
+    animation-duration: 0s !important;
+  }
+}
