@@ -68,6 +68,7 @@ body {
 .slidev-layout li {
   font-size: var(--fs-body);
   font-weight: var(--fw-body);
+  line-height: 1.4;
 }
 
 .slidev-layout strong {
@@ -137,6 +138,15 @@ body {
 .slidev-code .line.highlighted.dishonored,
 .slidev-code .line.dishonored {
   opacity: 0.45 !important;
+}
+
+/* Backstage reference code: a little more width so 86-character lines fit at 18 px. */
+.slidev-layout.ref-code {
+  padding: 26px 18px 20px;
+}
+.slidev-layout.ref-code .slidev-code {
+  letter-spacing: -0.02em;
+  --slidev-code-padding: 12px 14px;
 }
 
 /* ---------- Click reveals ---------- */
