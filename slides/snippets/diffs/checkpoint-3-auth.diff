@@ -1,0 +1,47 @@
+diff --git a/config/urls.py b/config/urls.py
+index 93d554b..9b863d0 100644
+--- a/config/urls.py
++++ b/config/urls.py
+@@ -10,4 +10,5 @@ router.register("questions", QuestionViewSet, basename="question")
+ urlpatterns = [
+     path("admin/", admin.site.urls),
+     path("api/", include(router.urls)),
++    path("api-auth/", include("rest_framework.urls")),
+ ]
+diff --git a/questions/views.py b/questions/views.py
+index 00e7b60..c7b2ed9 100644
+--- a/questions/views.py
++++ b/questions/views.py
+@@ -1,7 +1,7 @@
+ from rest_framework import viewsets
+ from rest_framework.decorators import action
+ from rest_framework.response import Response
+-from rest_framework.permissions import AllowAny
++from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+ 
+ from .models import Question
+ from .serializers import QuestionSerializer
+@@ -12,7 +12,13 @@ class QuestionViewSet(viewsets.ModelViewSet):
+     serializer_class = QuestionSerializer
+     permission_classes = [AllowAny]
+ 
+-    @action(detail=True, methods=["post"])
++    def get_permissions(self):
++        if self.action in ("update", "partial_update", "destroy"):
++            return [IsAdminUser()]
++
++        return super().get_permissions()
++
++    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
+     def upvote(self, request, pk=None, format=None):
+         question = self.get_object()
+         question.votes += 1
+@@ -20,7 +26,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
+         return Response(self.get_serializer(question).data)
+ 
+ 
+-    @action(detail=True, methods=["post"])
++    @action(detail=True, methods=["post"], permission_classes=[IsAdminUser])
+     def toggle_answered(self, request, pk=None, format=None):
+         question = self.get_object()
+         question.answered = not question.answered

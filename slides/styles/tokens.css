@@ -1,0 +1,62 @@
+/*
+ * Every visual value in the deck (plan section 5). Components use these
+ * custom properties only. The animations repeat the same values in
+ * animations/shared/stage.css; change both together.
+ */
+:root {
+  /* One solid background on every slide; code sits on a slightly lighter surface. */
+  --bg: #16181d;
+  --surface: #21252d;
+  --surface-strong: #2a2f39;
+
+  /* Text. Nothing dimmer than --text-2: projectors crush dark greys. */
+  --text: #f2f0eb;
+  --text-2: #c5c9d0;
+
+  /* Lines: diagram strokes and table rules. */
+  --stroke: #8d95a3;
+  --rule: #4a515e;
+  --stroke-w: 2px;
+
+  /* Color carries meaning only. */
+  --accent: #4fd1b5;          /* the thing to look at now */
+  --get: #6cb6ff;
+  --post: #ffb454;
+  --put: #c49bff;
+  --patch: #c49bff;
+  --delete: #ff79c6;
+  --status-2xx: #7ed957;
+  --status-4xx: #ff6b6b;
+
+  /* Type: one sans, one mono, both self-hosted. Body weight 500 or heavier. */
+  --font-sans: 'Inter Variable', 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', ui-monospace, monospace;
+  --fw-body: 500;
+  --fw-strong: 650;
+  --fw-title: 700;
+
+  /* Minimum sizes on the 980 × 552 canvas: titles 40, body 24, code 18, labels 16. */
+  --fs-hero: 52px;
+  --fs-section: 50px;
+  --fs-title: 40px;
+  --fs-lead: 28px;
+  --fs-body: 26px;
+  --fs-small: 24px;
+  --fs-code: 18px;
+  --fs-label: 16px;
+  --lh-body: 1.35;
+  --lh-code: 1.4;
+
+  /* Layout: titles top-left in the same place on every slide. */
+  --pad-x: 40px;
+  --pad-top: 30px;
+  --title-gap: 22px;
+  --gap: 20px;
+  --radius: 6px;
+  --radius-sm: 4px;
+  --code-pad-x: 12px;
+  --code-pad-y: 10px;
+
+  /* Motion: every build finishes well under 500 ms. */
+  --t-build: 200ms;
+}

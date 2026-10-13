@@ -1,0 +1,154 @@
+<!doctype html>
+<!--
+  V3. From a count to a list of voters (plan slide 37, stepped).
+  Migration 0002_votes_many_to_many in pictures: RemoveField drops the votes
+  column, AddField creates questions_question_votes, rows link question 1 to
+  sam and mod, sam's toggle_vote deletes their row, and the JSON still says
+  "votes": 1 because the serializer reads votes.count. Table and column names
+  come from `sqlmigrate questions 0002` on checkpoint-4-m2m.
+  Stops: 0 before · 4 RemoveField · 8.5 AddField · 13.5 two votes ·
+  18 sam toggles off · 24 the API is unchanged (the poster).
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, height=1080">
+  <link rel="stylesheet" href="../shared/stage.css">
+  <script src="../node_modules/gsap/dist/gsap.min.js"></script>
+  <script src="../shared/stage.js"></script>
+  <style>
+    .cell {
+      position: absolute;
+      height: 81px;
+      border: var(--stroke-w) solid var(--rule);
+      padding: 0 22px;
+      display: flex;
+      align-items: center;
+      font-family: var(--mono);
+      font-size: 42px;
+      font-weight: 500;
+      color: var(--text-2);
+      white-space: nowrap;
+      overflow: hidden;
+    }
+    .cell.head { font-weight: 700; color: var(--text); }
+    .sub { position: absolute; font-family: var(--mono); font-size: 40px; font-weight: 500; white-space: pre; }
+  </style>
+</head>
+<body>
+  <div id="stage">
+    <svg class="lines" id="lines"></svg>
+  </div>
+
+  <script>
+    const tl = gsap.timeline({ paused: true })
+    const STOPS = [0, 4, 8.5, 13.5, 18, 24]
+    const ROW = 76
+
+    /** A table drawn as absolutely positioned cells, so a column can collapse. */
+    function table(name, x, y, cols, rows) {
+      const title = el('div', 'tname', { left: x, top: y - 56 }, name)
+      const cells = { head: [], rows: [] }
+      let cx = 0
+      const colX = []
+      cols.forEach(([, w]) => { colX.push(cx); cx += w })
+      cells.head = cols.map(([label, w], c) => el('div', 'cell head', { left: x + colX[c], top: y, width: w + 5 }, label))
+      cells.rows = rows.map((vals, r) => vals.map((v, c) => el('div', 'cell', { left: x + colX[c], top: y + ROW * (r + 1), width: cols[c][1] + 5 }, v)))
+      return { title, cells, x, y, colX, cols, width: cx }
+    }
+
+    const q = table('questions_question', 60, 150, [['id', 120], ['text', 710], ['votes', 190], ['answered', 250]],
+      [['1', 'What does a serializer do?', '3', '0']])
+    const users = table('auth_user', 1430, 150, [['id', 120], ['username', 330]],
+      [['1', 'mod'], ['2', 'sam']])
+    const join = table('questions_question_votes', 600, 486, [['id', 120], ['question_id', 330], ['user_id', 260]],
+      [['1', '1', '2'], ['2', '1', '1']])
+
+    // ---------- links: join row → question 1, join row → user ----------
+    const svg = document.getElementById('lines')
+    const NS = 'http://www.w3.org/2000/svg'
+    const rowMid = (t, r) => t.y + ROW * (r + 1) + ROW / 2 + 2
+    function link(d) {
+      const p = document.createElementNS(NS, 'path')
+      p.setAttribute('d', d)
+      p.setAttribute('class', 'link')
+      svg.appendChild(p)
+      return p
+    }
+    const qBottom = q.y + ROW * 2 + 5
+    const L = [
+      // join row 1 (sam's vote): question 1 and sam (auth_user row 2)
+      [link(`M 600 ${rowMid(join, 0)} H 140 V ${qBottom}`), link(`M 1315 ${rowMid(join, 0)} H 1370 V ${rowMid(users, 1)} H 1430`)],
+      // join row 2 (mod's vote): question 1 and mod (auth_user row 1)
+      [link(`M 600 ${rowMid(join, 1)} H 170 V ${qBottom}`), link(`M 1315 ${rowMid(join, 1)} H 1395 V ${rowMid(users, 0)} H 1430`)],
+    ]
+    const draw = (paths, t) => paths.forEach((p) => {
+      const len = p.getTotalLength()
+      tl.fromTo(p, { strokeDasharray: len, strokeDashoffset: len, opacity: 1 }, { strokeDashoffset: 0, duration: 0.7, ease: 'power2.out', immediateRender: false }, t)
+    })
+
+    // ---------- captions ----------
+    const CAPS = [
+      ['Before: votes is a number in questions_question', 'After three upvotes from sam, it says 3.'],
+      ['RemoveField: the votes column is dropped', `migrations.RemoveField(model_name='question', name='votes')`],
+      ['AddField: Django creates a join table', 'models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)'],
+      ['Each vote is a row that links a question to a user', 'sam votes, then mod votes'],
+      ['sam calls toggle_vote again: their row is deleted', '<span class="post">POST</span> /api/questions/1/toggle_vote/'],
+      ['The serializer counts the rows', `votes = serializers.IntegerField(source="votes.count", read_only=True)\n{"id": 1, "text": "What does a serializer do?", <span class="accent">"votes": 1</span>, …}`],
+    ]
+    const PROSE = new Set([0, 3])
+    const caps = CAPS.map(([c, sub], i) => [
+      el('div', 'caption', { left: 60, top: 784, opacity: 0 }, esc(c)),
+      el('div', 'sub', { left: 60, top: 866, opacity: 0, color: 'var(--text-2)', lineHeight: '64px', fontFamily: PROSE.has(i) ? 'var(--sans)' : 'var(--mono)', fontSize: PROSE.has(i) ? '44px' : '40px' }, sub),
+    ])
+    const cap = (i, t) => {
+      tl.to(caps[i - 1], { opacity: 0, duration: 0.25 }, t)
+      tl.fromTo(caps[i], { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out', immediateRender: false }, t + 0.25)
+    }
+
+    // ---------- frame 0 ----------
+    gsap.set(caps[0], { opacity: 1 })
+    const joinAll = [join.title, ...join.cells.head, ...join.cells.rows.flat()]
+    gsap.set(joinAll, { opacity: 0 })
+    gsap.set(L.flat(), { opacity: 0 })
+    const votesCol = [q.cells.head[2], q.cells.rows[0][2]]
+    const answeredCol = [q.cells.head[3], q.cells.rows[0][3]]
+
+    // 0 → 4: RemoveField drops the votes column
+    cap(1, 0.4)
+    tl.to(votesCol, { color: '#4fd1b5', duration: 0.3 }, 1.0)
+    tl.to(votesCol, { opacity: 0, duration: 0.5 }, 2.0)
+    tl.to(votesCol, { width: 0, paddingLeft: 0, paddingRight: 0, borderWidth: 0, duration: 0.7, ease: 'power2.inOut' }, 2.4)
+    tl.to(answeredCol, { x: -190, duration: 0.7, ease: 'power2.inOut' }, 2.4)
+
+    // 4 → 8.5: AddField creates questions_question_votes
+    cap(2, 4.3)
+    tl.fromTo([join.title, ...join.cells.head], { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', immediateRender: false }, 5.0)
+
+    // 8.5 → 13.5: two votes, two rows
+    cap(3, 8.8)
+    tl.fromTo(join.cells.rows[0], { opacity: 0 }, { opacity: 1, duration: 0.4, immediateRender: false }, 9.4)
+    draw(L[0], 9.8)
+    tl.to(users.cells.rows[1][1], { color: '#4fd1b5', duration: 0.3 }, 10.3)
+    tl.fromTo(join.cells.rows[1], { opacity: 0 }, { opacity: 1, duration: 0.4, immediateRender: false }, 11.0)
+    draw(L[1], 11.4)
+    tl.to(users.cells.rows[0][1], { color: '#4fd1b5', duration: 0.3 }, 11.9)
+
+    // 13.5 → 18: sam toggles off; their row goes away
+    cap(4, 13.8)
+    tl.to(join.cells.rows[0], { color: '#4fd1b5', duration: 0.3 }, 14.6)
+    tl.to([...join.cells.rows[0], ...L[0]], { opacity: 0, duration: 0.5 }, 15.4)
+    tl.to(users.cells.rows[1][1], { color: '#c5c9d0', duration: 0.4 }, 15.4)
+    tl.to(join.cells.rows[1], { y: -ROW, duration: 0.6, ease: 'power2.inOut' }, 16.2)
+    tl.to(L[1][0], { attr: { d: `M 600 ${rowMid(join, 0)} H 170 V ${qBottom}` }, duration: 0.6, ease: 'power2.inOut' }, 16.2)
+    tl.to(L[1][1], { attr: { d: `M 1315 ${rowMid(join, 0)} H 1395 V ${rowMid(users, 0)} H 1430` }, duration: 0.6, ease: 'power2.inOut' }, 16.2)
+    // the redrawn paths keep their full dash pattern
+    tl.set(L[1], { strokeDasharray: 'none' }, 16.2)
+
+    // 18 → 24: the serializer counts the rows; the JSON is unchanged
+    cap(5, 18.3)
+
+    registerVideo(tl, { duration: 24.5, stops: STOPS, poster: 24 })
+  </script>
+</body>
+</html>

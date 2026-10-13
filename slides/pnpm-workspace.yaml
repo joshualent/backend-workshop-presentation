@@ -1,0 +1,4 @@
+# playwright-chromium's install script only downloads a browser; the cached
+# Chromium matching the pinned version is used for export and QA instead.
+allowBuilds:
+  playwright-chromium: false

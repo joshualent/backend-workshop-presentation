@@ -1,0 +1,138 @@
+<!doctype html>
+<!--
+  V1. One backend, many clients (plan slide 5, loops silently).
+  Left: the server builds a whole HTML page and sends it to one browser, which
+  reloads. Right: the same server sends small JSON to a web app, a phone, and
+  a terminal at once. 15 s seamless loop: the last frame equals the first.
+  The poster (12 s) has both halves done, with their captions.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, height=1080">
+  <link rel="stylesheet" href="../shared/stage.css">
+  <script src="../node_modules/gsap/dist/gsap.min.js"></script>
+  <script src="../shared/stage.js"></script>
+  <style>
+    .heading { position: absolute; top: 112px; font-size: 52px; font-weight: 650; color: var(--text-2); }
+    .divider { position: absolute; left: 958px; top: 300px; width: 5px; height: 740px; background: var(--rule); }
+    .client { position: absolute; border: var(--stroke-w) solid var(--stroke); border-radius: 12px; background: var(--bg); }
+    .client .who { position: absolute; left: 22px; top: 14px; font-size: 40px; font-weight: 600; color: var(--text-2); }
+    .page { position: absolute; padding: 26px 30px; border-radius: 10px; }
+    .page h1 { font-size: 50px; font-weight: 700; margin-bottom: 26px; }
+    .page .item { font-size: 44px; font-weight: 600; }
+    .page .votes { font-size: 40px; color: var(--text-2); margin-top: 8px; }
+    .value { position: absolute; left: 0; right: 0; text-align: center; font-size: 46px; font-weight: 650; }
+    .value.mono { font-family: var(--mono); font-size: 40px; font-weight: 500; }
+    .chip { position: absolute; padding: 6px 20px; border-radius: 10px; background: var(--surface); border: var(--stroke-w) solid var(--stroke); font-family: var(--mono); font-size: 40px; font-weight: 600; }
+    .note { position: absolute; top: 990px; font-size: 46px; font-weight: 650; }
+  </style>
+</head>
+<body>
+  <div id="stage">
+    <svg class="lines" id="lines"></svg>
+  </div>
+
+  <script>
+    const tl = gsap.timeline({ paused: true })
+
+    // ---------- layout ----------
+    el('div', 'heading', { left: 60 }, 'Server-rendered pages')
+    el('div', 'heading', { right: 60 }, 'An API')
+    el('div', 'box', { left: 760, top: 80, width: 400, height: 150 }, '<span class="name">Server</span>')
+    el('div', 'divider')
+
+    // left: one browser
+    const browser = el('div', 'client', { left: 110, top: 470, width: 720, height: 500 })
+    el('div', 'who', {}, 'Browser', browser)
+    const pageHtml = n => `<h1>Questions</h1><div class="item">What does a serializer do?</div><div class="votes">${n} votes</div>`
+    const oldPage = el('div', 'page', { left: 140, top: 550, width: 660, height: 390, background: 'var(--surface)' }, pageHtml(3))
+    const newPage = el('div', 'page', { left: 140, top: 550, width: 660, height: 390, background: 'var(--surface)' }, pageHtml(4))
+    const leftNote = el('div', 'note', { left: 110 }, 'A whole page, every click')
+
+    // right: three clients
+    const CLIENTS = [['Web app', 1000], ['Phone', 1290], ['Terminal', 1580]]
+    const clients = CLIENTS.map(([who, x], i) => {
+      const box = el('div', 'client', { left: x, top: 600, width: 270, height: 300 })
+      el('div', 'who', {}, who, box)
+      const mono = i === 2
+      const v3 = el('div', `value${mono ? ' mono' : ''}`, { top: 150 }, mono ? '"votes": 3' : '3 votes', box)
+      const v4 = el('div', `value${mono ? ' mono' : ''}`, { top: 150, opacity: 0 }, mono ? '"votes": 4' : '4 votes', box)
+      const chip = el('div', 'chip', { left: x + 135 - 66, top: 520, opacity: 0 }, 'JSON')
+      return { x, v3, v4, chip }
+    })
+    const rightNote = el('div', 'note', { left: 1000 }, 'Just the data, to any client')
+
+    // request arrows
+    const svg = document.getElementById('lines')
+    const NS = 'http://www.w3.org/2000/svg'
+    svg.innerHTML = `<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="head"/></marker></defs>`
+    function arrow(d) {
+      const p = document.createElementNS(NS, 'path')
+      p.setAttribute('d', d)
+      p.setAttribute('class', 'edge')
+      p.setAttribute('marker-end', 'url(#arrow)')
+      svg.appendChild(p)
+      return p
+    }
+    const reqLeft = arrow('M 700 462 V 330 H 820 V 242')
+    const reqRight = arrow('M 1110 592 V 242')
+    const reqLeftLabel = el('div', 'label', { left: 722, top: 360 }, 'request')
+    const reqRightLabel = el('div', 'label', { left: 1132, top: 400 }, 'request')
+
+    // ---------- frame 0 (and frame 15): idle ----------
+    gsap.set([newPage, leftNote, rightNote, reqLeftLabel, reqRightLabel], { opacity: 0 })
+    for (const p of [reqLeft, reqRight]) {
+      const len = p.getTotalLength()
+      // Hidden, arrowhead included, until it's drawn.
+      gsap.set(p, { strokeDasharray: len, strokeDashoffset: len, opacity: 0 })
+    }
+    // The new page starts small, under the server, and travels to the browser.
+    const from = { x: -50, y: -415, scale: 0.5, opacity: 0 }
+    gsap.set(newPage, from)
+
+    const drawArrow = (p, label, t) => {
+      tl.set(p, { opacity: 1 }, t)
+      tl.to(p, { strokeDashoffset: 0, duration: 0.6, ease: 'power2.out' }, t)
+      tl.to(label, { opacity: 1, duration: 0.3 }, t + 0.2)
+    }
+    const eraseArrow = (p, label, t) => {
+      tl.to([p, label], { opacity: 0, duration: 0.3 }, t)
+      tl.set(p, { strokeDashoffset: p.getTotalLength() }, t + 0.35)
+    }
+
+    // ---------- left: a whole page ----------
+    drawArrow(reqLeft, reqLeftLabel, 0.5)
+    tl.to(newPage, { opacity: 1, duration: 0.5 }, 1.3)
+    tl.fromTo(newPage.children, { opacity: 0 }, { opacity: 1, duration: 0.3, stagger: 0.3, immediateRender: false }, 1.4)
+    eraseArrow(reqLeft, reqLeftLabel, 2.3)
+    tl.to(oldPage, { opacity: 0, duration: 0.3 }, 3.3)
+    tl.to(newPage, { x: 0, y: 0, scale: 1, duration: 1.5, ease: 'power1.inOut' }, 2.4)
+    tl.to(leftNote, { opacity: 1, duration: 0.4 }, 4.2)
+
+    // ---------- right: just the data ----------
+    drawArrow(reqRight, reqRightLabel, 5.4)
+    clients.forEach((c, i) => {
+      tl.fromTo(c.chip, { opacity: 0, x: 1066 - c.x - 69, y: -290 }, { opacity: 1, x: 1066 - c.x - 69, y: -290, duration: 0.15, immediateRender: false }, 6.3)
+      tl.to(c.chip, { x: 0, y: 0, duration: 0.9, ease: 'power2.out' }, 6.4 + i * 0.05)
+      tl.to(c.chip, { opacity: 0, duration: 0.25 }, 7.35)
+      tl.to(c.v3, { opacity: 0, duration: 0.25 }, 7.35)
+      tl.to(c.v4, { opacity: 1, duration: 0.25 }, 7.4)
+    })
+    eraseArrow(reqRight, reqRightLabel, 6.6)
+    tl.to(rightNote, { opacity: 1, duration: 0.4 }, 7.8)
+
+    // ---------- back to frame 0 ----------
+    tl.to([leftNote, rightNote], { opacity: 0, duration: 0.4 }, 12.6)
+    tl.to(newPage, { opacity: 0, duration: 0.5 }, 12.8)
+    tl.to(oldPage, { opacity: 1, duration: 0.5 }, 13.0)
+    clients.forEach((c) => {
+      tl.to(c.v4, { opacity: 0, duration: 0.4 }, 13.0)
+      tl.to(c.v3, { opacity: 1, duration: 0.4 }, 13.1)
+    })
+    tl.set(newPage, from, 13.6)
+
+    registerVideo(tl, { duration: 15, stops: [0], poster: 12, loop: true })
+  </script>
+</body>
+</html>

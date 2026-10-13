@@ -1,0 +1,17 @@
+# Workshop repo (joshualent/questions-api), cloned read-only by scripts/extract-snippets.sh
+/vendor/
+
+node_modules/
+dist/
+.slidev/
+*.local
+.DS_Store
+__pycache__/
+
+# Slidev scratch
+slides/components.d.ts
+slides/*-exported.pdf
+slides/shots/
+
+# Video render scratch (finished videos are copied into slides/public/media/videos)
+animations/renders/

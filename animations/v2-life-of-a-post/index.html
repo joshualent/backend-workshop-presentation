@@ -1,0 +1,226 @@
+<!doctype html>
+<!--
+  V2. Life of a POST (plan slide 11, stepped).
+  POST /api/questions/ with {"text": "What does a serializer do?", "votes": 9999}
+  through every layer, showing how the data changes shape. Every value is real:
+  the router line, the 400 body, the INSERT (captured from checkpoint-1-crud),
+  and the 201 body come from the workshop code (plan section 2).
+  Stops: 0 client · 4 router · 11 serializer · 15 model · 19.5 SQLite ·
+  23.5 back to JSON · 29 201 Created and the summary (the poster).
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, height=1080">
+  <link rel="stylesheet" href="../shared/stage.css">
+  <script src="../node_modules/gsap/dist/gsap.min.js"></script>
+  <script src="../shared/stage.js"></script>
+  <style>
+    .group { position: absolute; inset: 0; opacity: 0; }
+    .gate { position: absolute; width: 6px; background: var(--stroke); }
+    .strike { position: absolute; height: 5px; background: var(--text-2); transform-origin: 0 50%; }
+    .chip { position: absolute; padding: 6px 22px; border-radius: 12px; background: var(--surface); font-family: var(--mono); font-size: 46px; white-space: pre; }
+    .row-label { position: absolute; font-size: 44px; font-weight: 600; color: var(--text-2); }
+  </style>
+</head>
+<body>
+  <div id="stage">
+    <svg class="lines" id="lines"></svg>
+  </div>
+
+  <script>
+    const tl = gsap.timeline({ paused: true })
+    const STOPS = [0, 4, 11, 15, 19.5, 23.5, 29]
+
+    // ---------- the map: same boxes as the slides ----------
+    const NAMES = ['Client', 'URL router', 'ViewSet', 'Serializer', 'Model', 'SQLite']
+    const BOX_W = 262
+    const BOX_H = 116
+    const boxX = i => 60 + 300 * i + 19
+    const boxes = NAMES.map((n, i) => el('div', 'box', { left: boxX(i), top: 50, width: BOX_W, height: BOX_H }, `<span class="name">${n}</span>`))
+    const svg = document.getElementById('lines')
+    const NS = 'http://www.w3.org/2000/svg'
+    svg.innerHTML = `<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="head"/></marker></defs>`
+    for (let i = 1; i < NAMES.length; i++) {
+      const l = document.createElementNS(NS, 'line')
+      l.setAttribute('x1', boxX(i - 1) + BOX_W + 4); l.setAttribute('x2', boxX(i) - 6)
+      l.setAttribute('y1', 108); l.setAttribute('y2', 108)
+      l.setAttribute('class', 'edge'); l.setAttribute('marker-end', 'url(#arrow)')
+      svg.appendChild(l)
+    }
+
+    /** Move the focus to box i at time t (all boxes normal for i = -1). */
+    function focus(i, t) {
+      boxes.forEach((b, k) => {
+        const on = k === i
+        tl.to(b, { borderColor: on ? '#4fd1b5' : '#8d95a3', duration: 0.3 }, t)
+        tl.to(b.querySelector('.name'), { color: on ? '#4fd1b5' : (i === -1 ? '#f2f0eb' : '#c5c9d0'), duration: 0.3 }, t)
+      })
+    }
+
+    // ---------- captions ----------
+    const CAPTIONS = [
+      'The client sends text over the network',
+      'The URL router picks the code to run',
+      'The serializer checks the data',
+      'serializer.save() creates a Question',
+      'Django runs an INSERT. SQLite stores a row.',
+      'The serializer turns the row back into JSON',
+      'What went in, and what came back',
+    ]
+    const caps = CAPTIONS.map(c => el('div', 'caption', { left: 60, top: 222, opacity: 0 }, esc(c)))
+
+    // ---------- one group of content per stop ----------
+    const G = CAPTIONS.map(() => el('div', 'group'))
+    const add = (g, tag, cls, style, html) => el(tag, cls, style, html, G[g])
+
+    // 0. raw HTTP
+    add(0, 'div', 'panel', { left: 60, top: 340, width: 1800, height: 330 })
+    add(0, 'div', 'code', { left: 100, top: 375 },
+      `<span class="post">POST</span> /api/questions/ HTTP/1.1\nContent-Type: application/json\n\n{"text": "What does a serializer do?", "votes": 9999}`)
+
+    // 1. router → QuestionViewSet.create
+    const r1 = add(1, 'div', 'code', { left: 60, top: 350, fontSize: 52 }, '<span class="post">POST</span> /api/questions/')
+    const r2 = add(1, 'div', 'code', { left: 60, top: 520, fontSize: 52, color: 'var(--accent)' }, 'QuestionViewSet.create')
+    const r3 = add(1, 'div', 'label', { left: 60, top: 700 }, 'from config/urls.py')
+    const r4 = add(1, 'div', 'code', { left: 60, top: 760, fontSize: 40, color: 'var(--text-2)' }, 'router.register("questions", QuestionViewSet, basename="question")')
+    const rArrow = add(1, 'div', 'abs', { left: 80, top: 440, width: 6, height: 66, background: 'var(--stroke)' })
+    const rHead = add(1, 'div', 'abs', { left: 70, top: 500, width: 0, height: 0, borderLeft: '13px solid transparent', borderRight: '13px solid transparent', borderTop: '18px solid var(--stroke)' })
+
+    // 2. serializer: votes dropped; blank text bounces back with a 400
+    add(2, 'div', 'label', { left: 60, top: 336 }, 'Request data')
+    const dict = add(2, 'div', 'code', { left: 60, top: 390 }, '{"text": "What does a serializer do?"<span id="comma">, </span><span id="votes">"votes": 9999</span>}')
+    const strike = add(2, 'div', 'strike', { left: 0, top: 424, width: 0 })
+    const roNote = add(2, 'div', 'label', { left: 1050, top: 462 }, 'read-only: ignored')
+    const valid = add(2, 'div', 'code', { left: 60, top: 540 }, 'validated_data = {"text": "What does a serializer do?"}')
+    const blankLabel = add(2, 'div', 'label', { left: 60, top: 680 }, 'If the text is blank:')
+    const gate = add(2, 'div', 'gate', { left: 900, top: 730, height: 110 })
+    const gateLabel = add(2, 'div', 'label', { left: 930, top: 755 }, 'serializer')
+    const chip = add(2, 'div', 'chip', { left: 60, top: 742 }, '{"text": ""}')
+    const bad = add(2, 'div', 'code', { left: 60, top: 880 }, '<span class="badge err">400 Bad Request</span>  {"text": ["This field may not be blank."]}')
+
+    // 3. model
+    add(3, 'div', 'label', { left: 60, top: 336 }, 'serializer.save() calls')
+    const create = add(3, 'div', 'code', { left: 60, top: 392 }, 'Question.objects.create(text="What does a serializer do?")')
+    const defLabel = add(3, 'div', 'label', { left: 60, top: 540 }, 'Defaults from the model')
+    const defs = add(3, 'div', 'code', { left: 60, top: 596 }, 'votes = 0\nanswered = False')
+    const idNote = add(3, 'div', 'label', { left: 60, top: 780 }, 'The id comes from the database, next.')
+
+    // 4. SQLite
+    const sql = add(4, 'div', 'code', { left: 60, top: 336, fontSize: 42, lineHeight: '58px' },
+      `INSERT INTO "questions_question"\n  ("text", "votes", "answered", "created_at")\n  VALUES ('What does a serializer do?', 0, 0, '…')\n  RETURNING "questions_question"."id"`)
+    const tname = add(4, 'div', 'tname', { left: 60, top: 620 }, 'questions_question')
+    const tbl = add(4, 'table', 'tbl', { left: 60, top: 676 },
+      `<thead><tr><th style="width:120px">id</th><th style="width:700px">text</th><th style="width:170px">votes</th><th style="width:250px">answered</th><th style="width:300px">created_at</th></tr></thead>
+       <tbody><tr id="newrow"><td style="color:var(--accent)">1</td><td>What does a serializer do?</td><td>0</td><td>0</td><td>2026-10-19 …</td></tr></tbody>`)
+
+    // 5. back to JSON
+    add(5, 'div', 'label', { left: 60, top: 336 }, 'serializer.data')
+    const json = add(5, 'div', 'code', { left: 60, top: 392 },
+      '{"id": 1,\n "text": "What does a serializer do?",\n "votes": 0,\n "answered": false,\n "created_at": "…"}')
+
+    // 6. 201 and the summary
+    const s201 = add(6, 'div', 'code', { left: 60, top: 336 }, '<span class="badge ok">HTTP/1.1 201 Created</span>')
+    const rows = [
+      ['Sent', '{"text": "What does a serializer do?", "votes": 9999}'],
+      ['Got back', '<span class="badge ok">201 Created</span>  {"id": 1, …, <span class="accent">"votes": 0</span>, …}'],
+      ['Blank text', '<span class="badge err">400 Bad Request</span>  {"text": ["This field may not be blank."]}'],
+    ]
+    const summary = rows.map(([label, code], i) => [
+      add(6, 'div', 'row-label', { left: 60, top: 360 + i * 130 }, label),
+      add(6, 'div', 'code', { left: 330, top: 354 + i * 130, fontSize: 42 }, code),
+    ])
+    const closing = add(6, 'div', 'caption', { left: 60, top: 780, color: 'var(--accent)' }, 'The client asked for 9999. The server stored 0.')
+
+    // ---------- timeline ----------
+    const show = (g, t, d = 0.4) => tl.to(G[g], { opacity: 1, duration: d }, t)
+    const hide = (g, t, d = 0.35) => tl.to(G[g], { opacity: 0, duration: d }, t)
+    const cap = (i, t) => {
+      if (i > 0)
+        tl.to(caps[i - 1], { opacity: 0, duration: 0.25 }, t)
+      tl.to(caps[i], { opacity: 1, duration: 0.35 }, t + 0.2)
+    }
+    const fadeIn = (target, t, d = 0.45) => tl.fromTo(target, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: d, ease: 'power2.out', immediateRender: false }, t)
+
+    // frame 0: the client sends raw HTTP
+    gsap.set(caps[0], { opacity: 1 })
+    gsap.set(G[0], { opacity: 1 })
+    boxes.forEach((b, k) => {
+      gsap.set(b, { borderColor: k === 0 ? '#4fd1b5' : '#8d95a3' })
+      gsap.set(b.querySelector('.name'), { color: k === 0 ? '#4fd1b5' : '#c5c9d0' })
+    })
+
+    // 0 → 4: the router picks QuestionViewSet.create
+    focus(1, 0.4)
+    cap(1, 0.4)
+    hide(0, 0.5)
+    gsap.set([r2, r3, r4, rArrow, rHead], { opacity: 0 })
+    show(1, 0.8)
+    fadeIn([rArrow, rHead], 1.4, 0.35)
+    fadeIn(r2, 1.8)
+    fadeIn([r3, r4], 2.5)
+    focus(2, 3.1)
+
+    // 4 → 11: the serializer checks the data
+    focus(3, 4.3)
+    cap(2, 4.3)
+    hide(1, 4.3)
+    gsap.set([strike, roNote, valid, blankLabel, gate, gateLabel, chip, bad], { opacity: 0 })
+    show(2, 4.7)
+    // strike through `, "votes": 9999`; measured lazily, after the fonts have loaded
+    const votesBox = () => document.getElementById('votes').getBoundingClientRect()
+    tl.set(strike, { left: () => votesBox().left, top: () => votesBox().top + votesBox().height * 0.52, opacity: 1 }, 5.5)
+    tl.fromTo(strike, { width: 0 }, { width: () => votesBox().width, duration: 0.5, ease: 'power1.inOut', immediateRender: false }, 5.5)
+    tl.to(['#votes', '#comma'], { opacity: 0.3, duration: 0.4 }, 5.9)
+    tl.set(roNote, { left: () => votesBox().left }, 5.9)
+    fadeIn(roNote, 6.0)
+    fadeIn(valid, 6.7)
+    // side branch: blank text bounces off the serializer
+    fadeIn([blankLabel, gate, gateLabel], 7.6)
+    tl.to(chip, { opacity: 1, duration: 0.3 }, 8.0)
+    tl.fromTo(chip, { x: 0 }, { x: () => gate.offsetLeft - chip.offsetLeft - chip.offsetWidth - 4, duration: 0.7, ease: 'power2.in', immediateRender: false }, 8.3)
+    tl.to(chip, { x: 0, duration: 0.8, ease: 'power3.out' }, 9.0)
+    fadeIn(bad, 9.4)
+
+    // 11 → 15: a Question object
+    focus(4, 11.3)
+    cap(3, 11.3)
+    hide(2, 11.3)
+    gsap.set([defLabel, defs, idNote], { opacity: 0 })
+    show(3, 11.7)
+    fadeIn([defLabel, defs], 12.6)
+    fadeIn(idNote, 13.5)
+
+    // 15 → 19.5: INSERT, and a row appears
+    focus(5, 15.3)
+    cap(4, 15.3)
+    hide(3, 15.3)
+    gsap.set([tname, tbl], { opacity: 0 })
+    show(4, 15.7)
+    fadeIn([tname, tbl], 16.8)
+    tl.fromTo('#newrow', { opacity: 0 }, { opacity: 1, duration: 0.5, immediateRender: false }, 17.6)
+
+    // 19.5 → 23.5: back up the stack to JSON
+    focus(4, 19.8)
+    focus(3, 20.4)
+    cap(5, 20.4)
+    hide(4, 20.4)
+    show(5, 20.8)
+
+    // 23.5 → 29: 201 Created, then the summary
+    focus(2, 23.8)
+    focus(1, 24.2)
+    focus(0, 24.6)
+    cap(6, 24.6)
+    hide(5, 24.6)
+    gsap.set([...summary.flat(), closing], { opacity: 0 })
+    show(6, 25.0)
+    tl.to(s201, { opacity: 0, duration: 0.3 }, 26.0)
+    summary.forEach((pair, i) => fadeIn(pair, 26.2 + i * 0.45))
+    fadeIn(closing, 27.8)
+    focus(-1, 27.8)
+
+    registerVideo(tl, { duration: 29.5, stops: STOPS, poster: 29 })
+  </script>
+</body>
+</html>

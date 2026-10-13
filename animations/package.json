@@ -1,0 +1,13 @@
+{
+  "name": "questions-api-workshop-videos",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "render": "node render.mjs",
+    "preview": "node render.mjs --serve"
+  },
+  "devDependencies": {
+    "gsap": "^3.15.0",
+    "playwright-chromium": "1.63.0"
+  }
+}

@@ -1,0 +1,203 @@
+/*
+ * Deck-wide styles. Plain, flat, readable from the back row (plan section 5).
+ * Values come from tokens.css only.
+ */
+
+:root {
+  --slidev-transition-duration: 250ms;
+  --slidev-slide-container-background: var(--bg);
+  --slidev-code-background: var(--surface);
+  --slidev-code-foreground: var(--text);
+  --slidev-code-font-family: var(--font-mono);
+  --slidev-code-font-size: var(--fs-code);
+  --slidev-code-line-height: var(--lh-code);
+  --slidev-code-padding: var(--code-pad-y) var(--code-pad-x);
+  --slidev-code-radius: var(--radius);
+  --slidev-code-margin: 0;
+  --slidev-theme-primary: var(--accent);
+}
+
+html.dark {
+  --slidev-code-background: var(--surface);
+  --slidev-code-foreground: var(--text);
+}
+
+html,
+body,
+#app {
+  background: var(--bg);
+}
+
+.slidev-page,
+.slidev-slide-content {
+  background: var(--bg);
+}
+
+/* ---------- layouts ---------- */
+
+.deck {
+  box-sizing: border-box;
+  height: 100%;
+  padding: var(--pad-top) var(--pad-x) 26px;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: var(--fs-body);
+  font-weight: var(--fw-body);
+  line-height: var(--lh-body);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap);
+  font-feature-settings: 'cv11', 'ss01';
+}
+
+.deck > h1 {
+  margin: 0 0 calc(var(--title-gap) - var(--gap));
+  font-size: var(--fs-title);
+  font-weight: var(--fw-title);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.deck p {
+  margin: 0;
+}
+
+.deck strong {
+  font-weight: var(--fw-strong);
+  color: var(--text);
+}
+
+.deck a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.deck ul,
+.deck ol {
+  margin: 0;
+  padding-left: 1.1em;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.deck ul {
+  list-style: disc;
+}
+
+.deck li::marker {
+  color: var(--text-2);
+}
+
+/* Inline code in prose. Low specificity so components can style their own code. */
+:where(.deck :not(pre)) > code {
+  font-family: var(--font-mono);
+  font-size: 0.86em;
+  font-weight: 500;
+  color: var(--text);
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  padding: 0.05em 0.3em;
+}
+
+/* Centered layouts: the title slide and section dividers only. */
+.deck-cover,
+.deck-section {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 18px;
+}
+
+.deck-section > h1 {
+  margin: 0;
+  font-size: var(--fs-section);
+}
+
+.deck-section > p {
+  font-size: var(--fs-lead);
+  color: var(--text-2);
+  max-width: 720px;
+}
+
+/* ---------- helpers used on slides ---------- */
+
+.muted { color: var(--text-2); }
+.accent { color: var(--accent); }
+.mono { font-family: var(--font-mono); }
+.small { font-size: var(--fs-small); }
+.lead { font-size: var(--fs-lead); }
+.stack { display: flex; flex-direction: column; gap: var(--gap); }
+.row { display: flex; gap: var(--gap); align-items: flex-start; }
+.grow { flex: 1; min-width: 0; }
+.push-down { margin-top: auto; }
+
+/* A file path above a code block. Plain text, not window chrome. */
+.file-label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  color: var(--text-2);
+  margin-bottom: 6px;
+}
+
+/* Two blocks in the same place, swapped on a click. */
+.swap {
+  display: grid;
+}
+.swap > * {
+  grid-area: 1 / 1;
+}
+
+/* ---------- code ---------- */
+
+.deck .slidev-code-wrapper {
+  margin: 0 !important;
+}
+
+.deck .slidev-code,
+.deck .slidev-code code {
+  font-family: var(--font-mono) !important;
+  font-weight: 500;
+}
+
+/* Lines that aren't being discussed: dimmed, never invisible. */
+.slidev-code .slidev-code-dishonored {
+  opacity: 0.5;
+}
+
+/* Magic Move: same surface and spacing as static code. */
+.deck .slidev-code-magic-move {
+  margin: 0;
+}
+
+/* ---------- builds ---------- */
+
+.slidev-vclick-target {
+  transition: opacity var(--t-build) ease !important;
+}
+
+/* ---------- projector simulation (plan section 5.1) ---------- */
+
+html.projector-sim .slidev-slide-content,
+html.projector-sim .slidev-page {
+  filter: contrast(0.75) brightness(1.15);
+}
+
+/* ---------- placeholders for presenter inputs (plan section 11) ---------- */
+
+.placeholder {
+  box-sizing: border-box;
+  border: var(--stroke-w) dashed var(--stroke);
+  border-radius: var(--radius);
+  color: var(--text-2);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  padding: 10px 14px;
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
