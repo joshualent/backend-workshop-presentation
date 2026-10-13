@@ -42,8 +42,9 @@ cd animations && pnpm render       # re-render V1–V3 into slides/public/media/
 
 ## How the deck is built (decisions already made)
 
-- Slidev numbers = plan numbers + 1 (the setup slide, plan 0, is slide 1). Each slide's frontmatter has `plan: N`; the presenter view shows it.
+- **This branch (`dev`) is the slim deck.** No slide's main job is showing code: slides cover the opening, the concepts each lesson needs, and the close, and the code happens in VS Code. Code slides, Magic Moves, and "Try it" result slides from plan section 7 are folded into the notes of the concept slide before each coding stretch (with a clock time on each `→ SWITCH TO` line); `notes/cheat-sheet.md` has the code. Don't add slides that present a snippet; small inline identifiers are fine. `main` has the full plan-by-plan deck.
+- Each slide's `plan:` lists the plan slides it stands for (`13`, `14–15`, `31, 34`); the presenter view shows it, and `pnpm qa` checks every plan slide 0–45 is covered exactly once.
 - The hidden appendix uses `backstage: true`, not `hide: true` (Slidev 53 drops hidden slides at parse time). `setup/shortcuts.ts` makes the clicker skip them; reach them with `g`.
-- Code that isn't a whole file (Magic Move steps, windows) is generated between `<!-- code-block: id -->` markers from `scripts/code-blocks.config.mjs`; never edit inside the markers. Whole files use `<<< @/snippets/…`.
+- Code that isn't a whole file is generated between `<!-- code-block: id -->` markers from `scripts/code-blocks.config.mjs`; never edit inside the markers. Only the projector check uses one on this branch.
 - Stepped videos: stop times live in `slides/data/videos.json` (written by `animations/render.mjs`); the slide's `clicks:` must equal stops − 1, and notes give a timestamp per stop.
 - Event inputs and placeholders live in `slides/workshop.config.ts`.

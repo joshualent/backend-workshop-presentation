@@ -59,46 +59,20 @@ plan: 43
 -->
 
 ---
-plan: 44
+plan: 44–45
 ---
 
 # Questions?
 
-<div class="qs">
-<p class="lead">The finished code is on <code>checkpoint-4-m2m</code>.</p>
-<p class="muted">github.com/joshualent/questions-api</p>
-</div>
-
-<style>
-.qs {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-</style>
-
-<!--
-[8:27 · 2 min] [SLIDES]
-
-- Take questions. Never cut this.
-- Good fallbacks if it's quiet: "Why 403 and not 401?" (session auth; see slide 9's notes), "Why not let clients send votes?" (lesson 2), "How would a phone app log in?" (tokens).
-- Repeat each question into the room before answering.
--->
-
----
-plan: 45
----
-
-# Thanks for coming
-
 <div class="thanks">
 <div class="stack">
-<ClubMark :height="48" />
+<p class="lead">Thanks for coming. The finished code is on <code>checkpoint-4-m2m</code>.</p>
 <div>
 <div class="file-label">Next Developer Club event</div>
-<p v-if="!$isPlaceholder($workshop.nextEvent)" class="lead">{{ $workshop.nextEvent }}</p>
+<p v-if="!$isPlaceholder($workshop.nextEvent)">{{ $workshop.nextEvent }}</p>
 <div v-else class="placeholder">Placeholder: next event (set nextEvent in workshop.config.ts)</div>
 </div>
+<ClubMark :height="48" />
 </div>
 <QrCode :url="$workshop.repoUrl" :size="170" />
 </div>
@@ -113,10 +87,11 @@ plan: 45
 </style>
 
 <!--
-[8:29 · 1 min] [SLIDES]
+[8:27 · 3 min] [SLIDES]
 
-- Thank the helpers and the club by name.
-- Announce the next event.
-- The repo stays up: the QR code is the same one from the setup slide.
-- Leave this slide on screen while people pack up.
+- Thank the helpers and the club by name, then take questions. Never cut this.
+- Good fallbacks if it's quiet: "Why 403 and not 401?" (session auth; see slide 9's notes), "Why not let clients send votes?" (lesson 2), "How would a phone app log in?" (tokens).
+- Repeat each question into the room before answering.
+- Announce the next event before people start packing up.
+- The QR code is the repo, the same one from the setup slide. Leave this slide on screen at the end.
 -->

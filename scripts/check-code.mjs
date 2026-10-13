@@ -57,12 +57,10 @@ for (const script of ['build-code-blocks.mjs', 'build-cheat-sheet.mjs']) {
   }
 }
 
-// 3. snippet imports and their highlights. What each highlighted line must contain:
-const EXPECT = {
-  'checkpoint-1-crud/questions/serializers.py': { 10: 'read_only_fields' },
-  'checkpoint-1-crud/questions/views.py': { 11: 'AllowAny' },
-  'checkpoint-1-crud/questions/admin.py': { 3: 'import Question', 5: 'admin.site.register(Question)' },
-}
+// 3. snippet imports and their highlights. What each highlighted line must contain,
+// by snippet path and line number, e.g. { 'checkpoint-1-crud/questions/views.py': { 11: 'AllowAny' } }.
+// No slide imports a snippet in this version of the deck; the check stays for any that do.
+const EXPECT = {}
 const pages = readdirSync(pagesDir).filter(f => f.endsWith('.md'))
 let imports = 0
 for (const name of pages) {

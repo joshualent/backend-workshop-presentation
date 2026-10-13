@@ -3,9 +3,9 @@ import { useSlideContext } from '@slidev/client'
 import { computed } from 'vue'
 
 /**
- * Presenter-only tag with the plan's slide number (plan 0–45, A1…). Slidev
- * numbers run one ahead of the plan because the setup slide (plan 0) is
- * slide 1. Never shown on the projector or in exports.
+ * Presenter-only tag with the plan slides this slide stands for: "13",
+ * "14–15", "31, 34" (merged slides), or A1… in the appendix. Never shown on
+ * the projector or in exports.
  */
 const { $frontmatter, $renderContext } = useSlideContext()
 const show = computed(() => ['presenter', 'previewNext'].includes($renderContext.value) && $frontmatter.plan != null)

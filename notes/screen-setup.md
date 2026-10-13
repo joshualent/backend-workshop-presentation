@@ -11,11 +11,13 @@
 - Keep four windows on the projector, each full screen in its own space or behind the others: the slides, VS Code, a terminal, and the browser.
 - macOS: `Cmd`+`Tab` between apps; `Ctrl`+arrow if each window is in its own full-screen space. Windows: `Alt`+`Tab`. Practise the exact order once before the talk.
 - Coming back to the slides, click the presenter view on the laptop before pressing the clicker, so the keys go to Slidev.
-- **Jump to a slide by number:** press `g`, type the number, press `Enter`. Numbers are the deck's (1–46), shown in the presenter view; the plan number is in the corner of each slide there.
-- The clicker and arrow keys skip the backstage appendix (slides 47–62). Reach those with `g`.
+- **Jump to a slide by number:** press `g`, type the number, press `Enter`. Numbers are the deck's (1–31), shown in the presenter view; the plan slides each one stands for are in its corner there.
+- The clicker and arrow keys skip the backstage appendix (slides 32–38). Reach those with `g`.
 - `o` shows the slide overview. Don't press `d` or `p`; nothing is bound to them on the night (the projector simulation is dev-only).
 
 ## VS Code
+
+No slide shows the code in this version of the deck, so VS Code is where the room reads it. Set it up for the back row.
 
 - Zoom to 18–20 pt: `Cmd`/`Ctrl` + `=` until the editor font is about 20 pt, or set `"editor.fontSize": 20` and `"terminal.integrated.fontSize": 18`.
 - Use a high-contrast theme: **Dark High Contrast** or **Light High Contrast** (a light theme often reads better on a weak projector).
@@ -58,10 +60,10 @@ Presenter view: <http://localhost:3031/#/presenter/1>. Projector: <http://localh
 ## Pre-talk checklist
 
 - [ ] `pnpm build` done after the last change; `pnpm serve` running.
-- [ ] Wi-Fi off, then: deck loads, fonts look right, all three videos play (slides 6, 12, 38), QR codes show. Wi-Fi back on.
+- [ ] Wi-Fi off, then: deck loads, fonts look right, all three videos play (slides 6, 12, 27), QR codes show. Wi-Fi back on.
 - [ ] `pnpm qa` passed (offline check, navigation, click counts, notes).
 - [ ] Presenter view on the laptop, slides full screen on the projector, synced.
-- [ ] Projector check (`g` 62) from the back row: every swatch distinct, the 16 px line readable.
+- [ ] Projector check (`g` 38) from the back row: every swatch distinct, the 16 px line readable.
 - [ ] Your own `questions-api`: on `main` (same as `checkpoint-0-setup`), `db.sqlite3` deleted, `uv sync --locked`, `uv run manage.py migrate`, `runserver` running.
 - [ ] VS Code zoomed, high-contrast theme, file tree hidden, the five files open.
 - [ ] Browser tabs open and zoomed.

@@ -2,7 +2,7 @@
 
 # Cheat sheet
 
-Everything you type or paste tonight, in order. Code comes from the checkpoint branches of [joshualent/questions-api](https://github.com/joshualent/questions-api):
+Everything you type or paste tonight, in order. No slide shows this code: each slide's notes say which step to type after it. Code comes from the checkpoint branches of [joshualent/questions-api](https://github.com/joshualent/questions-api):
 
 - `checkpoint-0-setup` at `1003c93`: Initialize Django workshop project
 - `checkpoint-1-crud` at `44b69bd`: Add public question CRUD
@@ -30,7 +30,7 @@ Check <http://127.0.0.1:8000/admin/> shows the login page.
 
 ### 1. `questions/models.py`
 
-Replace the stub. Slide 16 (plan 15).
+Replace the stub. After slide 15, *Models become tables*.
 
 The whole file, to paste if you fall behind:
 
@@ -59,7 +59,7 @@ Expect `questions/migrations/0001_initial.py` and `Applying questions.0001_initi
 
 ### 2. `questions/serializers.py`
 
-The file exists but is empty. Slide 18 (plan 17).
+The file exists but is empty. After slide 16, *Serializers translate and check*.
 
 The whole file, to paste if you fall behind:
 
@@ -78,7 +78,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 ### 3. `questions/views.py`
 
-Replace the stub. Slide 20 (plan 19).
+Replace the stub. After slide 17, *One ViewSet, six routes*.
 
 The whole file, to paste if you fall behind:
 
@@ -98,7 +98,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
 
 ### 4. `config/urls.py`
 
-Add the imports, the router, and the `api/` line. Slide 20 (plan 19), second click.
+Add the imports, the router, and the `api/` line. Right after `views.py`.
 
 What changes (`+` lines are new, `-` lines go away):
 
@@ -140,7 +140,7 @@ urlpatterns = [
 
 ### 5. `questions/admin.py`
 
-Replace the stub. Slide 21 (plan 20).
+Replace the stub. After the browser shows "Question List".
 
 The whole file, to paste if you fall behind:
 
@@ -160,7 +160,7 @@ uv run manage.py createsuperuser
 
 Use username `mod`. Any email is fine; Django asks for the password twice.
 
-**Try it** (slide 22, plan 21) at <http://127.0.0.1:8000/api/questions/>, in the browsable API's form at the bottom of the page:
+**Try it** (still on slide 17) at <http://127.0.0.1:8000/api/questions/>, in the browsable API's form at the bottom of the page:
 
 | Send | Expect |
 |---|---|
@@ -180,7 +180,7 @@ curl -i -X POST http://127.0.0.1:8000/api/questions/ \
 
 ### 6. `questions/views.py`
 
-Two new imports at the top, then two methods at the end of `QuestionViewSet`, indented one level. Slide 26 (plan 25). The two blank lines between the methods are in the repo as-is. If you run the "your turn" exercise (slide 27), type only `upvote` here and let the room write `toggle_answered`.
+Two new imports at the top, then two methods at the end of `QuestionViewSet`, indented one level. After slide 19, *Why not just PATCH the votes?* The two blank lines between the methods are in the repo as-is. If you run the "your turn" exercise (slide 20), type only `upvote` here and let the room write `toggle_answered`.
 
 What changes (`+` lines are new, `-` lines go away):
 
@@ -248,7 +248,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
 
 No migration: the fields already exist.
 
-**Try it** (slide 28, plan 27): open <http://127.0.0.1:8000/api/questions/1/upvote/> and press **POST** twice (votes 1, then 2); open `/api/questions/1/toggle_answered/` and press **POST** twice (`answered` true, then false). A plain GET on an action URL shows `405 Method Not Allowed`; that's expected, use the POST button.
+**Try it** (after slide 20): open <http://127.0.0.1:8000/api/questions/1/upvote/> and press **POST** twice (votes 1, then 2); open `/api/questions/1/toggle_answered/` and press **POST** twice (`answered` true, then false). A plain GET on an action URL shows `405 Method Not Allowed`; that's expected, use the POST button.
 
 ## Checkpoint pause
 
@@ -264,7 +264,7 @@ uv run manage.py migrate
 
 ### 7. `questions/views.py`
 
-One import line changes, `get_permissions` goes right after `permission_classes`, and each `@action` gets a `permission_classes` argument. Slide 34 (plan 33).
+One import line changes, `get_permissions` goes right after `permission_classes`, and each `@action` gets a `permission_classes` argument. After slide 25, *How DRF decides*.
 
 What changes (`+` lines are new, `-` lines go away):
 
@@ -345,7 +345,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
 
 ### 8. `config/urls.py`
 
-One new line at the end of `urlpatterns`. Slide 34 (plan 33), last click.
+One new line at the end of `urlpatterns`. Right after `views.py`.
 
 What changes (`+` lines are new, `-` lines go away):
 
@@ -385,7 +385,7 @@ uv run manage.py createsuperuser
 
 Then at <http://127.0.0.1:8000/admin/auth/user/add/> create `sam` with a password. Leave **Staff status** and **Superuser status** unchecked.
 
-**Try it** (slide 36, plan 35): log in with the browsable API's **Log in** link (top right), as nobody, `sam`, then `mod`:
+**Try it** (still on slide 25): log in with the browsable API's **Log in** link (top right), as nobody, `sam`, then `mod`:
 
 | | `POST …/1/upvote/` | `POST …/1/toggle_answered/` | `PATCH /api/questions/1/` |
 |---|---|---|---|
@@ -397,7 +397,7 @@ Then at <http://127.0.0.1:8000/admin/auth/user/add/> create `sam` with a passwor
 
 ### 9. `questions/models.py`
 
-Import `settings`; `votes` becomes a `ManyToManyField`. Slide 39 (plan 38).
+Import `settings`; `votes` becomes a `ManyToManyField`. After slide 27, the V3 video.
 
 What changes (`+` lines are new, `-` lines go away):
 
@@ -440,9 +440,11 @@ uv run manage.py migrate
 
 Expect `0002_votes_many_to_many.py` with `- Remove field votes from question` and `+ Add field votes to question`. Existing vote totals reset to zero.
 
+Before the next step, show <http://127.0.0.1:8000/api/questions/>: `"votes": []`. DRF shows the many-to-many field as a list of user ids, so every client expecting a number would break. That's slide 28.
+
 ### 10. `questions/serializers.py`
 
-One field above `class Meta`. Slide 40 (plan 39).
+One field above `class Meta`. After slide 28, *The API doesn't change*.
 
 What changes (`+` lines are new, `-` lines go away):
 
@@ -477,7 +479,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 ### 11. `questions/views.py`
 
-`upvote` becomes `toggle_vote`. Slide 41 (plan 40). Paste if short on time.
+`upvote` becomes `toggle_vote`. Right after the serializer. Paste if short on time.
 
 What changes (`+` lines are new, `-` lines go away):
 
@@ -548,7 +550,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
         return Response(self.get_serializer(question).data)
 ```
 
-**Try it** (slide 42, plan 41): as `sam`, POST `/api/questions/1/toggle_vote/` twice (votes 1, then 0); as `mod`, once (votes 1). `/upvote/` is gone: 404.
+**Try it** (still on slide 28): as `sam`, POST `/api/questions/1/toggle_vote/` twice (votes 1, then 0); as `mod`, once (votes 1). `/upvote/` is gone: 404.
 
 ## If you need the finished project
 

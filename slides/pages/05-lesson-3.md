@@ -31,11 +31,12 @@ plan: 30
 -->
 
 ---
-plan: 31
+plan: 31, 34
 ---
 
 # The rules
 
+<div class="rules-wrap">
 <table class="rules">
 <thead>
 <tr><th>Operation</th><th>Who can do it</th></tr>
@@ -48,7 +49,15 @@ plan: 31
 </tbody>
 </table>
 
+<p v-click="1" class="small">Staff is a checkbox on each user. DRF's <code>IsAdminUser</code> checks it, not superuser. <code>createsuperuser</code> ticks both.</p>
+</div>
+
 <style>
+.rules-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
 .rules {
   border-collapse: collapse;
   font-size: var(--fs-body);
@@ -67,17 +76,19 @@ plan: 31
 </style>
 
 <!--
-[8:03 · 1 min] [SLIDES]
+[8:03 · 2 min] [SLIDES]
 
 - These are the rules we're about to write. Read them out once.
 - Asking a question stays open to everyone: that's the point of a Q&A board.
 - Voting needs a login so we know who's voting (that matters in lesson 4).
 - Moderation, meaning edit, delete, and marking answered, is for staff.
 - No ownership tonight: you can't edit "your own" question. Only staff can edit.
+
+[click] Staff, not superuser. The name `IsAdminUser` is misleading: it checks the "Staff status" box on the user. `createsuperuser` sets both boxes, so `mod` passes. We'll make `sam` on the admin's Users page with both boxes off, so sam fails every staff check. Ticking only Staff status would make a moderator without every admin power.
 -->
 
 ---
-plan: 32
+plan: 32–33, 35
 ---
 
 # How DRF decides
@@ -97,7 +108,7 @@ plan: 32
 </style>
 
 <!--
-[8:04 · 2 min] [SLIDES]
+[8:05 · 8 min] [SLIDES]
 
 - Start at the bottom: the ViewSet's default, `permission_classes = [AllowAny]`, which we wrote in lesson 1. Everything is open.
 
@@ -108,125 +119,15 @@ plan: 32
 [click] On the map: the check runs inside the ViewSet, before your method runs. A failed check never reaches the serializer or the database.
 
 - Read it top to bottom for any request: the first "yes" decides.
--->
 
----
-plan: 33
----
+→ SWITCH TO VS CODE (8:07): questions/views.py, then config/urls.py (cheat sheet steps 7 and 8)
 
-# Add permissions
+- The import line becomes `from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser`.
+- `get_permissions()` goes right under `permission_classes`: `[IsAdminUser()]` for the three actions, otherwise `super().get_permissions()`.
+- `upvote` gets `permission_classes=[IsAuthenticated]`; `toggle_answered` gets `permission_classes=[IsAdminUser]`. Save.
+- `config/urls.py`: one line at the end of `urlpatterns`, `path("api-auth/", include("rest_framework.urls"))`. It gives the browsable API its Log in link. Save.
 
-<div class="swap">
-<div v-click.hide="4">
-<div class="file-label">questions/views.py</div>
-
-<!-- code-block: views-2-to-3 -->
-````md magic-move
-```python
-from rest_framework import viewsets
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
-
-from .models import Question
-from .serializers import QuestionSerializer
-
-
-class QuestionViewSet(viewsets.ModelViewSet):
-    queryset = Question.objects.all()
-    serializer_class = QuestionSerializer
-    permission_classes = [AllowAny]
-```
-```python {4}
-from rest_framework import viewsets
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
-
-from .models import Question
-from .serializers import QuestionSerializer
-
-
-class QuestionViewSet(viewsets.ModelViewSet):
-    queryset = Question.objects.all()
-    serializer_class = QuestionSerializer
-    permission_classes = [AllowAny]
-```
-```python {1-3,5,7}
-    def get_permissions(self):
-        if self.action in ("update", "partial_update", "destroy"):
-            return [IsAdminUser()]
-
-        return super().get_permissions()
-
-    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
-    def upvote(self, request, pk=None, format=None):
-        question = self.get_object()
-        question.votes += 1
-        question.save()
-        return Response(self.get_serializer(question).data)
-```
-```python {9}
-    @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
-    def upvote(self, request, pk=None, format=None):
-        question = self.get_object()
-        question.votes += 1
-        question.save()
-        return Response(self.get_serializer(question).data)
-
-
-    @action(detail=True, methods=["post"], permission_classes=[IsAdminUser])
-    def toggle_answered(self, request, pk=None, format=None):
-        question = self.get_object()
-        question.answered = not question.answered
-        question.save()
-        return Response(self.get_serializer(question).data)
-```
-````
-<!-- /code-block -->
-
-</div>
-<div v-click="4">
-<div class="file-label">config/urls.py</div>
-
-<!-- code-block: urls-cp3 -->
-```python {4}
-urlpatterns = [
-    path("admin/", admin.site.urls),
-    path("api/", include(router.urls)),
-    path("api-auth/", include("rest_framework.urls")),
-]
-```
-<!-- /code-block -->
-
-<p class="small muted push">Adds the <strong>Log in</strong> link to the browsable API.</p>
-</div>
-</div>
-
-<style>
-.push {
-  margin-top: 16px;
-}
-</style>
-
-<!--
-[8:06 · 4 min] [VS CODE]
-
-- `views.py` from checkpoint 2, morphing to checkpoint 3.
-
-[click] Import the two permission classes we need.
-
-[click] `get_permissions()` goes right under `permission_classes`. And `upvote` gets `permission_classes=[IsAuthenticated]`.
-
-[click] `toggle_answered` gets `permission_classes=[IsAdminUser]`.
-
-[click] `config/urls.py`: one line, `api-auth/`, which gives the browsable API its Log in link.
-
-→ SWITCH TO VS CODE: questions/views.py, then config/urls.py
-
-- Make the three changes in `views.py`, then the one line in `urls.py`. Save both. Runserver reloads.
-
-→ SWITCH TO TERMINAL
+→ SWITCH TO TERMINAL (8:09)
 
 - Anyone who didn't make `mod` in lesson 1: `uv run manage.py createsuperuser`.
 
@@ -234,88 +135,17 @@ urlpatterns = [
 
 - Create `sam` with a password. Leave Staff status and Superuser status unchecked. Save.
 
-Back here when: most people have `mod` and `sam`.
-
-If behind: paste `views.py` from the cheat sheet. Describe the second user instead of creating it (cut list item 4).
--->
-
----
-plan: 34
----
-
-# Staff, not superuser
-
-<div class="staff">
-<p class="lead"><code>IsAdminUser</code> checks one thing: is the user <strong>staff</strong>?</p>
-
-<table class="rules">
-<thead>
-<tr><th></th><th>Staff status</th><th>Superuser status</th><th><code>IsAdminUser</code></th></tr>
-</thead>
-<tbody>
-<tr><td><code>mod</code></td><td>yes</td><td>yes</td><td>passes</td></tr>
-<tr><td><code>sam</code></td><td>no</td><td>no</td><td>fails</td></tr>
-</tbody>
-</table>
-
-<p class="small muted">A superuser is also staff: <code>createsuperuser</code> turns both on. <code>sam</code> came from the admin's Users page with both off.</p>
-</div>
-
-<style>
-.staff {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-.staff .rules {
-  border-collapse: collapse;
-  font-size: var(--fs-small);
-}
-.staff .rules th,
-.staff .rules td {
-  text-align: left;
-  padding: 8px 30px 8px 0;
-  border-bottom: var(--stroke-w) solid var(--rule);
-}
-.staff .rules th {
-  font-weight: var(--fw-strong);
-  color: var(--text-2);
-}
-</style>
-
-<!--
-[8:10 · 1 min] [SLIDES]
-
-- The name is misleading: `IsAdminUser` doesn't mean superuser. It checks the "Staff status" box on the user.
-- `createsuperuser` sets both boxes, so `mod` passes.
-- `sam` has neither, so `sam` fails every staff check.
-- You could make a moderator who is staff but not a superuser: tick only Staff status. They'd pass `IsAdminUser` without getting every admin permission.
--->
-
----
-plan: 35
----
-
-# Try it
-
-<UserGrid />
-
-<!--
-[8:11 · 2 min] [BROWSER]
-
-→ SWITCH TO BROWSER: http://127.0.0.1:8000/api/questions/
+→ SWITCH TO BROWSER (8:11): http://127.0.0.1:8000/api/questions/ to try it as three users
 
 - Log in and out with the browsable API's Log in link (top right). The admin and the browsable API share the login.
+- Logged out: open `/api/questions/1/upvote/`. The page itself shows `403` and "Authentication credentials were not provided." No POST button.
+- As `sam`: upvote works (POST button, `200`). `/api/questions/1/toggle_answered/` shows `403` "You do not have permission to perform this action." On `/api/questions/1/`, sam gets no edit or delete form at all.
+- As `mod`: everything works, including the edit form on `/api/questions/1/`.
+- The browsable API hides forms you can't use. To show sam's 403 on an edit, use the terminal: `curl -i -u sam:PASSWORD -X PATCH http://127.0.0.1:8000/api/questions/1/ -H "Content-Type: application/json" -d '{"text": "x"}'` → `403`. (DRF also accepts basic auth by default; that's what `-u` uses.)
 
-[click] Logged out: open `/api/questions/1/upvote/`. The page itself shows `403` and "Authentication credentials were not provided." No POST button.
+Back here when: you've shown all three users (8:13).
 
-[click] As `sam`: upvote works (POST button, `200`). `/api/questions/1/toggle_answered/` shows `403` "You do not have permission to perform this action." On `/api/questions/1/`, `sam` gets no edit or delete form at all.
-
-[click] As `mod`: everything works, including the edit form on `/api/questions/1/`.
-
-- The browsable API hides forms you can't use. To see sam's 403 on an edit, use the terminal: `curl -i -u sam:PASSWORD -X PATCH http://127.0.0.1:8000/api/questions/1/ -H "Content-Type: application/json" -d '{"text": "x"}'` → `403`. (DRF also accepts basic auth by default; that's what `-u` uses.)
-
-If behind: show it as `mod` and describe the others (cut list item 4).
+If behind: paste `views.py` from the cheat sheet. Describe sam instead of creating it, and show only `mod` (cut list item 4).
 -->
 
 ---

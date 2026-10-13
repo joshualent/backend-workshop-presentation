@@ -3,81 +3,87 @@ import { useSlideContext } from '@slidev/client'
 import { computed } from 'vue'
 
 /**
- * The questions_question table that Question becomes. Column names and types
- * come from `sqlmigrate questions 0001`; the row is the first real POST.
- * Each column appears on its click (text, votes, answered, created_at, then
- * the id Django adds), in step with the model's highlighted line.
+ * How the Question model becomes the questions_question table, one field per
+ * row: the Django field type on the left, the column it becomes on the right.
+ * Field types come from migration 0001 (Django adds the `id` field itself);
+ * column types from `sqlmigrate questions 0001`. Rows appear on their
+ * click (text, votes, answered, created_at, then the id Django adds); the
+ * newest row is in focus. Clicks come from the slide's `clicks:`.
  */
 const { $clicks } = useSlideContext()
 
-const COLS = [
-  { name: 'id', type: 'integer', value: '1', at: 5 },
-  { name: 'text', type: 'varchar(300)', value: 'What does a serializer do?', at: 1 },
-  { name: 'votes', type: 'integer', value: '0', at: 2 },
-  { name: 'answered', type: 'bool', value: '0', at: 3 },
-  { name: 'created_at', type: 'datetime', value: '2026-10-19 …', at: 4 },
+const ROWS = [
+  { name: 'text', field: 'CharField', column: 'varchar(300)', means: 'up to 300 characters', at: 1 },
+  { name: 'votes', field: 'IntegerField', column: 'integer', means: 'starts at 0', at: 2 },
+  { name: 'answered', field: 'BooleanField', column: 'bool', means: 'starts false', at: 3 },
+  { name: 'created_at', field: 'DateTimeField', column: 'datetime', means: "set when it's created", at: 4 },
+  { name: 'id', field: 'BigAutoField', column: 'integer', means: 'added by Django: 1, 2, 3, …', at: 5 },
 ]
 
-const cols = computed(() => COLS.map(c => ({ ...c, shown: $clicks.value >= c.at, on: $clicks.value === c.at })))
+const rows = computed(() => ROWS.map(r => ({ ...r, shown: $clicks.value >= r.at, on: $clicks.value === r.at })))
 </script>
 
 <template>
-  <div class="table-wrap">
-    <div class="file-label">
-      questions_question
-    </div>
-    <table>
-      <thead>
-        <tr>
-          <th v-for="c in cols" :key="c.name" :class="{ hidden: !c.shown, on: c.on }">
-            {{ c.name }}<span class="type">{{ c.type }}</span>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td v-for="c in cols" :key="c.name" :class="{ hidden: !c.shown }">
-            {{ c.value }}
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div class="fields">
+    <span />
+    <span class="head">models.py</span>
+    <span />
+    <span class="head">questions_question</span>
+    <span />
+    <template v-for="r in rows" :key="r.name">
+      <code class="name" :class="{ hidden: !r.shown, on: r.on }">{{ r.name }}</code>
+      <code class="field" :class="{ hidden: !r.shown }">{{ r.field }}</code>
+      <span class="arrow" :class="{ hidden: !r.shown }" aria-hidden="true">→</span>
+      <code class="column" :class="{ hidden: !r.shown }">{{ r.column }}</code>
+      <span class="means" :class="{ hidden: !r.shown }">{{ r.means }}</span>
+    </template>
   </div>
 </template>
 
 <style scoped>
-table {
-  border-collapse: collapse;
+.fields {
+  display: grid;
+  grid-template-columns: 150px auto 48px auto 1fr;
+  align-items: baseline;
+  column-gap: 14px;
+  row-gap: 6px;
+}
+.head {
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  color: var(--text-2);
+  padding-bottom: 4px;
+}
+code {
+  background: none;
+  padding: 0;
   font-family: var(--font-mono);
   font-size: var(--fs-code);
+  font-weight: 500;
+  color: var(--text);
 }
-th,
-td {
-  border: var(--stroke-w) solid var(--rule);
-  padding: 5px 12px;
-  text-align: left;
-  white-space: nowrap;
+.name {
+  font-weight: 700;
   transition: opacity var(--t-build) ease, color var(--t-build) ease;
 }
-th {
-  font-weight: 700;
-  color: var(--text);
-  vertical-align: top;
-}
-th.on {
+.name.on {
   color: var(--accent);
 }
-.type {
-  display: block;
-  font-size: var(--fs-label);
-  font-weight: 500;
-  color: var(--text-2);
+.arrow {
+  color: var(--stroke);
+  text-align: center;
+  font-size: var(--fs-small);
 }
-td {
-  font-weight: 500;
+.means {
+  font-size: var(--fs-small);
   color: var(--text-2);
+  padding-left: 12px;
 }
 .hidden {
   opacity: 0;
+}
+.fields > * {
+  transition: opacity var(--t-build) ease;
 }
 </style>

@@ -377,7 +377,7 @@ uv run manage.py migrate
 - `rest_framework` and `questions` are already in `INSTALLED_APPS`, so there's no setup to do.
 - Checkpoints: each branch is the finished code for a lesson. `main` is the same as `checkpoint-0-setup`.
 - Fell behind: stash your work (it's kept, not lost), switch, migrate. The README has the same steps.
-- Moving backward from `checkpoint-4-m2m` needs one extra step; it's on slide 48 if anyone asks.
+- Moving backward from `checkpoint-4-m2m` needs one extra step; it's on slide 33 if anyone asks.
 
 → Next: lesson 1.
 -->

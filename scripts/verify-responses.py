@@ -42,6 +42,17 @@ def client():
 
 anon = client()
 
+if checkpoint.endswith("-before-serializer"):
+    # Lesson 4 between the model change and the serializer line: DRF shows the
+    # many-to-many field as a list of user ids (the "votes": [] moment).
+    from questions.models import Question
+
+    sam = User.objects.create_user("sam", password="pw-sam-123456")
+    show("POST /api/questions/ text", anon.post("/api/questions/", {"text": "What does a serializer do?"}, format="json"))
+    Question.objects.get(pk=1).votes.add(sam)
+    show("GET /api/questions/1/ (sam voted)", anon.get("/api/questions/1/"))
+    sys.exit()
+
 if n == 0:
     show("GET /admin/ (anon)", anon.get("/admin/", follow=False))
     show("GET /api/questions/ (anon)", anon.get("/api/questions/"))

@@ -6,6 +6,9 @@
  *   pnpm qa                      # in another; or: node scripts/qa-deck.mjs --url http://localhost:3030
  *
  * Source checks:
+ *   - every plan slide (0–45) is covered by exactly one show slide: `plan:` lists
+ *     the plan slides each one stands for ("14–15", "31, 34"), since this deck
+ *     merges the code slides into the concept slides' notes
  *   - every slide has notes; show slides start with "[H:MM · N min] [MODE]" (plan 8.1),
  *     and slides whose mode isn't SLIDES have an explicit "→ SWITCH TO" line
  *   - the clock adds up: each slide starts when the previous one ends, and the
@@ -62,6 +65,28 @@ for (const f of files) {
 const show = slides.filter(s => !s.backstage)
 const where = s => `slide ${s.no} (plan ${s.plan}, "${s.title}")`
 
+// The plan slides a show slide stands for: "13", "14–15", "32–33, 35".
+const planNumbers = (tag = '') => String(tag).split(',').flatMap((part) => {
+  const [a, b = a] = part.trim().split(/[–-]/).map(Number)
+  return Array.from({ length: b - a + 1 }, (_, i) => a + i)
+})
+const firstPlan = s => planNumbers(s.plan)[0]
+const covered = new Map()
+for (const s of show) {
+  for (const n of planNumbers(s.plan)) {
+    if (Number.isNaN(n))
+      problems.push(`${where(s)}: can't read its plan tag`)
+    else if (covered.has(n))
+      problems.push(`plan slide ${n} is on both slide ${covered.get(n)} and slide ${s.no}`)
+    else
+      covered.set(n, s.no)
+  }
+}
+for (let n = 0; n <= 45; n++) {
+  if (!covered.has(n))
+    problems.push(`plan slide ${n} isn't covered by any show slide (add it to a slide's plan tag)`)
+}
+
 // Notes format and the clock.
 const toMin = hm => Number(hm.split(':')[0]) * 60 + Number(hm.split(':')[1])
 const SECTIONS = { 1: '6:55', 13: '7:15', 23: '7:42', 28: '7:55', 30: '8:02', 37: '8:14', 42: '8:25' }
@@ -83,11 +108,11 @@ for (const s of slides) {
     continue
   }
   const [, at, mins, mode] = m
-  if (clock != null && s.plan !== '0' && toMin(at) !== clock)
+  if (clock != null && firstPlan(s) !== 0 && toMin(at) !== clock)
     problems.push(`${where(s)} starts at ${at}, but the previous slide ends at ${Math.floor(clock / 60)}:${String(clock % 60).padStart(2, '0')}`)
-  if (SECTIONS[s.plan] && SECTIONS[s.plan] !== at)
-    problems.push(`${where(s)} should start at ${SECTIONS[s.plan]} (plan section 3), notes say ${at}`)
-  clock = s.plan === '0' ? toMin('6:55') : toMin(at) + Number(mins)
+  if (SECTIONS[firstPlan(s)] && SECTIONS[firstPlan(s)] !== at)
+    problems.push(`${where(s)} should start at ${SECTIONS[firstPlan(s)]} (plan section 3), notes say ${at}`)
+  clock = firstPlan(s) === 0 ? toMin('6:55') : toMin(at) + Number(mins)
   if (mode !== 'SLIDES' && !/→ SWITCH TO /.test(s.notes))
     problems.push(`${where(s)} is in ${mode} mode but its notes have no "→ SWITCH TO" line`)
   if (/SWITCH TO/.test(s.notes) && !/→ SWITCH TO (VS CODE|TERMINAL|BROWSER|SLIDES)/.test(s.notes))

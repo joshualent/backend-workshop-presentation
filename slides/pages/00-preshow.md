@@ -43,7 +43,7 @@ uv run manage.py runserver
 - Expected result in the browser: the Django administration login page at http://127.0.0.1:8000/admin/. No account yet; that's fine.
 - Before 6:55: your own project is on main with a fresh db.sqlite3, runserver is running, and the browser tabs from notes/screen-setup.md are open.
 
-Common snags (details on the troubleshooting slide, slide 49):
+Common snags (details on the troubleshooting slide, slide 34):
 
 - `uv: command not found` → install uv (docs.astral.sh/uv), open a new terminal.
 - "That port is already in use" → `uv run manage.py runserver 8001`.
