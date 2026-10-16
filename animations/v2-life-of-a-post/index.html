@@ -1,6 +1,6 @@
 <!doctype html>
 <!--
-  V2. Life of a POST (plan slide 11, stepped).
+  V2. Life of a POST request (plan slide 11, stepped).
   POST /api/questions/ with {"text": "What does a serializer do?", "votes": 9999}
   through every layer, showing how the data changes shape. Every value is real:
   the router line, the 400 body, the INSERT (captured from checkpoint-1-crud),
@@ -36,14 +36,15 @@
     const NAMES = ['Client', 'URL router', 'ViewSet', 'Serializer', 'Model', 'SQLite']
     const BOX_W = 262
     const BOX_H = 116
-    const boxX = i => 60 + 300 * i + 19
+    // Laid out in build order, the same as the slides: SQLite on the left, the client on the right.
+    const boxX = i => 60 + 300 * (NAMES.length - 1 - i) + 19
     const boxes = NAMES.map((n, i) => el('div', 'box', { left: boxX(i), top: 50, width: BOX_W, height: BOX_H }, `<span class="name">${n}</span>`))
     const svg = document.getElementById('lines')
     const NS = 'http://www.w3.org/2000/svg'
     svg.innerHTML = `<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="head"/></marker></defs>`
     for (let i = 1; i < NAMES.length; i++) {
       const l = document.createElementNS(NS, 'line')
-      l.setAttribute('x1', boxX(i - 1) + BOX_W + 4); l.setAttribute('x2', boxX(i) - 6)
+      l.setAttribute('x1', boxX(i - 1) - 4); l.setAttribute('x2', boxX(i) + BOX_W + 6)
       l.setAttribute('y1', 108); l.setAttribute('y2', 108)
       l.setAttribute('class', 'edge'); l.setAttribute('marker-end', 'url(#arrow)')
       svg.appendChild(l)
@@ -66,7 +67,7 @@
       'serializer.save() creates a Question',
       'Django runs an INSERT. SQLite stores a row.',
       'The serializer turns the row back into JSON',
-      'What went in, and what came back',
+      'The request and the response',
     ]
     const caps = CAPTIONS.map(c => el('div', 'caption', { left: 60, top: 222, opacity: 0 }, esc(c)))
 
@@ -91,7 +92,7 @@
     add(2, 'div', 'label', { left: 60, top: 336 }, 'Request data')
     const dict = add(2, 'div', 'code', { left: 60, top: 390 }, '{"text": "What does a serializer do?"<span id="comma">, </span><span id="votes">"votes": 9999</span>}')
     const strike = add(2, 'div', 'strike', { left: 0, top: 424, width: 0 })
-    const roNote = add(2, 'div', 'label', { left: 1050, top: 462 }, 'read-only: ignored')
+    const roNote = add(2, 'div', 'label', { left: 1050, top: 462 }, 'read-only, so it is ignored')
     const valid = add(2, 'div', 'code', { left: 60, top: 540 }, 'validated_data = {"text": "What does a serializer do?"}')
     const blankLabel = add(2, 'div', 'label', { left: 60, top: 680 }, 'If the text is blank:')
     const gate = add(2, 'div', 'gate', { left: 900, top: 730, height: 110 })
@@ -104,7 +105,7 @@
     const create = add(3, 'div', 'code', { left: 60, top: 392 }, 'Question.objects.create(text="What does a serializer do?")')
     const defLabel = add(3, 'div', 'label', { left: 60, top: 540 }, 'Defaults from the model')
     const defs = add(3, 'div', 'code', { left: 60, top: 596 }, 'votes = 0\nanswered = False')
-    const idNote = add(3, 'div', 'label', { left: 60, top: 780 }, 'The id comes from the database, next.')
+    const idNote = add(3, 'div', 'label', { left: 60, top: 780 }, 'The database assigns the id in the next step.')
 
     // 4. SQLite
     const sql = add(4, 'div', 'code', { left: 60, top: 336, fontSize: 42, lineHeight: '58px' },

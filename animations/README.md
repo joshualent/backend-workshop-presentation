@@ -6,7 +6,7 @@ The three pre-rendered videos from plan section 6.3. Each is an HTML page with a
 |---|---|---|---|---|
 | `v1-one-backend-many-clients/` | 6 (5) | 15 s loop | none | Left: the server sends a whole HTML page to one browser, which reloads. Right: the same server sends small JSON to a web app, a phone, and a terminal at once. |
 | `v2-life-of-a-post/` | 12 (11) | 29.5 s | 4, 11, 15, 19.5, 23.5, 29 | `POST /api/questions/` with `"votes": 9999` through the router, serializer (votes dropped; blank text bounces back as 400), model, an INSERT and a new row, back to JSON, and `201 Created` with `"votes": 0`. |
-| `v3-count-to-voters/` | 27 (37) | 24.5 s | 4, 8.5, 13.5, 18, 24 | Migration 0002: the `votes` column is removed, `questions_question_votes` appears, rows link question 1 to sam and mod, sam's row is deleted, and the JSON still says `"votes": 1`. |
+| `v3-count-to-voters/` | not used on `dev` (plan 37 was cut) | 24.5 s | 4, 8.5, 13.5, 18, 24 | Migration 0002: the `votes` column is removed, `questions_question_votes` appears, rows link question 1 to sam and mod, sam's row is deleted, and the JSON still says `"votes": 1`. |
 
 Every value on screen comes from the workshop code: the router line, the 400 body, the INSERT captured from `checkpoint-1-crud`, the table names from `sqlmigrate`, and the serializer line from `checkpoint-4-m2m`.
 

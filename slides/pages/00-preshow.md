@@ -8,7 +8,7 @@ plan: 0
 <div class="setup">
 <div class="stack">
 
-<p>Get set up while we wait. In a terminal:</p>
+<p>While you wait, run these commands in a terminal:</p>
 
 ```bash
 git clone https://github.com/joshualent/questions-api.git
@@ -18,9 +18,9 @@ uv run manage.py migrate
 uv run manage.py runserver
 ```
 
-<p>Done? Open <code>http://127.0.0.1:8000/admin/</code>. You should see a login page.</p>
+<p>Then open <code>http://127.0.0.1:8000/admin/</code>. You should see the Django login page.</p>
 
-<p class="small muted">No Python 3.14? <code>uv sync</code> installs it for you.</p>
+<p class="small muted">If you don't have Python 3.14, <code>uv sync</code> installs it.</p>
 
 </div>
 <QrCode :url="$workshop.repoUrl" :size="176" />
@@ -43,7 +43,7 @@ uv run manage.py runserver
 - Expected result in the browser: the Django administration login page at http://127.0.0.1:8000/admin/. No account yet; that's fine.
 - Before 6:55: your own project is on main with a fresh db.sqlite3, runserver is running, and the browser tabs from notes/screen-setup.md are open.
 
-Common snags (details on the troubleshooting slide, slide 34):
+Common snags (details on the troubleshooting slide, slide 31):
 
 - `uv: command not found` → install uv (docs.astral.sh/uv), open a new terminal.
 - "That port is already in use" → `uv run manage.py runserver 8001`.

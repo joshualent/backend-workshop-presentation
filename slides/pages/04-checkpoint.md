@@ -8,7 +8,7 @@ plan: 28
 <RequestMap :highlight="['router', 'viewset', 'serializer', 'model', 'db']" />
 
 <div>
-<div class="file-label">Behind? Catch up to the end of lesson 2</div>
+<div class="file-label">If you're behind, catch up to the end of lesson 2:</div>
 
 ```bash
 git stash push -u -m "my work"
@@ -30,9 +30,9 @@ uv run manage.py migrate
 <!--
 [7:55 · 3 min] [SLIDES]
 
-- Halfway. Every box on the map is now code you wrote: URLs, a ViewSet with two custom actions, a serializer, a model, and a table.
-- REST in one line: resources at URLs, methods say what to do, status codes say what happened.
-- Catch-up time. Anyone behind runs these three commands; helpers go to raised hands. `migrate` is safe to run even when nothing changed.
+- We're halfway. You wrote the code for every box on the diagram: the URLs, a ViewSet with two custom actions, a serializer, and a model. `migrate` created the table.
+- A REST API in one sentence: each resource has a URL, the method says what to do with it, and the status code says what happened.
+- Anyone who is behind runs these three commands, and helpers go to raised hands. `migrate` is safe to run even when nothing changed.
 
 Ask: "Stretch for a minute. Anyone with an error, hand up now."
 
@@ -48,7 +48,7 @@ plan: 29
 # What's still broken?
 
 <ul>
-<li v-click>Anyone can upvote, forever.</li>
+<li v-click>Anyone can upvote a question as many times as they want, without logging in.</li>
 <li v-click>Anyone can mark a question answered.</li>
 <li v-click>Anyone can edit or delete any question.</li>
 </ul>
@@ -60,15 +60,15 @@ Ask first: "We're not logged in. What can we do that we shouldn't?" Let the room
 
 → SWITCH TO BROWSER: http://127.0.0.1:8000/api/questions/1/upvote/
 
-- Demo: press POST ten times, logged out. Votes climb to whatever you like.
+- While logged out, press POST ten times. The vote count goes up by one each time.
 
 → SWITCH TO SLIDES
 
-[click] Unlimited upvotes, from anyone, logged in or not.
+[click] Anyone can upvote as often as they want, without logging in.
 
-[click] Anyone can mark answered. Moderating is everyone's job, which means nobody's.
+[click] Anyone can mark a question answered. Only moderators should be able to do that.
 
-[click] Anyone can PATCH or DELETE any question. Show the DELETE button on `/api/questions/1/` if you want, but don't press it.
+[click] Anyone can PATCH or DELETE any question. You can show the DELETE button on `/api/questions/1/`, but don't press it.
 
-- "Next: who are you, and what are you allowed to do?"
+- Say: "Lesson 3 adds logins, and rules for what each user is allowed to do."
 -->

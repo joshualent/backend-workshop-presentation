@@ -48,7 +48,7 @@
     const pageHtml = n => `<h1>Questions</h1><div class="item">What does a serializer do?</div><div class="votes">${n} votes</div>`
     const oldPage = el('div', 'page', { left: 140, top: 550, width: 660, height: 390, background: 'var(--surface)' }, pageHtml(3))
     const newPage = el('div', 'page', { left: 140, top: 550, width: 660, height: 390, background: 'var(--surface)' }, pageHtml(4))
-    const leftNote = el('div', 'note', { left: 110 }, 'A whole page, every click')
+    const leftNote = el('div', 'note', { left: 110 }, 'Every click loads a whole new page')
 
     // right: three clients
     const CLIENTS = [['Web app', 1000], ['Phone', 1290], ['Terminal', 1580]]
@@ -61,7 +61,7 @@
       const chip = el('div', 'chip', { left: x + 135 - 66, top: 520, opacity: 0 }, 'JSON')
       return { x, v3, v4, chip }
     })
-    const rightNote = el('div', 'note', { left: 1000 }, 'Just the data, to any client')
+    const rightNote = el('div', 'note', { left: 1000 }, 'Each client gets only the data')
 
     // request arrows
     const svg = document.getElementById('lines')

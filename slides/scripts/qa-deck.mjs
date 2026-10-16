@@ -8,7 +8,8 @@
  * Source checks:
  *   - every plan slide (0–45) is covered by exactly one show slide: `plan:` lists
  *     the plan slides each one stands for ("14–15", "31, 34"), since this deck
- *     merges the code slides into the concept slides' notes
+ *     merges the code slides into the concept slides' notes. CUT lists the plan
+ *     slides the presenter removed from this version.
  *   - every slide has notes; show slides start with "[H:MM · N min] [MODE]" (plan 8.1),
  *     and slides whose mode isn't SLIDES have an explicit "→ SWITCH TO" line
  *   - the clock adds up: each slide starts when the previous one ends, and the
@@ -82,14 +83,22 @@ for (const s of show) {
       covered.set(n, s.no)
   }
 }
+// Plan slides the presenter cut from this version: 2 "Tonight", 26 the "your turn"
+// exercise, 37 the V3 video. Their content isn't on any slide.
+const CUT = new Set([2, 26, 37])
+for (const n of CUT) {
+  if (covered.has(n))
+    problems.push(`plan slide ${n} was cut from this deck but is on slide ${covered.get(n)}`)
+}
 for (let n = 0; n <= 45; n++) {
-  if (!covered.has(n))
+  if (!covered.has(n) && !CUT.has(n))
     problems.push(`plan slide ${n} isn't covered by any show slide (add it to a slide's plan tag)`)
 }
 
 // Notes format and the clock.
 const toMin = hm => Number(hm.split(':')[0]) * 60 + Number(hm.split(':')[1])
-const SECTIONS = { 1: '6:55', 13: '7:15', 23: '7:42', 28: '7:55', 30: '8:02', 37: '8:14', 42: '8:25' }
+// Lesson 4 (plan 37 at 8:14) starts inside slide "What's still broken?" (plan 36, 38), so it has no entry.
+const SECTIONS = { 1: '6:55', 13: '7:15', 23: '7:42', 28: '7:55', 30: '8:02', 42: '8:25' }
 let clock = null
 for (const s of slides) {
   if (!s.notes) {
@@ -256,7 +265,7 @@ for (const s of slides.filter(x => x.backstage)) {
 // 4. presenter view shows notes; projector simulation switches on
 await page.goto(`${base}/#/presenter/2`, { waitUntil: 'networkidle' })
 await page.waitForTimeout(1500)
-if (!(await page.evaluate(() => document.body.innerText)).includes('[6:55 · 1 min]'))
+if (!(await page.evaluate(() => document.body.innerText)).includes('[6:55 · 3 min]'))
   problems.push('presenter view did not show slide 2\'s notes')
 await page.goto(`${base}/?projector#/1`, { waitUntil: 'networkidle' })
 await page.waitForTimeout(500)

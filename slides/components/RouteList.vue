@@ -6,12 +6,12 @@
 withDefaults(defineProps<{ at?: number | string | false, actions?: boolean }>(), { at: false, actions: false })
 
 const ROUTES = [
-  { method: 'GET', url: '/api/questions/', what: 'list', action: 'list' },
-  { method: 'POST', url: '/api/questions/', what: 'create', action: 'create' },
+  { method: 'GET', url: '/api/questions/', what: 'list all questions', action: 'list' },
+  { method: 'POST', url: '/api/questions/', what: 'create a question', action: 'create' },
   { method: 'GET', url: '/api/questions/1/', what: 'read question 1', action: 'retrieve' },
-  { method: 'PUT', url: '/api/questions/1/', what: 'replace it', action: 'update' },
-  { method: 'PATCH', url: '/api/questions/1/', what: 'update it', action: 'partial_update' },
-  { method: 'DELETE', url: '/api/questions/1/', what: 'delete it', action: 'destroy' },
+  { method: 'PUT', url: '/api/questions/1/', what: 'replace question 1', action: 'update' },
+  { method: 'PATCH', url: '/api/questions/1/', what: 'change part of question 1', action: 'partial_update' },
+  { method: 'DELETE', url: '/api/questions/1/', what: 'delete question 1', action: 'destroy' },
 ]
 </script>
 

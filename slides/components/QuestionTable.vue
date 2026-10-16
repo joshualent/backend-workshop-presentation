@@ -13,11 +13,11 @@ import { computed } from 'vue'
 const { $clicks } = useSlideContext()
 
 const ROWS = [
-  { name: 'text', field: 'CharField', column: 'varchar(300)', means: 'up to 300 characters', at: 1 },
-  { name: 'votes', field: 'IntegerField', column: 'integer', means: 'starts at 0', at: 2 },
-  { name: 'answered', field: 'BooleanField', column: 'bool', means: 'starts false', at: 3 },
+  { name: 'text', field: 'CharField', column: 'varchar(300)', means: 'at most 300 characters', at: 1 },
+  { name: 'votes', field: 'IntegerField', column: 'integer', means: 'defaults to 0', at: 2 },
+  { name: 'answered', field: 'BooleanField', column: 'bool', means: 'defaults to false', at: 3 },
   { name: 'created_at', field: 'DateTimeField', column: 'datetime', means: "set when it's created", at: 4 },
-  { name: 'id', field: 'BigAutoField', column: 'integer', means: 'added by Django: 1, 2, 3, …', at: 5 },
+  { name: 'id', field: 'BigAutoField', column: 'integer', means: 'Django adds it: 1, 2, 3, …', at: 5 },
 ]
 
 const rows = computed(() => ROWS.map(r => ({ ...r, shown: $clicks.value >= r.at, on: $clicks.value === r.at })))

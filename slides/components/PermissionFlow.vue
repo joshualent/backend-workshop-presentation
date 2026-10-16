@@ -8,19 +8,19 @@
 const ROWS = [
   {
     at: 1,
-    ask: 'update, partial_update, or destroy?',
+    ask: 'Is it update, partial_update, or destroy?',
     where: 'get_permissions()',
     result: [{ perm: 'IsAdminUser', note: 'staff only' }],
   },
   {
     at: 2,
-    ask: 'an @action with permission_classes?',
+    ask: 'Does the @action set permission_classes?',
     where: '@action(permission_classes=…)',
     result: [{ label: 'upvote', perm: 'IsAuthenticated' }, { label: 'toggle_answered', perm: 'IsAdminUser' }],
   },
   {
     at: false,
-    ask: 'anything else: list, create, retrieve',
+    ask: 'Every other action: list, create, retrieve',
     where: 'permission_classes = [AllowAny]',
     result: [{ perm: 'AllowAny', note: 'anyone' }],
   },

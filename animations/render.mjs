@@ -33,7 +33,7 @@ const stopsOnly = args.includes('--stops')
 const sheet = stopsOnly || args.includes('--sheet')
 const atArg = args.indexOf('--at')
 const atTimes = atArg > -1 ? args[atArg + 1].split(',').map(Number) : null
-const names = args.filter((a, i) => !a.startsWith('--') && i !== atArg + 1)
+const names = args.filter((a, i) => !a.startsWith('--') && (atArg < 0 || i !== atArg + 1))
 for (const n of names) {
   if (!VIDEOS.includes(n)) {
     console.error(`Unknown video "${n}". Known: ${VIDEOS.join(', ')}`)

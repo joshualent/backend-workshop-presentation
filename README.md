@@ -10,7 +10,7 @@ The deck and presenter notes for the Developer Club backend workshop, **Build a 
 
 | Path | What |
 |---|---|
-| `slides/` | The Slidev deck: `slides.md` (settings) and `pages/` (31 show slides plus a 7-slide hidden appendix), components, styles, and the rendered videos in `public/media/videos/`. |
+| `slides/` | The Slidev deck: `slides.md` (settings) and `pages/` (28 show slides plus a 6-slide hidden appendix), components, styles, and the rendered videos in `public/media/videos/`. |
 | `slides/questions-api-workshop.pdf` | PDF backup: every slide at its final state, videos as their final frames. |
 | `slides/snippets/` | Real files from each checkpoint branch, plus each checkpoint's diff. Generated; don't edit. |
 | `animations/` | Sources for the three explainer videos (HTML + GSAP) and the script that renders them. |

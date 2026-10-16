@@ -4,11 +4,11 @@
 
 Everything you type or paste tonight, in order. No slide shows this code: each slide's notes say which step to type after it. Code comes from the checkpoint branches of [joshualent/questions-api](https://github.com/joshualent/questions-api):
 
-- `checkpoint-0-setup` at `1003c93`: Initialize Django workshop project
-- `checkpoint-1-crud` at `44b69bd`: Add public question CRUD
-- `checkpoint-2-actions` at `f207834`: Add upvoting and answered toggling
-- `checkpoint-3-auth` at `22b092f`: Add login and staff moderation
-- `checkpoint-4-m2m` at `70e8155`: Track voters and toggle votes
+- `checkpoint-0-setup` at `fa53e5b`: Initialize Django workshop project
+- `checkpoint-1-crud` at `aa49eea`: Add public question CRUD
+- `checkpoint-2-actions` at `46a2fd2`: Add upvoting and answered toggling
+- `checkpoint-3-auth` at `779ba5e`: Add login and staff moderation
+- `checkpoint-4-m2m` at `ddaaee6`: Track voters and toggle votes
 
 Run commands from the folder that contains `manage.py`. Keep `runserver` going in one terminal and use a second one for everything else.
 
@@ -30,7 +30,7 @@ Check <http://127.0.0.1:8000/admin/> shows the login page.
 
 ### 1. `questions/models.py`
 
-Replace the stub. After slide 15, *Models become tables*.
+Replace the stub. After slide 14, *A model becomes a database table*.
 
 The whole file, to paste if you fall behind:
 
@@ -59,7 +59,7 @@ Expect `questions/migrations/0001_initial.py` and `Applying questions.0001_initi
 
 ### 2. `questions/serializers.py`
 
-The file exists but is empty. After slide 16, *Serializers translate and check*.
+The file exists but is empty. After slide 15, *A serializer converts and validates data*.
 
 The whole file, to paste if you fall behind:
 
@@ -78,7 +78,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 ### 3. `questions/views.py`
 
-Replace the stub. After slide 17, *One ViewSet, six routes*.
+Replace the stub. After slide 16, *One ViewSet handles six routes*.
 
 The whole file, to paste if you fall behind:
 
@@ -160,7 +160,7 @@ uv run manage.py createsuperuser
 
 Use username `mod`. Any email is fine; Django asks for the password twice.
 
-**Try it** (still on slide 17) at <http://127.0.0.1:8000/api/questions/>, in the browsable API's form at the bottom of the page:
+**Try it** (still on slide 16) at <http://127.0.0.1:8000/api/questions/>, in the browsable API's form at the bottom of the page:
 
 | Send | Expect |
 |---|---|
@@ -168,7 +168,7 @@ Use username `mod`. Any email is fine; Django asks for the password twice.
 | `POST /api/questions/` with `{"text": ""}` | `400 Bad Request`, `{"text": ["This field may not be blank."]}` |
 | Open `/api/questions/999/` | `404 Not Found`, `{"detail": "No Question matches the given query."}` |
 
-Optional curl aside (first thing to cut):
+Optional curl example (cut this first if you're behind):
 
 ```bash
 curl -i -X POST http://127.0.0.1:8000/api/questions/ \
@@ -180,7 +180,7 @@ curl -i -X POST http://127.0.0.1:8000/api/questions/ \
 
 ### 6. `questions/views.py`
 
-Two new imports at the top, then two methods at the end of `QuestionViewSet`, indented one level. After slide 19, *Why not just PATCH the votes?* The two blank lines between the methods are in the repo as-is. If you run the "your turn" exercise (slide 20), type only `upvote` here and let the room write `toggle_answered`.
+Two new imports at the top, then two methods at the end of `QuestionViewSet`, indented one level. After slide 18, *Why not let clients PATCH the vote count?* The repo has two blank lines between the methods.
 
 What changes (`+` lines are new, `-` lines go away):
 
@@ -248,7 +248,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
 
 No migration: the fields already exist.
 
-**Try it** (after slide 20): open <http://127.0.0.1:8000/api/questions/1/upvote/> and press **POST** twice (votes 1, then 2); open `/api/questions/1/toggle_answered/` and press **POST** twice (`answered` true, then false). A plain GET on an action URL shows `405 Method Not Allowed`; that's expected, use the POST button.
+**Try it** (still on slide 18): open <http://127.0.0.1:8000/api/questions/1/upvote/> and press **POST** twice (votes 1, then 2); open `/api/questions/1/toggle_answered/` and press **POST** twice (`answered` true, then false). A plain GET on an action URL shows `405 Method Not Allowed`; that's expected, use the POST button.
 
 ## Checkpoint pause
 
@@ -264,7 +264,7 @@ uv run manage.py migrate
 
 ### 7. `questions/views.py`
 
-One import line changes, `get_permissions` goes right after `permission_classes`, and each `@action` gets a `permission_classes` argument. After slide 25, *How DRF decides*.
+One import line changes, `get_permissions` goes right after `permission_classes`, and each `@action` gets a `permission_classes` argument. After slide 23, *How DRF checks permissions*.
 
 What changes (`+` lines are new, `-` lines go away):
 
@@ -385,7 +385,7 @@ uv run manage.py createsuperuser
 
 Then at <http://127.0.0.1:8000/admin/auth/user/add/> create `sam` with a password. Leave **Staff status** and **Superuser status** unchecked.
 
-**Try it** (still on slide 25): log in with the browsable API's **Log in** link (top right), as nobody, `sam`, then `mod`:
+**Try it** (still on slide 23): log in with the browsable API's **Log in** link (top right), as nobody, `sam`, then `mod`:
 
 | | `POST …/1/upvote/` | `POST …/1/toggle_answered/` | `PATCH /api/questions/1/` |
 |---|---|---|---|
@@ -397,7 +397,7 @@ Then at <http://127.0.0.1:8000/admin/auth/user/add/> create `sam` with a passwor
 
 ### 9. `questions/models.py`
 
-Import `settings`; `votes` becomes a `ManyToManyField`. After slide 27, the V3 video.
+Import `settings`, and change `votes` to a `ManyToManyField`. After slide 24, *What's still broken?*
 
 What changes (`+` lines are new, `-` lines go away):
 
@@ -440,24 +440,31 @@ uv run manage.py migrate
 
 Expect `0002_votes_many_to_many.py` with `- Remove field votes from question` and `+ Add field votes to question`. Existing vote totals reset to zero.
 
-Before the next step, show <http://127.0.0.1:8000/api/questions/>: `"votes": []`. DRF shows the many-to-many field as a list of user ids, so every client expecting a number would break. That's slide 28.
+Before the next step, show <http://127.0.0.1:8000/api/questions/>: `"votes": []`. DRF shows the many-to-many field as a list of user ids, so every client expecting a number would break. Slide 25 explains the fix.
 
 ### 10. `questions/serializers.py`
 
-One field above `class Meta`. After slide 28, *The API doesn't change*.
+Two fields above `class Meta`, `has_voted` in `fields`, and the `get_has_voted` method. After slide 25, *Keep the JSON compatible*.
 
 What changes (`+` lines are new, `-` lines go away):
 
 ```diff
-@@ -4,6 +4,8 @@ from .models import Question
+@@ -4,7 +4,14 @@ from .models import Question
  
  
  class QuestionSerializer(serializers.ModelSerializer):
 +    votes = serializers.IntegerField(source="votes.count", read_only=True)
++    has_voted = serializers.SerializerMethodField()
 +
      class Meta:
          model = Question
-         fields = ("id", "text", "votes", "answered", "created_at")
+-        fields = ("id", "text", "votes", "answered", "created_at")
++        fields = ("id", "text", "votes", "has_voted", "answered", "created_at")
+         read_only_fields = ("id", "votes", "answered", "created_at")
++
++    def get_has_voted(self, question):
++        user = self.context["request"].user
++        return question.votes.filter(pk=user.pk).exists()
 ```
 
 The whole file afterwards, to paste if you fall behind:
@@ -470,11 +477,16 @@ from .models import Question
 
 class QuestionSerializer(serializers.ModelSerializer):
     votes = serializers.IntegerField(source="votes.count", read_only=True)
+    has_voted = serializers.SerializerMethodField()
 
     class Meta:
         model = Question
-        fields = ("id", "text", "votes", "answered", "created_at")
+        fields = ("id", "text", "votes", "has_voted", "answered", "created_at")
         read_only_fields = ("id", "votes", "answered", "created_at")
+
+    def get_has_voted(self, question):
+        user = self.context["request"].user
+        return question.votes.filter(pk=user.pk).exists()
 ```
 
 ### 11. `questions/views.py`
@@ -550,7 +562,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
         return Response(self.get_serializer(question).data)
 ```
 
-**Try it** (still on slide 28): as `sam`, POST `/api/questions/1/toggle_vote/` twice (votes 1, then 0); as `mod`, once (votes 1). `/upvote/` is gone: 404.
+**Try it** (still on slide 25): as `sam`, POST `/api/questions/1/toggle_vote/` twice (`"votes": 1, "has_voted": true`, then `"votes": 0, "has_voted": false`); as `mod`, once (`"votes": 1, "has_voted": true`). `/upvote/` no longer exists, so it returns 404.
 
 ## If you need the finished project
 

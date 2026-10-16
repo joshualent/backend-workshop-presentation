@@ -1,17 +1,18 @@
 <script setup lang="ts">
 /**
- * The request map turned sideways, with the real names from
+ * The request map turned on its side (SQLite on top, the client at the
+ * bottom, the same build order as RequestMap), with the real names from
  * checkpoint-4-m2m in each layer (plan slide 42). Names appear on click `at`.
  */
 withDefaults(defineProps<{ at?: number | false }>(), { at: 1 })
 
 const LAYERS = [
-  { name: 'Client', file: 'browser, curl', code: [] as string[] },
-  { name: 'URL router', file: 'config/urls.py', code: ['DefaultRouter'] },
-  { name: 'ViewSet', file: 'views.py', code: ['QuestionViewSet', 'get_permissions', 'toggle_vote'] },
-  { name: 'Serializer', file: 'serializers.py', code: ['QuestionSerializer'] },
-  { name: 'Model', file: 'models.py', code: ['Question'] },
   { name: 'SQLite', file: 'db.sqlite3', code: ['questions_question', 'questions_question_votes'] },
+  { name: 'Model', file: 'models.py', code: ['Question'] },
+  { name: 'Serializer', file: 'serializers.py', code: ['QuestionSerializer'] },
+  { name: 'ViewSet', file: 'views.py', code: ['QuestionViewSet', 'get_permissions', 'toggle_vote'] },
+  { name: 'URL router', file: 'config/urls.py', code: ['DefaultRouter'] },
+  { name: 'Client', file: 'browser, curl', code: [] as string[] },
 ]
 </script>
 
@@ -86,9 +87,9 @@ code {
   content: '';
   position: absolute;
   left: -5px;
-  bottom: -6px;
+  top: -6px;
   border: 6px solid transparent;
-  border-top: 7px solid var(--stroke);
-  border-bottom: 0;
+  border-bottom: 7px solid var(--stroke);
+  border-top: 0;
 }
 </style>

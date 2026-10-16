@@ -22,8 +22,8 @@
     <text x="749" y="92" class="name">Server</text>
     <text x="749" y="120" class="sub">the backend</text>
     <g v-click="2">
-      <text x="749" y="158" class="work">reads and writes data,</text>
-      <text x="749" y="184" class="work">checks the rules</text>
+      <text x="749" y="158" class="work">reads and writes data</text>
+      <text x="749" y="184" class="work">and checks the rules</text>
     </g>
 
     <g v-click="1">
@@ -35,7 +35,7 @@
     <g v-click="3">
       <line x1="588" y1="156" x2="192" y2="156" class="edge" marker-end="url(#rt-arrow)" />
       <text x="389" y="186" class="label">response</text>
-      <text x="389" y="222" class="code"><tspan class="ok">200 OK</tspan> + questions as JSON</text>
+      <text x="389" y="222" class="code"><tspan class="ok">200 OK</tspan> and the questions as JSON</text>
     </g>
   </svg>
 </template>

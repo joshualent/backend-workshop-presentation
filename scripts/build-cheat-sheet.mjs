@@ -70,7 +70,7 @@ Check <http://127.0.0.1:8000/admin/> shows the login page.
 
 ## Lesson 1: CRUD (ends at \`checkpoint-1-crud\`)
 
-${fileStep(1, 'checkpoint-1-crud', 'questions/models.py', 'Replace the stub. After slide 15, *Models become tables*.', { diff: false })}
+${fileStep(1, 'checkpoint-1-crud', 'questions/models.py', 'Replace the stub. After slide 14, *A model becomes a database table*.', { diff: false })}
 
 Then, in the second terminal:
 
@@ -78,9 +78,9 @@ ${sh('uv run manage.py makemigrations questions', 'uv run manage.py migrate')}
 
 Expect \`questions/migrations/0001_initial.py\` and \`Applying questions.0001_initial... OK\`.
 
-${fileStep(2, 'checkpoint-1-crud', 'questions/serializers.py', 'The file exists but is empty. After slide 16, *Serializers translate and check*.', { diff: false })}
+${fileStep(2, 'checkpoint-1-crud', 'questions/serializers.py', 'The file exists but is empty. After slide 15, *A serializer converts and validates data*.', { diff: false })}
 
-${fileStep(3, 'checkpoint-1-crud', 'questions/views.py', 'Replace the stub. After slide 17, *One ViewSet, six routes*.', { diff: false })}
+${fileStep(3, 'checkpoint-1-crud', 'questions/views.py', 'Replace the stub. After slide 16, *One ViewSet handles six routes*.', { diff: false })}
 
 ${fileStep(4, 'checkpoint-1-crud', 'config/urls.py', 'Add the imports, the router, and the `api/` line. Right after `views.py`.')}
 
@@ -92,7 +92,7 @@ ${sh('uv run manage.py createsuperuser')}
 
 Use username \`mod\`. Any email is fine; Django asks for the password twice.
 
-**Try it** (still on slide 17) at <http://127.0.0.1:8000/api/questions/>, in the browsable API's form at the bottom of the page:
+**Try it** (still on slide 16) at <http://127.0.0.1:8000/api/questions/>, in the browsable API's form at the bottom of the page:
 
 | Send | Expect |
 |---|---|
@@ -100,17 +100,17 @@ Use username \`mod\`. Any email is fine; Django asks for the password twice.
 | \`POST /api/questions/\` with \`{"text": ""}\` | \`400 Bad Request\`, \`{"text": ["This field may not be blank."]}\` |
 | Open \`/api/questions/999/\` | \`404 Not Found\`, \`{"detail": "No Question matches the given query."}\` |
 
-Optional curl aside (first thing to cut):
+Optional curl example (cut this first if you're behind):
 
 ${sh(`curl -i -X POST http://127.0.0.1:8000/api/questions/ \\`, `  -H "Content-Type: application/json" \\`, `  -d '{"text": "What does a serializer do?"}'`)}
 
 ## Lesson 2: custom actions (ends at \`checkpoint-2-actions\`)
 
-${fileStep(6, 'checkpoint-2-actions', 'questions/views.py', 'Two new imports at the top, then two methods at the end of `QuestionViewSet`, indented one level. After slide 19, *Why not just PATCH the votes?* The two blank lines between the methods are in the repo as-is. If you run the "your turn" exercise (slide 20), type only `upvote` here and let the room write `toggle_answered`.')}
+${fileStep(6, 'checkpoint-2-actions', 'questions/views.py', 'Two new imports at the top, then two methods at the end of `QuestionViewSet`, indented one level. After slide 18, *Why not let clients PATCH the vote count?* The repo has two blank lines between the methods.')}
 
 No migration: the fields already exist.
 
-**Try it** (after slide 20): open <http://127.0.0.1:8000/api/questions/1/upvote/> and press **POST** twice (votes 1, then 2); open \`/api/questions/1/toggle_answered/\` and press **POST** twice (\`answered\` true, then false). A plain GET on an action URL shows \`405 Method Not Allowed\`; that's expected, use the POST button.
+**Try it** (still on slide 18): open <http://127.0.0.1:8000/api/questions/1/upvote/> and press **POST** twice (votes 1, then 2); open \`/api/questions/1/toggle_answered/\` and press **POST** twice (\`answered\` true, then false). A plain GET on an action URL shows \`405 Method Not Allowed\`; that's expected, use the POST button.
 
 ## Checkpoint pause
 
@@ -120,7 +120,7 @@ ${sh('git stash push -u -m "my workshop progress"', 'git switch checkpoint-2-act
 
 ## Lesson 3: authentication and staff moderation (ends at \`checkpoint-3-auth\`)
 
-${fileStep(7, 'checkpoint-3-auth', 'questions/views.py', 'One import line changes, `get_permissions` goes right after `permission_classes`, and each `@action` gets a `permission_classes` argument. After slide 25, *How DRF decides*.')}
+${fileStep(7, 'checkpoint-3-auth', 'questions/views.py', 'One import line changes, `get_permissions` goes right after `permission_classes`, and each `@action` gets a `permission_classes` argument. After slide 23, *How DRF checks permissions*.')}
 
 ${fileStep(8, 'checkpoint-3-auth', 'config/urls.py', 'One new line at the end of `urlpatterns`. Right after `views.py`.')}
 
@@ -130,7 +130,7 @@ ${sh('uv run manage.py createsuperuser')}
 
 Then at <http://127.0.0.1:8000/admin/auth/user/add/> create \`sam\` with a password. Leave **Staff status** and **Superuser status** unchecked.
 
-**Try it** (still on slide 25): log in with the browsable API's **Log in** link (top right), as nobody, \`sam\`, then \`mod\`:
+**Try it** (still on slide 23): log in with the browsable API's **Log in** link (top right), as nobody, \`sam\`, then \`mod\`:
 
 | | \`POST …/1/upvote/\` | \`POST …/1/toggle_answered/\` | \`PATCH /api/questions/1/\` |
 |---|---|---|---|
@@ -140,19 +140,19 @@ Then at <http://127.0.0.1:8000/admin/auth/user/add/> create \`sam\` with a passw
 
 ## Lesson 4: many-to-many voting (ends at \`checkpoint-4-m2m\`)
 
-${fileStep(9, 'checkpoint-4-m2m', 'questions/models.py', 'Import `settings`; `votes` becomes a `ManyToManyField`. After slide 27, the V3 video.')}
+${fileStep(9, 'checkpoint-4-m2m', 'questions/models.py', 'Import `settings`, and change `votes` to a `ManyToManyField`. After slide 24, *What\'s still broken?*')}
 
 ${sh('uv run manage.py makemigrations questions --name votes_many_to_many', 'uv run manage.py migrate')}
 
 Expect \`0002_votes_many_to_many.py\` with \`- Remove field votes from question\` and \`+ Add field votes to question\`. Existing vote totals reset to zero.
 
-Before the next step, show <http://127.0.0.1:8000/api/questions/>: \`"votes": []\`. DRF shows the many-to-many field as a list of user ids, so every client expecting a number would break. That's slide 28.
+Before the next step, show <http://127.0.0.1:8000/api/questions/>: \`"votes": []\`. DRF shows the many-to-many field as a list of user ids, so every client expecting a number would break. Slide 25 explains the fix.
 
-${fileStep(10, 'checkpoint-4-m2m', 'questions/serializers.py', 'One field above `class Meta`. After slide 28, *The API doesn\'t change*.')}
+${fileStep(10, 'checkpoint-4-m2m', 'questions/serializers.py', 'Two fields above `class Meta`, `has_voted` in `fields`, and the `get_has_voted` method. After slide 25, *Keep the JSON compatible*.')}
 
 ${fileStep(11, 'checkpoint-4-m2m', 'questions/views.py', '`upvote` becomes `toggle_vote`. Right after the serializer. Paste if short on time.')}
 
-**Try it** (still on slide 28): as \`sam\`, POST \`/api/questions/1/toggle_vote/\` twice (votes 1, then 0); as \`mod\`, once (votes 1). \`/upvote/\` is gone: 404.
+**Try it** (still on slide 25): as \`sam\`, POST \`/api/questions/1/toggle_vote/\` twice (\`"votes": 1, "has_voted": true\`, then \`"votes": 0, "has_voted": false\`); as \`mod\`, once (\`"votes": 1, "has_voted": true\`). \`/upvote/\` no longer exists, so it returns 404.
 
 ## If you need the finished project
 

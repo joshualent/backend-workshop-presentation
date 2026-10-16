@@ -2,8 +2,9 @@
 import { computed } from 'vue'
 
 /**
- * The recurring request-flow map (plan section 4.3):
- * Client → URL router → ViewSet → Serializer → Model → SQLite, JSON back.
+ * The recurring request-flow map (plan section 4.3), laid out in the order we
+ * build it: SQLite, Model, Serializer, ViewSet, URL router, Client. Requests
+ * travel right to left along the arrows; the JSON goes back underneath.
  *
  *   <RequestMap />                          the whole map, file labels under each box
  *   <RequestMap :build="1" />               boxes appear left to right from click 1, then the return path
@@ -24,12 +25,12 @@ const props = withDefaults(defineProps<{
 }>(), { highlight: () => [], build: undefined, permission: false, mini: false, back: true })
 
 const BOXES = [
-  { id: 'client', name: 'Client', file: 'browser, curl' },
-  { id: 'router', name: 'URL router', file: 'config/urls.py' },
-  { id: 'viewset', name: 'ViewSet', file: 'views.py' },
-  { id: 'serializer', name: 'Serializer', file: 'serializers.py' },
-  { id: 'model', name: 'Model', file: 'models.py' },
   { id: 'db', name: 'SQLite', file: 'db.sqlite3' },
+  { id: 'model', name: 'Model', file: 'models.py' },
+  { id: 'serializer', name: 'Serializer', file: 'serializers.py' },
+  { id: 'viewset', name: 'ViewSet', file: 'views.py' },
+  { id: 'router', name: 'URL router', file: 'config/urls.py' },
+  { id: 'client', name: 'Client', file: 'browser, curl' },
 ]
 
 const W = 900
@@ -56,15 +57,15 @@ const arrowY = computed(() => (props.mini ? (showPermission.value ? 18 : 20) : 3
 const nameY = computed(() => (showPermission.value ? (props.mini ? 18 : 28) : BOX_H.value / 2 + 1))
 const permY = computed(() => (props.mini ? 30 : 44))
 const backY = computed(() => BOX_H.value + 56)
-const client = computed(() => boxes.value[0])
-const db = computed(() => boxes.value.at(-1)!)
+const client = computed(() => boxes.value.find(b => b.id === 'client')!)
+const db = computed(() => boxes.value.find(b => b.id === 'db')!)
 </script>
 
 <template>
   <svg
     class="request-map" :class="{ mini, focused: anyFocus }"
     :viewBox="`0 0 ${W} ${H}`" :width="W" :height="H"
-    role="img" aria-label="Client, URL router, ViewSet, Serializer, Model, SQLite, and JSON back to the client"
+    role="img" aria-label="SQLite, Model, Serializer, ViewSet, URL router, and Client. Requests go from the client to SQLite, and JSON goes back to the client"
   >
     <defs>
       <marker id="map-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -75,8 +76,8 @@ const db = computed(() => boxes.value.at(-1)!)
     <g v-for="b in boxes" :key="b.id" v-click="clickFor(b.i)" class="node" :class="{ on: b.focused }">
       <line
         v-if="b.i > 0"
-        :x1="boxes[b.i - 1].x + BOX_W + 4" :y1="arrowY" :x2="b.x - 5" :y2="arrowY"
-        class="edge" marker-end="url(#map-arrow)"
+        :x1="boxes[b.i - 1].x + BOX_W + 5" :y1="arrowY" :x2="b.x - 4" :y2="arrowY"
+        class="edge" marker-start="url(#map-arrow)"
       />
       <rect :x="b.x" y="1" :width="BOX_W" :height="BOX_H - 2" rx="5" class="box" />
       <text :x="b.cx" :y="nameY" class="name">{{ b.name }}</text>

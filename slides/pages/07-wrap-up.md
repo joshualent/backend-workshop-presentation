@@ -9,12 +9,12 @@ plan: 42
 <!--
 [8:25 · 1 min] [SLIDES]
 
-- The same map, with the names you wrote.
+- The same diagram, turned on its side, with SQLite at the top and the client at the bottom.
 
-[click] `DefaultRouter`, `QuestionViewSet` with `get_permissions` and `toggle_vote`, `QuestionSerializer`, `Question`, and two tables, including the join table Django made for us.
+[click] Next to each part are the names you wrote: two tables (Django created the join table), `Question`, `QuestionSerializer`, `QuestionViewSet` with `get_permissions` and `toggle_vote`, and the `DefaultRouter`.
 
-- "A real API: validation, permissions, and a many-to-many relationship, in about 60 lines of your own code."
-- Anyone who fell behind: `checkpoint-4-m2m` is the finished project.
+- Say: "This API validates input, checks permissions, and stores votes in a many-to-many relationship. You wrote about 60 lines of code for it."
+- Anyone who fell behind can switch to `checkpoint-4-m2m` to get the finished project.
 -->
 
 ---
@@ -25,13 +25,11 @@ plan: 43
 
 <div class="next">
 <ul>
-<li>Token auth, for frontends and apps</li>
-<li>PostgreSQL instead of SQLite</li>
+<li>The official DRF tutorial</li>
 <li>Tests with DRF's <code>APITestCase</code></li>
 <li>Pagination and ordering</li>
-<li>Deploying it somewhere public</li>
 <li>A frontend that calls your API</li>
-<li>The official DRF tutorial</li>
+<li>Deploying</li>
 </ul>
 <QrCode :url="$workshop.resourceListUrl" :size="170" />
 </div>
@@ -52,10 +50,13 @@ plan: 43
 <!--
 [8:26 · 1 min] [SLIDES]
 
-- Pick one. Each builds straight on tonight's code.
-- Token auth is the next step if you want a React or mobile app to log in.
-- `APITestCase` lets you write tonight's "try it" checks as tests that run in a second.
-- The QR code has links for all of these.
+- Each of these starts from tonight's code.
+- The DRF tutorial covers the same ideas in more depth: serializers, views, routers, and permissions.
+- With `APITestCase`, you can turn tonight's browser checks into tests that run in about a second.
+- Pagination returns a long list in pages. Ordering sorts it, for example by votes.
+- A frontend, such as a React app, can call `/api/questions/` with `fetch`.
+- Deploying puts the API on a server so other people can use it.
+- The QR code links to resources for each of these.
 -->
 
 ---
@@ -89,8 +90,8 @@ plan: 44–45
 <!--
 [8:27 · 3 min] [SLIDES]
 
-- Thank the helpers and the club by name, then take questions. Never cut this.
-- Good fallbacks if it's quiet: "Why 403 and not 401?" (session auth; see slide 9's notes), "Why not let clients send votes?" (lesson 2), "How would a phone app log in?" (tokens).
+- Thank the helpers and the club by name, then take questions. Never cut this slide.
+- Questions to answer if the room is quiet: "Why 403 and not 401?" (session login; see slide 8's notes), "Why not let clients send the vote count?" (lesson 2), "How would a phone app log in?" (with a token).
 - Repeat each question into the room before answering.
 - Announce the next event before people start packing up.
 - The QR code is the repo, the same one from the setup slide. Leave this slide on screen at the end.
