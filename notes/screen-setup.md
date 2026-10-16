@@ -12,7 +12,7 @@
 - macOS: `Cmd`+`Tab` between apps; `Ctrl`+arrow if each window is in its own full-screen space. Windows: `Alt`+`Tab`. Practise the exact order once before the talk.
 - Coming back to the slides, click the presenter view on the laptop before pressing the clicker, so the keys go to Slidev.
 - **Jump to a slide by number:** press `g`, type the number, press `Enter`. Numbers are the deck's (1–28), shown in the presenter view; the plan slides each one stands for are in its corner there.
-- The clicker and arrow keys skip the backstage appendix (slides 29–34). Reach those with `g`.
+- The clicker and arrow keys skip the backstage appendix (slides 29–35). Reach those with `g`.
 - `o` shows the slide overview. Don't press `d` or `p`; nothing is bound to them on the night (the projector simulation is dev-only).
 
 ## VS Code

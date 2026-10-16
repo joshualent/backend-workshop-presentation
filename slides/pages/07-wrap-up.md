@@ -91,7 +91,7 @@ plan: 44–45
 [8:27 · 3 min] [SLIDES]
 
 - Thank the helpers and the club by name, then take questions. Never cut this slide.
-- Questions to answer if the room is quiet: "Why 403 and not 401?" (session login; see slide 8's notes), "Why not let clients send the vote count?" (lesson 2), "How would a phone app log in?" (with a token).
+- Questions to answer if the room is quiet: "Why 403 and not 401?" (session login; see slide 21's notes), "Why not let clients send the vote count?" (lesson 2), "How would a phone app log in?" (with a token).
 - Repeat each question into the room before answering.
 - Announce the next event before people start packing up.
 - The QR code is the repo, the same one from the setup slide. Leave this slide on screen at the end.

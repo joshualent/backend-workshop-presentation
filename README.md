@@ -10,7 +10,7 @@ The deck and presenter notes for the Developer Club backend workshop, **Build a 
 
 | Path | What |
 |---|---|
-| `slides/` | The Slidev deck: `slides.md` (settings) and `pages/` (28 show slides plus a 6-slide hidden appendix), components, styles, and the rendered videos in `public/media/videos/`. |
+| `slides/` | The Slidev deck: `slides.md` (settings) and `pages/` (28 show slides plus a 7-slide hidden appendix), components, styles, and the rendered videos in `public/media/videos/`. |
 | `slides/questions-api-workshop.pdf` | PDF backup: every slide at its final state, videos as their final frames. |
 | `slides/snippets/` | Real files from each checkpoint branch, plus each checkpoint's diff. Generated; don't edit. |
 | `animations/` | Sources for the three explainer videos (HTML + GSAP) and the script that renders them. |
@@ -41,7 +41,7 @@ pnpm serve      # serves dist/ offline at http://localhost:3031
 
 Present from the built copy: projector window at `http://localhost:3031/#/1`, presenter view on the laptop at `http://localhost:3031/#/presenter/1`, both in the same browser so they stay in sync. Everything (fonts, videos, QR codes) is local; the deck runs with Wi-Fi off.
 
-Keys: `→`/`Space`/clicker for the next click, `←` back, `g` then a number to jump, `o` for the overview. The clicker and arrow keys skip the hidden appendix (slides 32–38); reach it with `g` (slide 32 lists it). `?projector` in the URL (or `p` in `pnpm dev`) applies the weak-projector simulation from plan section 5.1.
+Keys: `→`/`Space`/clicker for the next click, `←` back, `g` then a number to jump, `o` for the overview. The clicker and arrow keys skip the hidden appendix (slides 29–35); reach it with `g` (slide 29 lists it). `?projector` in the URL (or `p` in `pnpm dev`) applies the weak-projector simulation from plan section 5.1.
 
 Each slide's `plan:` frontmatter lists the `PLAN.md` slides it stands for: `13`, or `14–15` when a concept slide's notes now carry the code slide that followed it. The presenter view shows the tag in each slide's corner, and `pnpm qa` checks that every plan slide from 0 to 45 is covered exactly once.
 

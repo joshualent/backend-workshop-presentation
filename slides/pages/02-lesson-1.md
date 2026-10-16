@@ -121,7 +121,7 @@ plan: 16–17
 
 [click] A client sends `"votes": 9999`. `votes` is read-only, so the serializer ignores it and the question starts at 0. The response is still 201, because the question was created.
 
-[click] Blank text gets a 400 Bad Request response with an error message for each invalid field. Nothing is saved to the database.
+[click] Blank text gets a 400 Bad Request response with an error message for each invalid field. Nothing is saved to the database. 400 starts with 4, so the problem is in the request, as on the anatomy slide.
 
 [click] Say: "Any client can send any data, so the server validates everything it receives. In DRF, the serializer does that."
 
@@ -143,14 +143,14 @@ plan: 18–21
 # One ViewSet handles six routes
 
 <div class="viewset">
-<p>A ViewSet is one class that handles every operation on a resource. Ours is <code>QuestionViewSet</code>.</p>
+<p>A ViewSet is one class that handles every route for a resource.</p>
 
 <div v-click="1" class="routes-wrap">
-<p class="small muted">DRF's <code>DefaultRouter</code> creates six routes from it:</p>
+<p class="small muted">DRF's <code>DefaultRouter</code> creates the routes. Each route calls a ViewSet method.</p>
 <RouteList actions />
 </div>
 
-<p v-click="2" class="small">For now, <code>AllowAny</code> lets anyone call every route. Lesson 3 adds restrictions.</p>
+<p v-click="2" class="small"><code>/api/questions/999/</code> gets <StatusBadge :code="404" />, because no question has id 999.</p>
 
 <RequestMap mini :highlight="['router', 'viewset']" class="push-down" />
 </div>
@@ -172,11 +172,13 @@ plan: 18–21
 <!--
 [7:28 · 13 min] [SLIDES]
 
-- `ModelViewSet` already has the methods list, create, retrieve, update, partial_update, and destroy. We set three attributes: `queryset` (which rows), `serializer_class` (how to convert them to JSON), and `permission_classes` (who may call it).
+- Ours is `QuestionViewSet`. `ModelViewSet` already has the methods list, create, retrieve, update, partial_update, and destroy. We set three attributes: `queryset` (which rows), `serializer_class` (how to convert them to JSON), and `permission_classes` (who may call it).
 
-[click] The router creates six routes from one ViewSet. The names on the right are the ViewSet methods that each route calls. Lesson 3 uses the names `update`, `partial_update`, and `destroy`.
+[click] These are the six routes from the HTTP methods slide. The router creates all of them from one ViewSet. The new column is the ViewSet method that each route calls. Lesson 3 uses the names `update`, `partial_update`, and `destroy`.
 
-[click] Say: "Right now, `AllowAny` lets anyone do anything. Lesson 3 replaces it."
+[click] The ViewSet looks up the question by its id. If no question has that id, DRF sends `404 Not Found`. It starts with 4, so the problem is in the request. We try it in the browser in a few minutes.
+
+- Say: "For now, `AllowAny` lets anyone call every route. Lesson 3 replaces it."
 
 → SWITCH TO VS CODE (7:30): questions/views.py, then config/urls.py (cheat sheet steps 3 and 4)
 

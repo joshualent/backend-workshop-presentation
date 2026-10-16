@@ -156,3 +156,44 @@ class Question(models.Model):
 - Check that you can tell every color swatch apart, and that you can read the 16 px label line and the dimmed code line.
 - If the colors look faded, turn the projector's brightness down instead of changing the deck.
 -->
+
+---
+backstage: true
+plan: A6
+---
+
+# Status codes in our API
+
+<div class="codes-ref">
+<StatusBadge :code="200" /><span>A read, an edit, or an action worked.</span>
+<StatusBadge :code="201" /><span>A POST to <code>/api/questions/</code> created a question.</span>
+<StatusBadge :code="204" /><span>A DELETE removed the question. The response has no body.</span>
+<StatusBadge :code="400" /><span>The data is invalid, for example blank text.</span>
+<StatusBadge :code="403" /><span>You aren't logged in, or you aren't allowed to make this request.</span>
+<StatusBadge :code="404" /><span>No question has that id, or the URL doesn't exist.</span>
+<StatusBadge :code="405" /><span>The URL doesn't accept that method, for example a GET on <code>/upvote/</code>.</span>
+</div>
+
+<style>
+.codes-ref {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px 20px;
+  align-items: baseline;
+  font-size: var(--fs-small);
+}
+.codes-ref > :nth-child(odd) {
+  font-size: var(--fs-code);
+  justify-self: start;
+}
+</style>
+
+<!--
+[backstage] [SLIDES]
+
+- Every status code the API sends during the workshop. Use it if someone asks about a code.
+- 2xx means the request worked. 4xx means a problem with the request.
+- 403: logged out, the message is "Authentication credentials were not provided." Logged in without permission, it's "You do not have permission to perform this action." DRF sends 403 rather than 401 because the browsable API uses session login.
+- 404 also covers `/api/questions/1/upvote/` after lesson 4, because that route no longer exists.
+- 405 shows when you open an action URL in the browser, because the browser sends a GET. Press the POST button instead.
+-->

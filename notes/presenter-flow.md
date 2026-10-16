@@ -15,9 +15,9 @@ Modes: **SLIDES**, **VS CODE**, **TERMINAL**, **BROWSER**. Every row that leaves
 | 6:59 | 4 | 4 | SLIDES | What the backend is responsible for. | 3 clicks. | |
 | 7:01 | 5 | 5 | SLIDES | Video V1 loops. Talk over it. | → | |
 | 7:03 | 6 | 6 | SLIDES | Why build an API? | 3 clicks. | |
-| 7:04 | 7 | 7 | SLIDES | Anatomy of a request: method, URL, headers, body, status, response body. | 6 clicks. | |
-| 7:07 | 8 | 8 | SLIDES | Methods and status codes. | → | |
-| 7:08 | 9 | 9 | SLIDES | Resources and URLs, the six routes, and a preview of actions. | 2 clicks. | |
+| 7:04 | 7 | 9 | SLIDES | Resources and URLs: the collection and one question. | 3 clicks. | |
+| 7:05 | 8 | 8 | SLIDES | HTTP methods: the six routes, row by row. PUT vs. PATCH. | 4 clicks. | |
+| 7:07 | 9 | 7 | SLIDES | Anatomy of a request: method and URL, headers, the JSON body, the status code and its first digit (2xx, 4xx, 5xx), the response body. | 5 clicks. | |
 | 7:10 | 10 | 10 | SLIDES | The parts of our API, from the client to SQLite. "We build from the right, starting with the model." | 7 clicks. | |
 | 7:12 | 11 | 11 | SLIDES | Video V2, stepped: 6 clicks, one per stop (0:04, 0:11, 0:15, 0:19.5, 0:23.5, 0:29). | 6 clicks. | |
 | 7:14 | 12 | 12 | SLIDES | Your starter repo: files, checkpoint branches, and how to switch. | → | |
@@ -25,9 +25,9 @@ Modes: **SLIDES**, **VS CODE**, **TERMINAL**, **BROWSER**. Every row that leaves
 | 7:16 | 14 | 14–15 | SLIDES | A model becomes a database table: one column for each field. | 6 clicks. | |
 | 7:18 | 14 | | VS CODE | Write the model in `questions/models.py` (cheat sheet 1). | → SWITCH TO VS CODE. | Leave `models.py` on the projector for people to copy. |
 | 7:20 | 14 | | TERMINAL | `makemigrations questions`, `migrate`. Expect `Applying questions.0001_initial... OK`. | Back when most people have the OK. | |
-| 7:23 | 15 | 16–17 | SLIDES | A serializer converts and validates data: 9999 is ignored, blank text gets a 400. | 3 clicks. | |
+| 7:23 | 15 | 16–17 | SLIDES | A serializer converts and validates data: 9999 is ignored, blank text gets a 400. The first time you name a 4xx code. | 3 clicks. | |
 | 7:25 | 15 | | VS CODE | Write `questions/serializers.py` (cheat sheet 2). Point at `read_only_fields`. | → SWITCH TO VS CODE. | Paste from the cheat sheet. |
-| 7:28 | 16 | 18–21 | SLIDES | One ViewSet handles six routes. `AllowAny` for now. | 2 clicks. | |
+| 7:28 | 16 | 18–21 | SLIDES | One ViewSet handles six routes: slide 8's table plus the ViewSet method names. 404 for a missing question. `AllowAny` for now. | 2 clicks. | |
 | 7:30 | 16 | | VS CODE | `views.py`, then `config/urls.py` (cheat sheet 3, 4). | → SWITCH TO VS CODE. | `git switch checkpoint-1-crud` for anyone stuck. |
 | 7:34 | 16 | | BROWSER | `/api/questions/` shows "Question List". | | |
 | 7:35 | 16 | | VS CODE → TERMINAL → BROWSER | `admin.py` (cheat sheet 5), `createsuperuser` (`mod`), log in to `/admin/`, add a question, and show it in the API. | | **Cut 2:** skip the admin demo, but keep the line in `admin.py`. |
@@ -40,7 +40,7 @@ Modes: **SLIDES**, **VS CODE**, **TERMINAL**, **BROWSER**. Every row that leaves
 | 7:55 | 19 | 28 | SLIDES | You built a REST API. Catch-up: `git switch checkpoint-2-actions`. | Back at 7:58 at the latest. | |
 | 7:58 | 20 | 29 | BROWSER → SLIDES | Ask first, then upvote ten times while logged out. Show the three problems. | 3 clicks. | |
 | **8:05** | | | | **Time check: if the checkpoint pause didn't start by 8:05, lesson 4 becomes a 3-minute demo from `checkpoint-4-m2m`.** | | |
-| 8:02 | 21 | 30 | SLIDES | Authentication and authorization. | 3 clicks. | |
+| 8:02 | 21 | 30 | SLIDES | Authentication and authorization. A failed check gets 403. | 4 clicks. | |
 | 8:03 | 22 | 31, 34 | SLIDES | Who can do what: the rules table, then staff status vs. superuser status. | 1 click. | |
 | 8:05 | 23 | 32–33, 35 | SLIDES | How DRF checks permissions. The permission check appears on the diagram. | 3 clicks. | |
 | 8:07 | 23 | | VS CODE | Permissions in `views.py`, then the `api-auth/` line in `config/urls.py` (cheat sheet 7, 8). | → SWITCH TO VS CODE. | Paste from the cheat sheet. |
@@ -85,6 +85,8 @@ Never cut lessons 1–2 or the closing questions.
 
 The concept slides that used to show code now show the idea: *A model becomes a database table* maps each field to its column, *One ViewSet handles six routes* lists the routes the router creates, *Why not let clients PATCH the vote count?* introduces actions without the decorator code, and *Keep the JSON compatible* compares the JSON before and after lesson 4.
 
+The HTTP slides go from the smallest idea to the whole message: a URL names the data (slide 7), a method says what to do with it (slide 8), and then slide 9 takes apart one full request and response. Specific status codes come in when the room first sees them: 400 on slide 15, 404 on slide 16, 405 in lesson 2's browser check, and 403 on slide 21. Slide 35 lists them all.
+
 The diagram of the API's parts (slide 10, the small versions on later slides, and video V2) follows the request: the client on the left, SQLite on the right. We build it from right to left, starting with the model.
 
 ## Backstage slides (press `g`, type the number)
@@ -96,5 +98,6 @@ The diagram of the API's parts (slide 10, the small versions on later slides, an
 | 31 | Troubleshooting: port in use, no such table, uv not found |
 | 32–33 | Final-frame stills of V1 and V2 (use them if a video won't play) |
 | 34 | Projector check |
+| 35 | Status codes in our API: every code the workshop shows, and when you get it |
 
 The clicker and arrow keys never land on these. To get back, press `g` and type the slide you came from.

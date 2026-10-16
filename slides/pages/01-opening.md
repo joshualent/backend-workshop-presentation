@@ -109,8 +109,88 @@ plan: 6
 -->
 
 ---
+plan: 9
+---
+
+# Resources and URLs
+
+<div class="stack">
+<p>A resource is a kind of data that an API makes available. Our API has one resource: questions.</p>
+
+<div class="urls">
+<code v-click="1">/api/questions/</code><span v-click="1">the collection of all questions</span>
+<code v-click="2">/api/questions/1/</code><span v-click="2">the question with id 1</span>
+</div>
+
+<p v-click="3" class="small">A URL says which data the request is about. It doesn't say what to do with the data.</p>
+</div>
+
+<style>
+.urls {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 12px 28px;
+  align-items: baseline;
+}
+.urls code {
+  background: none;
+  padding: 0;
+  font-family: var(--font-mono);
+  font-size: var(--fs-code);
+  font-weight: 600;
+}
+.urls span {
+  font-size: var(--fs-small);
+  color: var(--text-2);
+}
+</style>
+
+<!--
+[7:04 · 1 min] [SLIDES]
+
+- A resource is a kind of data that the API makes available. A bigger API has more resources, such as users or comments. Ours has only questions.
+
+[click] `/api/questions/` is the collection: all the questions.
+
+[click] `/api/questions/1/` is one question. The number is the question's id. Django needs the trailing slash, so keep it.
+
+[click] Say: "The URL says which data. The method says what to do with it. That's the next slide."
+-->
+
+---
+plan: 8
+clicks: 4
+---
+
+# HTTP methods
+
+<div class="stack">
+<p>The method says what to do with the data at the URL.</p>
+
+<RouteList :steps="[1, 1, 2, 3, 3, 4]" />
+
+<p v-click="3" class="small">PUT sends every field and replaces the question. PATCH sends only the fields that change.</p>
+</div>
+
+<!--
+[7:05 · 2 min] [SLIDES]
+
+- The method is the first word of every request. A method and a URL together make a route. Our API has six routes.
+
+[click] Two routes use the collection URL. GET lists all the questions. POST creates a new question from the data in the request body.
+
+[click] GET on one question's URL reads that question.
+
+[click] PUT and PATCH both edit a question. PUT replaces all the writable fields. PATCH changes only the fields you send. In our API they behave the same, because `text` is the only writable field.
+
+[click] DELETE deletes the question.
+
+- Say: "GET only reads data. POST, PUT, PATCH, and DELETE change it."
+-->
+
+---
 plan: 7
-clicks: 6
+clicks: 5
 ---
 
 # Anatomy of a request
@@ -118,106 +198,19 @@ clicks: 6
 <RequestAnatomy />
 
 <!--
-[7:04 · 3 min] [SLIDES]
+[7:07 · 3 min] [SLIDES]
 
 - We send this exact request in lesson 1, and the server sends back this response.
 
-[click] The method: POST creates something. GET reads.
-
-[click] The URL: `/api/questions/` is the list of questions.
+[click] The first line has the method and the URL: a POST to the collection, which creates a question. `HTTP/1.1` is the version of HTTP. You can ignore it.
 
 [click] The headers describe the message. `Content-Type` says the body is JSON.
 
-[click] The body is the data we send. We send only `text`.
+[click] The body is the data we send. We send only `text`. JSON is a text format for data, and most APIs use it. It looks like a Python dictionary: names in quotes, a colon, and a value.
 
-[click] The response status is `201 Created`. Say: "Status codes that start with 2 mean the request worked."
+[click] The response status is `201 Created`. The first digit says what kind of result it is. 2xx means success: the request worked. 4xx is a client error: something is wrong with the request, such as invalid data or a missing login. 5xx is a server error: the server itself failed, for example because of a bug in our code. Say: "We'll see each 4xx code when it comes up in the lessons."
 
 [click] The response body: the server filled in `id`, `votes`, `answered`, and `created_at`. We sent only `text`.
--->
-
----
-plan: 8
----
-
-# Methods and status codes
-
-<div class="codes">
-<div class="col">
-<div class="file-label">Methods</div>
-<div class="grid">
-<MethodBadge method="GET" /><span>read</span>
-<MethodBadge method="POST" /><span>create, or run an action</span>
-<span class="pair"><MethodBadge method="PUT" /><MethodBadge method="PATCH" /></span><span>edit</span>
-<MethodBadge method="DELETE" /><span>delete</span>
-</div>
-</div>
-<div class="col">
-<div class="file-label">Status codes</div>
-<div class="grid">
-<StatusBadge :code="200" /><span>success</span>
-<StatusBadge :code="201" /><span>created</span>
-<StatusBadge :code="400" /><span>invalid data, such as blank text</span>
-<StatusBadge :code="403" /><span>you aren't allowed to do this</span>
-<StatusBadge :code="404" /><span>the question doesn't exist</span>
-</div>
-</div>
-</div>
-
-<style>
-.codes {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 36px;
-}
-.codes .grid {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 12px 16px;
-  align-items: baseline;
-  font-size: var(--fs-small);
-}
-.codes .grid > :nth-child(odd) {
-  font-size: var(--fs-code);
-  justify-self: start;
-}
-.codes .pair {
-  display: flex;
-  gap: 6px;
-}
-</style>
-
-<!--
-[7:07 · 1 min] [SLIDES]
-
-- The method tells the server what to do with the URL. We use all of these methods in the workshop.
-- PUT replaces all the writable fields. PATCH changes only the fields you send. In our API they behave the same, because `text` is the only writable field.
-- When we see each status code: 201 when we create a question, 400 when the text is blank, and 404 for a question that doesn't exist. From lesson 3 on, we get 403 when you're logged out or not staff.
-- Optional: logged-out requests get 403, not 401, because the browsable API uses session login. Skip this unless someone asks.
--->
-
----
-plan: 9
----
-
-# Resources and URLs
-
-<div class="stack">
-<p><code>/api/questions/</code> is the collection of all questions.<br><code>/api/questions/1/</code> is the question with id 1.</p>
-
-<RouteList :at="1" />
-
-<p v-click="2" class="small">In lesson 2 we add actions, such as <MethodBadge method="POST" /> <code>/api/questions/1/upvote/</code></p>
-</div>
-
-<!--
-[7:08 · 2 min] [SLIDES]
-
-- A resource is a kind of data that the API makes available. Our only resource is questions.
-- There are two URLs: one for the collection and one for a single question. Django needs the trailing slash, so keep it.
-
-[click] These are the six routes from the README. Two use the collection URL: list and create. Four use the single-question URL: read, replace, change part of it, and delete. Say: "Two URLs give six operations. The method picks the operation."
-
-[click] An action is an operation that isn't create, read, update, or delete. We add actions in lesson 2.
 -->
 
 ---

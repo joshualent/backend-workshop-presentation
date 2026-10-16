@@ -7,7 +7,8 @@ plan: 30
 <div class="auth">
 <p v-click="1"><strong>Authentication</strong> checks who sent the request. You prove who you are with a username and password.</p>
 <p v-click="2"><strong>Authorization</strong> checks whether that user is allowed to make the request. In DRF, permission classes do this.</p>
-<p v-click="3" class="small muted">The browsable API uses a session login. Apps and frontends usually send a token instead. The permission code works the same way with both.</p>
+<p v-click="3">When either check fails, DRF sends <StatusBadge :code="403" />.</p>
+<p v-click="4" class="small muted">The browsable API uses a session login. Apps and frontends usually send a token instead. The permission code works the same way with both.</p>
 </div>
 
 <style>
@@ -26,6 +27,9 @@ plan: 30
 [click] Authentication: you log in once with a username and password, and the browser sends a session cookie with every request after that.
 
 [click] Authorization: the server knows who you are, and checks whether you may make this request. DRF permission classes do this check.
+
+[click] A failed check gets `403 Forbidden`. The message says which check failed: "Authentication credentials were not provided." when you're logged out, and "You do not have permission to perform this action." when you're logged in but not allowed. We see both in the browser in a few minutes.
+- Optional, only if someone asks: HTTP also has `401 Unauthorized` for a missing login. DRF sends 403 instead when the API uses session login, as the browsable API does.
 
 [click] The browsable API uses session login. A React or mobile app sends a token in a header instead. `permission_classes` works the same way with either kind of login.
 -->

@@ -1,9 +1,10 @@
 <script setup lang="ts">
 /**
  * The six CRUD routes DefaultRouter makes for QuestionViewSet (from the
- * workshop README). `at` reveals them on that click.
+ * workshop README). `steps` gives the click that reveals each row; without
+ * it every row shows at once. `actions` adds the ViewSet method each route calls.
  */
-withDefaults(defineProps<{ at?: number | string | false, actions?: boolean }>(), { at: false, actions: false })
+const props = withDefaults(defineProps<{ steps?: number[], actions?: boolean }>(), { actions: false })
 
 const ROUTES = [
   { method: 'GET', url: '/api/questions/', what: 'list all questions', action: 'list' },
@@ -13,15 +14,17 @@ const ROUTES = [
   { method: 'PATCH', url: '/api/questions/1/', what: 'change part of question 1', action: 'partial_update' },
   { method: 'DELETE', url: '/api/questions/1/', what: 'delete question 1', action: 'destroy' },
 ]
+const at = (i: number) => props.steps?.[i] ?? false
 </script>
 
 <template>
-  <div v-click="at" class="routes">
-    <template v-for="r in ROUTES" :key="r.method + r.url">
+  <div class="routes" :class="{ actions }">
+    <div v-for="(r, i) in ROUTES" :key="r.method + r.url" v-click="at(i)" class="row">
       <MethodBadge :method="r.method" />
       <code>{{ r.url }}</code>
-      <span class="what" :class="{ action: actions }">{{ actions ? r.action : r.what }}</span>
-    </template>
+      <span class="what">{{ r.what }}</span>
+      <code v-if="actions" class="action">{{ r.action }}</code>
+    </div>
   </div>
 </template>
 
@@ -31,8 +34,17 @@ const ROUTES = [
   grid-template-columns: auto auto 1fr;
   column-gap: 14px;
   row-gap: 5px;
-  align-items: baseline;
   font-size: var(--fs-code);
+}
+.routes.actions {
+  grid-template-columns: auto auto auto 1fr;
+  column-gap: 22px;
+}
+.row {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: baseline;
 }
 code {
   background: none;
@@ -47,9 +59,7 @@ code {
   line-height: 1.25;
   color: var(--text-2);
 }
-.what.action {
-  font-family: var(--font-mono);
-  font-size: var(--fs-code);
-  font-weight: 500;
+.action {
+  color: var(--accent);
 }
 </style>
