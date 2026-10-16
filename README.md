@@ -2,8 +2,6 @@
 
 The deck and presenter notes for the Developer Club backend workshop, **Build a Q&A API with Python & Django** (Monday, October 19, 2026, 6:30–8:30 PM, Floyd Hall D-109). Attendees code along with [joshualent/questions-api](https://github.com/joshualent/questions-api); every line of code on a slide comes from that repo's checkpoint branches.
 
-[`PLAN.md`](PLAN.md) is the source of truth: run of show, code at each checkpoint, every slide, visual and motion rules, and the build phases.
-
 ## What's here
 
 | Path | What |
@@ -37,11 +35,9 @@ pnpm build      # static deck in dist/
 pnpm serve      # serves dist/ offline at http://localhost:3031
 ```
 
-Present from the built copy: projector window at `http://localhost:3031/#/1`, presenter view on the laptop at `http://localhost:3031/#/presenter/1`, both in the same browser so they stay in sync. Everything (fonts, videos, QR codes) is local; the deck runs with Wi-Fi off.
+Present from the built copy: projector window at `http://localhost:3031/#/1`, presenter view on the laptop at `http://localhost:3031/#/presenter/1`, both in the same browser so they stay in sync. Everything (fonts, videos, QR codes) is local.
 
 Keys: `→`/`Space`/clicker for the next click, `←` back, `g` then a number to jump, `o` for the overview. The clicker and arrow keys skip the hidden appendix (slides 47–62); reach it with `g` (slide 47 lists it). `?projector` in the URL (or `p` in `pnpm dev`) applies the weak-projector simulation from plan section 5.1.
-
-Slide numbers in the deck run one ahead of `PLAN.md`'s, because the setup slide (plan 0) is slide 1. The presenter view shows the plan number in each slide's corner.
 
 Why not `hide: true` for the appendix: Slidev 53 removes hidden slides when it parses the deck, so they couldn't be shown during the talk. Appendix slides use `backstage: true` and a keyboard guard in `slides/setup/shortcuts.ts` instead.
 
