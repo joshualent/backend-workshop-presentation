@@ -12,7 +12,7 @@ plan: 13
 
 - CRUD stands for create, read, update, and delete: the four basic operations on stored data.
 - By 7:42, everyone has a working API that can create and read questions.
-- The order: model, serializer, view and URLs, then the admin. That is left to right on the diagram.
+- The order: model, serializer, view and URLs, then the admin. That is right to left on the diagram.
 - Say: "From here on, the slides explain the ideas, and we write the code together in the editor."
 -->
 

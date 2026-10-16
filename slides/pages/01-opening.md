@@ -16,7 +16,7 @@ plan: 1
 
 - Welcome. Say your name and one line about what you do.
 - Thank the club and the helpers. Point out where the helpers are standing.
-- Say what we build: "Tonight you build an API where people ask questions, vote on them, and mark them answered. It runs on your laptop when you leave."
+- Say what we build: "You're going to build an API where people ask questions, vote on them, and mark them answered. When you leave, it runs on your laptop."
 - Ask for a show of hands: "Who has written Python?" "Who has used Django?" "Who has called an API, from code or with curl?" Adjust your pace to the answers.
 - How the night works: you type the code yourself in your own editor. Every lesson ends on a checkpoint branch, so anyone who falls behind can catch up with three commands (slide 12 shows them). If you're stuck for more than a minute, put your hand up and a helper comes to you.
 -->
@@ -36,7 +36,7 @@ plan: 3
 
 [click] The request: `GET /api/questions/` asks the server for the list of questions.
 
-[click] The server reads and writes data and checks the rules. Say: "This is the code we write tonight."
+[click] The server reads and writes data and checks the rules. Say: "This is the part we're going to write."
 
 [click] The response: a status code and the questions as JSON.
 
@@ -81,7 +81,7 @@ plan: 5
 - The video loops on its own. Talk over it.
 - Left: the server builds the whole HTML page and sends it to one browser. Every click loads a new page.
 - Right: an API sends only the data, as JSON. A web app, a phone app, and a terminal all use the same responses.
-- Say: "Tonight we build the right half: a backend that sends data, not pages."
+- Say: "We're going to build the right half: a backend that sends data, not pages."
 -->
 
 ---
@@ -105,7 +105,7 @@ plan: 6
 
 [click] You can test the API without a browser. When traffic grows, you can run more API servers without touching the frontend.
 
-- If anyone asks: Django can also render HTML pages, and for many sites that is simpler. Tonight is about APIs.
+- If anyone asks: Django can also render HTML pages, and for many sites that is simpler. This workshop is about APIs.
 -->
 
 ---
@@ -139,7 +139,7 @@ clicks: 6
 plan: 8
 ---
 
-# The methods and status codes we use tonight
+# Methods and status codes
 
 <div class="codes">
 <div class="col">
@@ -189,7 +189,7 @@ plan: 8
 <!--
 [7:07 · 1 min] [SLIDES]
 
-- The method tells the server what to do with the URL. We use all of these tonight.
+- The method tells the server what to do with the URL. We use all of these methods in the workshop.
 - PUT replaces all the writable fields. PATCH changes only the fields you send. In our API they behave the same, because `text` is the only writable field.
 - When we see each status code: 201 when we create a question, 400 when the text is blank, and 404 for a question that doesn't exist. From lesson 3 on, we get 403 when you're logged out or not staff.
 - Optional: logged-out requests get 403, not 401, because the browsable API uses session login. Skip this unless someone asks.
@@ -228,28 +228,28 @@ plan: 10
 
 <div class="stack">
 <RequestMap :build="1" />
-<p v-click="7" class="small">We build these parts from left to right, starting with the model.</p>
+<p v-click="7" class="small">We build these parts from right to left, starting with the model.</p>
 </div>
 
 <!--
 [7:10 · 2 min] [SLIDES]
 
-- This diagram comes back on later slides. Each box except SQLite and the client is a file you edit tonight. The boxes are in the order we build them.
-- First box: SQLite, the file `db.sqlite3`, stores the rows. `migrate` creates its tables.
-
-[click] The model, in `models.py`, describes a question as a Python class.
-
-[click] The serializer, in `serializers.py`, converts between JSON and Python and validates incoming data.
-
-[click] The ViewSet, in `views.py`, handles each request: list, create, and so on.
+- This diagram comes back on later slides. Each box between the client and SQLite is a file you'll edit. A request goes through the boxes from left to right.
+- First box: the client sends the request. It can be a browser, an app, or curl.
 
 [click] The URL router, in `config/urls.py`, reads the URL and picks the ViewSet method to run.
 
-[click] The client sends the request: a browser, an app, or curl. The request goes right to left, from the client to the database.
+[click] The ViewSet, in `views.py`, handles each request: list, create, and so on.
+
+[click] The serializer, in `serializers.py`, converts between JSON and Python and validates incoming data.
+
+[click] The model, in `models.py`, describes a question as a Python class.
+
+[click] SQLite, the file `db.sqlite3`, stores the rows. `migrate` creates its tables.
 
 [click] The response goes back to the client as JSON, along the bottom arrow.
 
-[click] Say: "We build from the left. The model comes first, because every other part uses it."
+[click] Say: "We build from the right. The model comes first, because every other part uses it."
 -->
 
 ---
@@ -264,7 +264,7 @@ clicks: 6
 <!--
 [7:12 · 2 min] [SLIDES]
 
-- This is the same POST request as before, but the client also sends `"votes": 9999`. The video shows what each part does with it. The highlighted box moves from the client on the right toward SQLite on the left.
+- This is the same POST request as before, but the client also sends `"votes": 9999`. The video shows what each part does with it. The highlighted box moves from the client toward SQLite.
 - 0:00 (hold): the client sends the request as text: the method, URL, headers, and JSON body.
 
 [click] 0:00–0:04: the URL router matches `POST /api/questions/` to `QuestionViewSet.create`. Say: "The router only reads the URL. It doesn't look at the data."
@@ -342,7 +342,7 @@ uv run manage.py migrate
 <!--
 [7:14 · 1 min] [SLIDES]
 
-- We edit the highlighted files tonight: `models.py`, `serializers.py`, `views.py`, and `config/urls.py`. One line also goes in `admin.py`.
+- You'll edit the highlighted files: `models.py`, `serializers.py`, `views.py`, and `config/urls.py`. One line also goes in `admin.py`.
 - `rest_framework` and `questions` are already in `INSTALLED_APPS`, so you don't need to set anything up.
 - Each checkpoint branch has the finished code for one lesson. `main` is the same as `checkpoint-0-setup`.
 - If you fall behind: `git stash` saves your work, `git switch` moves you to the checkpoint, and `migrate` updates your database. The README has the same steps.

@@ -2,7 +2,7 @@
 
 # Cheat sheet
 
-Everything you type or paste tonight, in order. No slide shows this code: each slide's notes say which step to type after it. Code comes from the checkpoint branches of [joshualent/questions-api](https://github.com/joshualent/questions-api):
+Everything you type or paste during the workshop, in order. No slide shows this code: each slide's notes say which step to type after it. Code comes from the checkpoint branches of [joshualent/questions-api](https://github.com/joshualent/questions-api):
 
 - `checkpoint-0-setup` at `fa53e5b`: Initialize Django workshop project
 - `checkpoint-1-crud` at `aa49eea`: Add public question CRUD

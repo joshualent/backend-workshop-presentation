@@ -16,9 +16,9 @@ Modes: **SLIDES**, **VS CODE**, **TERMINAL**, **BROWSER**. Every row that leaves
 | 7:01 | 5 | 5 | SLIDES | Video V1 loops. Talk over it. | → | |
 | 7:03 | 6 | 6 | SLIDES | Why build an API? | 3 clicks. | |
 | 7:04 | 7 | 7 | SLIDES | Anatomy of a request: method, URL, headers, body, status, response body. | 6 clicks. | |
-| 7:07 | 8 | 8 | SLIDES | The methods and status codes we use tonight. | → | |
+| 7:07 | 8 | 8 | SLIDES | Methods and status codes. | → | |
 | 7:08 | 9 | 9 | SLIDES | Resources and URLs, the six routes, and a preview of actions. | 2 clicks. | |
-| 7:10 | 10 | 10 | SLIDES | The parts of our API, in build order from SQLite to the client. "We build from the left." | 7 clicks. | |
+| 7:10 | 10 | 10 | SLIDES | The parts of our API, from the client to SQLite. "We build from the right, starting with the model." | 7 clicks. | |
 | 7:12 | 11 | 11 | SLIDES | Video V2, stepped: 6 clicks, one per stop (0:04, 0:11, 0:15, 0:19.5, 0:23.5, 0:29). | 6 clicks. | |
 | 7:14 | 12 | 12 | SLIDES | Your starter repo: files, checkpoint branches, and how to switch. | → | |
 | 7:15 | 13 | 13 | SLIDES | Lesson 1 section slide. | → | |
@@ -85,7 +85,7 @@ Never cut lessons 1–2 or the closing questions.
 
 The concept slides that used to show code now show the idea: *A model becomes a database table* maps each field to its column, *One ViewSet handles six routes* lists the routes the router creates, *Why not let clients PATCH the vote count?* introduces actions without the decorator code, and *Keep the JSON compatible* compares the JSON before and after lesson 4.
 
-The diagram of the API's parts (slide 10, the small versions on later slides, and video V2) is in build order: SQLite on the left, the client on the right. Requests go right to left, and the JSON goes back along the bottom.
+The diagram of the API's parts (slide 10, the small versions on later slides, and video V2) follows the request: the client on the left, SQLite on the right. We build it from right to left, starting with the model.
 
 ## Backstage slides (press `g`, type the number)
 

@@ -7,7 +7,7 @@ plan: 30
 <div class="auth">
 <p v-click="1"><strong>Authentication</strong> checks who sent the request. You prove who you are with a username and password.</p>
 <p v-click="2"><strong>Authorization</strong> checks whether that user is allowed to make the request. In DRF, permission classes do this.</p>
-<p v-click="3" class="small muted">Tonight we log in to the browsable API with a session. Apps and frontends usually send a token instead. The permission code is the same for both.</p>
+<p v-click="3" class="small muted">The browsable API uses a session login. Apps and frontends usually send a token instead. The permission code works the same way with both.</p>
 </div>
 
 <style>
@@ -82,7 +82,7 @@ plan: 31, 34
 - Anyone can still ask a question, because that is what a Q&A board is for.
 - Voting needs a login so the server knows who voted. Lesson 4 uses that.
 - Only staff can moderate: edit, delete, and mark questions answered.
-- Questions have no owner tonight, so you can't edit a question you asked. Only staff can edit.
+- Questions don't have an owner in this API, so you can't edit a question you asked. Only staff can edit.
 
 [click] The name `IsAdminUser` is misleading: it checks the "Staff status" checkbox on the user, not "Superuser status". `createsuperuser` sets both, so `mod` passes. We create `sam` on the admin's Users page with both boxes unchecked, so sam fails every staff check. A user with only Staff status checked is a moderator without full admin access.
 -->

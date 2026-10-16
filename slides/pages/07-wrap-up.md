@@ -9,9 +9,9 @@ plan: 42
 <!--
 [8:25 · 1 min] [SLIDES]
 
-- The same diagram, turned on its side, with SQLite at the top and the client at the bottom.
+- The same diagram, turned on its side, with the client at the top and SQLite at the bottom.
 
-[click] Next to each part are the names you wrote: two tables (Django created the join table), `Question`, `QuestionSerializer`, `QuestionViewSet` with `get_permissions` and `toggle_vote`, and the `DefaultRouter`.
+[click] Next to each part are the names you wrote: the `DefaultRouter`, `QuestionViewSet` with `get_permissions` and `toggle_vote`, `QuestionSerializer`, `Question`, and two tables (Django created the join table).
 
 - Say: "This API validates input, checks permissions, and stores votes in a many-to-many relationship. You wrote about 60 lines of code for it."
 - Anyone who fell behind can switch to `checkpoint-4-m2m` to get the finished project.
@@ -50,9 +50,9 @@ plan: 43
 <!--
 [8:26 · 1 min] [SLIDES]
 
-- Each of these starts from tonight's code.
+- Each of these builds on the code you wrote in this workshop.
 - The DRF tutorial covers the same ideas in more depth: serializers, views, routers, and permissions.
-- With `APITestCase`, you can turn tonight's browser checks into tests that run in about a second.
+- With `APITestCase`, you can turn the browser checks from this workshop into tests that run in about a second.
 - Pagination returns a long list in pages. Ordering sorts it, for example by votes.
 - A frontend, such as a React app, can call `/api/questions/` with `fetch`.
 - Deploying puts the API on a server so other people can use it.
