@@ -1,6 +1,6 @@
 ---
 layout: cover
-plan: 1
+part: Opening
 ---
 
 <ClubMark :height="56" />
@@ -12,17 +12,42 @@ plan: 1
 <p class="small muted">Monday, October 19, 2026 · Floyd Hall D-109</p>
 
 <!--
-[6:55 · 3 min] [SLIDES]
+[7:00 · 2 min] [SLIDES]
 
 - Welcome. Say your name and one line about what you do.
-- Thank the club and the helpers. Point out where the helpers are standing.
+- Thank the club. If other people are helping tonight, introduce them.
 - Say what we build: "You're going to build an API where people ask questions, vote on them, and mark them answered. When you leave, it runs on your laptop."
 - Ask for a show of hands: "Who has written Python?" "Who has used Django?" "Who has called an API, from code or with curl?" Adjust your pace to the answers.
-- How the night works: you type the code yourself in your own editor. Every lesson ends on a checkpoint branch, so anyone who falls behind can catch up with three commands (slide 12 shows them). If you're stuck for more than a minute, put your hand up and a helper comes to you.
+- How the night works: "There are four lessons. Each one starts with a slide or two. Then we write the code together in VS Code until it works, with no slides in between. Each lesson ends on a checkpoint branch, so you can catch up if you fall behind."
 -->
 
 ---
-plan: 3
+part: Opening
+clicks: 2
+---
+
+# Check your setup
+
+<div class="stack">
+<p>At <code>http://127.0.0.1:8000/admin/</code> you should see the Django login page.</p>
+<p v-click="1">Leave <code>runserver</code> running in its terminal. Open a second terminal for every other command. In VS Code, choose New Terminal from the Terminal menu.</p>
+<p v-click="2">Each lesson ends on a checkpoint branch with the finished code. If you fall behind, the first slide of the next lesson shows one line to run.</p>
+</div>
+
+<!--
+[7:02 · 2 min] [SLIDES]
+
+Ask: "Hands up if you see the Django login page."
+
+- If some hands stay down: "Keep going with the steps from the setup slide. The README has them too. The next 15 minutes are slides, so you won't miss any code." Ask the people next to them to help.
+
+[click] → SWITCH TO VS CODE: show the terminal panel, with `runserver` in the first terminal. Click + to open a second one. Say: "runserver keeps running all night. Type every other command in the second terminal." → SWITCH TO SLIDES
+
+[click] Say: "Every lesson ends on a checkpoint branch with the finished code. If you fall behind, run the line on the next lesson's first slide. It saves your own work and switches you to the finished code."
+-->
+
+---
+part: API basics
 ---
 
 # What a backend does
@@ -30,13 +55,13 @@ plan: 3
 <RoundTrip />
 
 <!--
-[6:58 · 1 min] [SLIDES]
+[7:04 · 1 min] [SLIDES]
 
 - A client sends a request to the server. The server reads or writes data and sends back a response.
 
 [click] The request: `GET /api/questions/` asks the server for the list of questions.
 
-[click] The server reads and writes data and checks the rules. Say: "This is the part we're going to write."
+[click] The server reads and writes data and checks the rules. Any program can send a request, so only the server can enforce the rules. Say: "This is the part we're going to write."
 
 [click] The response: a status code and the questions as JSON.
 
@@ -44,31 +69,7 @@ plan: 3
 -->
 
 ---
-plan: 4
----
-
-# What the backend is responsible for
-
-<ul>
-<li v-click>It stores the data: questions, votes, and users.</li>
-<li v-click>It enforces rules. For example, a question can't be blank.</li>
-<li v-click>It decides who can do what. For example, only moderators can delete questions.</li>
-</ul>
-
-<!--
-[6:59 · 2 min] [SLIDES]
-
-- The client is any program that sends a request: a browser, a phone app, or curl. We don't control it.
-
-[click] The database is on the server, not in the browser.
-
-[click] The server checks every input, even if the web page already checked it. Anyone can send any request with curl, so a check in the browser doesn't protect the data. Lesson 1 adds this check.
-
-[click] The server decides who is allowed to do what. That is lesson 3.
--->
-
----
-plan: 5
+part: API basics
 ---
 
 # Server-rendered pages vs. an API
@@ -76,46 +77,23 @@ plan: 5
 <StepVideo name="v1-one-backend-many-clients" loop alt="Left: a server builds a whole HTML page for one browser, which reloads. Right: the same server sends small JSON to a web app, a phone, and a terminal." />
 
 <!--
-[7:01 · 2 min] [SLIDES]
+[7:05 · 2 min] [SLIDES]
 
 - The video loops on its own. Talk over it.
 - Left: the server builds the whole HTML page and sends it to one browser. Every click loads a new page.
 - Right: an API sends only the data, as JSON. A web app, a phone app, and a terminal all use the same responses.
 - Say: "We're going to build the right half: a backend that sends data, not pages."
--->
-
----
-plan: 6
----
-
-# Why build an API?
-
-<ul>
-<li v-click>One backend can serve many clients, such as a web app, a phone app, and a terminal.</li>
-<li v-click>You can change and deploy the frontend without changing the backend.</li>
-<li v-click>You can test and scale the frontend and the backend separately.</li>
-</ul>
-
-<!--
-[7:03 · 1 min] [SLIDES]
-
-[click] Every client calls the same URL, `/api/questions/`, and gets the same JSON.
-
-[click] Example: a new screen in the phone app doesn't need a backend deploy.
-
-[click] You can test the API without a browser. When traffic grows, you can run more API servers without touching the frontend.
-
 - If anyone asks: Django can also render HTML pages, and for many sites that is simpler. This workshop is about APIs.
 -->
 
 ---
-plan: 9
+part: API basics
 ---
 
 # Resources and URLs
 
 <div class="stack">
-<p>A resource is a kind of data that an API makes available. Our API has one resource: questions.</p>
+<p>A REST API organizes its data as resources, and each resource has URLs. Our API has one resource: questions.</p>
 
 <div class="urls">
 <code v-click="1">/api/questions/</code><span v-click="1">the collection of all questions</span>
@@ -146,9 +124,10 @@ plan: 9
 </style>
 
 <!--
-[7:04 · 1 min] [SLIDES]
+[7:07 · 1 min] [SLIDES]
 
-- A resource is a kind of data that the API makes available. A bigger API has more resources, such as users or comments. Ours has only questions.
+- REST is the most common way to design a web API. A REST API organizes its data as resources, gives each resource URLs, and uses HTTP methods to act on them. This slide and the next two cover those parts.
+- A resource is one kind of data. A bigger API has more resources, such as users or comments. Ours has only questions.
 
 [click] `/api/questions/` is the collection: all the questions.
 
@@ -158,7 +137,7 @@ plan: 9
 -->
 
 ---
-plan: 8
+part: API basics
 clicks: 4
 ---
 
@@ -173,7 +152,7 @@ clicks: 4
 </div>
 
 <!--
-[7:05 · 2 min] [SLIDES]
+[7:08 · 2 min] [SLIDES]
 
 - The method is the first word of every request. A method and a URL together make a route. Our API has six routes.
 
@@ -189,7 +168,7 @@ clicks: 4
 -->
 
 ---
-plan: 7
+part: API basics
 clicks: 5
 ---
 
@@ -198,7 +177,7 @@ clicks: 5
 <RequestAnatomy />
 
 <!--
-[7:07 · 3 min] [SLIDES]
+[7:10 · 3 min] [SLIDES]
 
 - We send this exact request in lesson 1, and the server sends back this response.
 
@@ -208,13 +187,15 @@ clicks: 5
 
 [click] The body is the data we send. We send only `text`. JSON is a text format for data, and most APIs use it. It looks like a Python dictionary: names in quotes, a colon, and a value.
 
-[click] The response status is `201 Created`. The first digit says what kind of result it is. 2xx means success: the request worked. 4xx is a client error: something is wrong with the request, such as invalid data or a missing login. 5xx is a server error: the server itself failed, for example because of a bug in our code. Say: "We'll see each 4xx code when it comes up in the lessons."
+[click] The response status is `201 Created`. The first digit says what kind of result it is. 2xx means success: the request worked. 4xx is a client error: something is wrong with the request, such as invalid data or a missing login. 5xx is a server error: the server itself failed, for example because of a bug in our code. Say: "You'll see specific 4xx codes in the browser during the lessons."
 
 [click] The response body: the server filled in `id`, `votes`, `answered`, and `created_at`. We sent only `text`.
+
+- Say: "That's a REST API: each resource has a URL, the method says what to do with it, and the status code says what happened."
 -->
 
 ---
-plan: 10
+part: API basics
 ---
 
 # The parts of our API
@@ -225,9 +206,10 @@ plan: 10
 </div>
 
 <!--
-[7:10 · 2 min] [SLIDES]
+[7:13 · 2 min] [SLIDES]
 
-- This diagram comes back on later slides. Each box between the client and SQLite is a file you'll edit. A request goes through the boxes from left to right.
+- Each box between the client and SQLite is a file you'll edit in the repo you cloned. A request goes through the boxes from left to right.
+- `rest_framework` and `questions` are already in `INSTALLED_APPS`, so there's nothing to set up. One line also goes in `admin.py`, so the Django admin can show questions.
 - First box: the client sends the request. It can be a browser, an app, or curl.
 
 [click] The URL router, in `config/urls.py`, reads the URL and picks the ViewSet method to run.
@@ -246,7 +228,7 @@ plan: 10
 -->
 
 ---
-plan: 11
+part: API basics
 clicks: 6
 ---
 
@@ -255,9 +237,10 @@ clicks: 6
 <StepVideo name="v2-life-of-a-post" alt="A POST request with votes 9999 goes from the client through the router, ViewSet, serializer, and model to SQLite, and comes back as 201 Created with votes 0." />
 
 <!--
-[7:12 · 2 min] [SLIDES]
+[7:15 · 2 min] [SLIDES]
 
-- This is the same POST request as before, but the client also sends `"votes": 9999`. The video shows what each part does with it. The highlighted box moves from the client toward SQLite.
+- Say: "In lesson 1 you write every part in this video. By the end of the lesson, your API handles this request."
+- This is the same POST request as on the anatomy slide, but the client also sends `"votes": 9999`. The video shows what each part does with it. The highlighted box moves from the client toward SQLite.
 - 0:00 (hold): the client sends the request as text: the method, URL, headers, and JSON body.
 
 [click] 0:00–0:04: the URL router matches `POST /api/questions/` to `QuestionViewSet.create`. Say: "The router only reads the URL. It doesn't look at the data."
@@ -273,73 +256,3 @@ clicks: 6
 [click] 0:23.5–0:29: the client gets `201 Created` with `"votes": 0`. Say: "The client sent 9999. The server stored 0, because only the server sets the vote count."
 -->
 
----
-plan: 12
----
-
-# Your starter repo
-
-<div class="repo">
-<div>
-<FileTree :highlight="['config/urls.py', 'questions/models.py', 'questions/serializers.py', 'questions/views.py']" :hide="['.gitignore', '.python-version', 'INITIAL_SETUP.md', 'uv.lock', 'config/__init__.py', 'config/asgi.py', 'config/wsgi.py', 'questions/__init__.py', 'questions/apps.py', 'questions/tests.py', 'questions/migrations/__init__.py']" />
-</div>
-<div class="stack">
-<div>
-<div class="file-label">Checkpoint branches</div>
-<div class="branches">
-<code>checkpoint-0-setup</code><span>where you are now</span>
-<code>checkpoint-1-crud</code><span>after lesson 1</span>
-<code>checkpoint-2-actions</code><span>after lesson 2</span>
-<code>checkpoint-3-auth</code><span>after lesson 3</span>
-<code>checkpoint-4-m2m</code><span>the finished API</span>
-</div>
-</div>
-<div>
-<div class="file-label">If you fall behind, run:</div>
-
-```bash
-git stash push -u -m "my work"
-git switch checkpoint-1-crud
-uv run manage.py migrate
-```
-
-</div>
-</div>
-</div>
-
-<style>
-.repo {
-  display: grid;
-  grid-template-columns: 300px 1fr;
-  gap: 30px;
-}
-.branches {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 4px 18px;
-  align-items: baseline;
-}
-.branches code {
-  background: none;
-  padding: 0;
-  font-family: var(--font-mono);
-  font-size: var(--fs-code);
-  font-weight: 600;
-}
-.branches span {
-  font-size: var(--fs-small);
-  color: var(--text-2);
-}
-</style>
-
-<!--
-[7:14 · 1 min] [SLIDES]
-
-- You'll edit the highlighted files: `models.py`, `serializers.py`, `views.py`, and `config/urls.py`. One line also goes in `admin.py`.
-- `rest_framework` and `questions` are already in `INSTALLED_APPS`, so you don't need to set anything up.
-- Each checkpoint branch has the finished code for one lesson. `main` is the same as `checkpoint-0-setup`.
-- If you fall behind: `git stash` saves your work, `git switch` moves you to the checkpoint, and `migrate` updates your database. The README has the same steps.
-- Going back from `checkpoint-4-m2m` to an earlier branch needs one more command. Slide 30 has it, if anyone asks.
-
-→ Next: lesson 1.
--->

@@ -1,30 +1,12 @@
 ---
-layout: section
-plan: 13
----
-
-# Lesson 1: CRUD
-
-<p>Store questions in a database, and create, read, update, and delete them over HTTP.</p>
-
-<!--
-[7:15 · 1 min] [SLIDES]
-
-- CRUD stands for create, read, update, and delete: the four basic operations on stored data.
-- By 7:42, everyone has a working API that can create and read questions.
-- The order: model, serializer, view and URLs, then the admin. That is right to left on the diagram.
-- Say: "From here on, the slides explain the ideas, and we write the code together in the editor."
--->
-
----
-plan: 14–15
+part: Lesson 1
 clicks: 6
 ---
 
-# A model becomes a database table
+# Lesson 1: A model becomes a table
 
 <div class="models">
-<p>Each model becomes a table, and each field becomes a column.</p>
+<p>Each model becomes a database table, and each field becomes a column.</p>
 
 <QuestionTable />
 
@@ -43,8 +25,9 @@ clicks: 6
 </style>
 
 <!--
-[7:16 · 7 min] [SLIDES]
+[7:17 · 25 min] [SLIDES]
 
+- Lesson 1 is CRUD: create, read, update, and delete. We write the model, the serializer, the ViewSet, and the URLs, from right to left on the diagram. By 7:42 your API handles the request from the video.
 - A model describes one kind of data we store. We write one class, `Question`, with four fields.
 
 [click] `text` is a CharField, stored as a `varchar(300)` column. A CharField needs a `max_length`.
@@ -59,138 +42,37 @@ clicks: 6
 
 [click] Say: "makemigrations writes a file that describes the change. migrate changes the database to match. Run both every time you change a model."
 
-→ SWITCH TO VS CODE (7:18): questions/models.py (cheat sheet step 1)
+- Say: "Now we write all of lesson 1 in VS Code. The slides come back when the lesson works."
+
+→ SWITCH TO VS CODE (7:19): questions/models.py (cheat sheet step 1)
 
 - Replace the stub with the `Question` class. Type it with the room, and say each field name as you type it.
 - Add `__str__`, which returns `self.text`. The admin then shows the question text instead of "Question object (1)". Save.
 
-→ SWITCH TO TERMINAL (7:20): the second terminal; runserver keeps running in the first
+→ SWITCH TO TERMINAL (7:21): the second terminal; runserver keeps running in the first
 
 - `uv run manage.py makemigrations questions` → expect `questions/migrations/0001_initial.py` and `+ Create model Question`.
 - `uv run manage.py migrate` → expect `Applying questions.0001_initial... OK`.
 - Open `questions/migrations/0001_initial.py` for ten seconds. Say: "Django generated this file from the model. migrate reads it to create the table."
 
-Back here when: most of the room has `Applying questions.0001_initial... OK` (7:23).
+→ SWITCH TO VS CODE (7:23): questions/serializers.py (cheat sheet step 2; the file exists but is empty)
 
-If behind: leave `models.py` on the projector so people can copy it. Make sure everyone runs both migration commands.
--->
-
----
-plan: 16–17
----
-
-# A serializer converts and validates data
-
-<div class="serial">
-<p>A serializer converts JSON to Python objects and back. It also validates incoming data before anything is saved.</p>
-
-<div v-click="1" class="case">
-<Exchange method="POST" url="/api/questions/" body='{"text": "hi", "votes": 9999}' :status="201" response='{"id": 2, "text": "hi", "votes": 0, …}' />
-<p class="small muted">votes is read-only, so the serializer ignores it.</p>
-</div>
-
-<div v-click="2" class="case">
-<Exchange method="POST" url="/api/questions/" body='{"text": ""}' :status="400" response='{"text": ["This field may not be blank."]}' />
-<p class="small muted">Blank text fails validation, so the server saves nothing.</p>
-</div>
-
-<p v-click="3" class="lead accent">Always validate data that comes from the client.</p>
-
-<RequestMap mini highlight="serializer" class="push-down" />
-</div>
-
-<style>
-.serial {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  height: 100%;
-}
-.serial .case {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-</style>
-
-<!--
-[7:23 · 5 min] [SLIDES]
-
-- A serializer does two things. It converts JSON to Python objects and back, and it validates input before the server saves anything.
-- In our serializer, only `text` is writable. `id`, `votes`, `answered`, and `created_at` are read-only, so the server sets them.
-
-[click] A client sends `"votes": 9999`. `votes` is read-only, so the serializer ignores it and the question starts at 0. The response is still 201, because the question was created.
-
-[click] Blank text gets a 400 Bad Request response with an error message for each invalid field. Nothing is saved to the database. 400 starts with 4, so the problem is in the request, as on the anatomy slide.
-
-[click] Say: "Any client can send any data, so the server validates everything it receives. In DRF, the serializer does that."
-
-→ SWITCH TO VS CODE (7:25): questions/serializers.py (cheat sheet step 2; the file exists but is empty)
-
+- Say: "A serializer converts JSON to a Question and back. It also checks incoming data before anything is saved. That's the step in the video where `votes` disappeared."
 - Type a `ModelSerializer` for `Question`, the `fields` tuple, and then `read_only_fields`.
-- Point at `read_only_fields`: "Because of this line, the serializer ignores `"votes": 9999`."
-- Save. You don't need a migration, because serializers don't change the database.
+- Point at `read_only_fields`: "Only `text` is writable. The server sets the other fields, so a client can't send its own vote count." Save. You don't need a migration, because serializers don't change the database.
 
-Back here when: most people have saved serializers.py (7:28).
+Still in VS Code (7:26): questions/views.py, then config/urls.py (cheat sheet steps 3 and 4)
 
-If behind: paste the file from the cheat sheet.
--->
-
----
-plan: 18–21
----
-
-# One ViewSet handles six routes
-
-<div class="viewset">
-<p>A ViewSet is one class that handles every route for a resource.</p>
-
-<div v-click="1" class="routes-wrap">
-<p class="small muted">DRF's <code>DefaultRouter</code> creates the routes. Each route calls a ViewSet method.</p>
-<RouteList actions />
-</div>
-
-<p v-click="2" class="small"><code>/api/questions/999/</code> gets <StatusBadge :code="404" />, because no question has id 999.</p>
-
-<RequestMap mini :highlight="['router', 'viewset']" class="push-down" />
-</div>
-
-<style>
-.viewset {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  height: 100%;
-}
-.viewset .routes-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-</style>
-
-<!--
-[7:28 · 13 min] [SLIDES]
-
-- Ours is `QuestionViewSet`. `ModelViewSet` already has the methods list, create, retrieve, update, partial_update, and destroy. We set three attributes: `queryset` (which rows), `serializer_class` (how to convert them to JSON), and `permission_classes` (who may call it).
-
-[click] These are the six routes from the HTTP methods slide. The router creates all of them from one ViewSet. The new column is the ViewSet method that each route calls. Lesson 3 uses the names `update`, `partial_update`, and `destroy`.
-
-[click] The ViewSet looks up the question by its id. If no question has that id, DRF sends `404 Not Found`. It starts with 4, so the problem is in the request. We try it in the browser in a few minutes.
-
-- Say: "For now, `AllowAny` lets anyone call every route. Lesson 3 replaces it."
-
-→ SWITCH TO VS CODE (7:30): questions/views.py, then config/urls.py (cheat sheet steps 3 and 4)
-
-- `views.py`: replace the stub. The imports, then `QuestionViewSet` with its three lines. Save.
-- `config/urls.py`: two imports, a `DefaultRouter`, `router.register("questions", QuestionViewSet, basename="question")`, and the `api/` line. Save. Say: "These lines create the `/api/questions/` URL."
+- Say: "A ViewSet is one class that handles every route for a resource. `ModelViewSet` already has a method for each of the six routes from the HTTP methods slide: list, create, retrieve, update, partial_update, and destroy."
+- `views.py`: replace the stub. The imports, then `QuestionViewSet` with three attributes: `queryset` (which rows), `serializer_class` (how to convert them to JSON), and `permission_classes`. Say: "For now, `AllowAny` lets anyone call every route. Lesson 3 replaces it." Save.
+- `config/urls.py`: two imports, a `DefaultRouter`, `router.register("questions", QuestionViewSet, basename="question")`, and the `api/` line. Save. Say: "The router creates the six routes from the ViewSet, under `/api/questions/`."
 - Watch the runserver terminal. It reloads when you save, and it shows typos there first.
 
-→ SWITCH TO BROWSER (7:34): http://127.0.0.1:8000/api/questions/
+→ SWITCH TO BROWSER (7:30): http://127.0.0.1:8000/api/questions/
 
 - Expect the browsable API page "Question List" with `[]` and a form at the bottom.
 
-→ SWITCH TO VS CODE (7:35): questions/admin.py (cheat sheet step 5)
+→ SWITCH TO VS CODE (7:31): questions/admin.py (cheat sheet step 5)
 
 - Replace the stub: import `Question`, then add `admin.site.register(Question)`. Save. Say: "With this line, the Django admin can list, add, edit, and delete questions."
 
@@ -202,46 +84,16 @@ plan: 18–21
 
 - Log in as `mod`. Click Questions. Add one question in the admin, then show it at `/api/questions/`. The admin and the API read the same database table.
 
-→ SWITCH TO BROWSER (7:37): http://127.0.0.1:8000/api/questions/ to try it
+→ SWITCH TO BROWSER (7:35): http://127.0.0.1:8000/api/questions/ to try it
 
-- Use the form at the bottom of the page (Raw data tab, media type `application/json`). Send each request and read the status code out loud.
+- Use the form at the bottom of the page (Raw data tab, media type `application/json`). Send each request and read the status code out loud. Remind the room of the first digit: 2 means it worked, 4 means a problem with the request.
 - Create: `{"text": "What does a serializer do?"}` → `HTTP 201 Created` with `"votes": 0`.
-- Blank text: `{"text": ""}` → `HTTP 400 Bad Request` and `"This field may not be blank."`.
+- Blank text: `{"text": ""}` → `HTTP 400 Bad Request` and `"This field may not be blank."`. Nothing was saved.
 - Not found: open http://127.0.0.1:8000/api/questions/999/ → `HTTP 404 Not Found` and `"No Question matches the given query."`.
 - Optional curl example (cut this first if you're behind): `curl -i -X POST http://127.0.0.1:8000/api/questions/ -H "Content-Type: application/json" -d '{"text": "What does a serializer do?"}'` → `HTTP/1.1 201 Created`. Say: "curl calls the same API without a browser."
+- Last, the problem lesson 2 fixes. Send `{"text": "hi", "votes": 9999}` → `HTTP 201 Created` with `"votes": 0`. Say: "The server ignored our vote count. `votes` and `answered` are read-only, so no client can vote or mark a question answered yet."
 
-Back here when: most of the room has a 201 and a 400 of their own (7:41).
+Back here when: most of the room has a 201 and a 400 of their own (7:42).
 
-If behind: anyone stuck can run `git switch checkpoint-1-crud` (stash first, as on slide 12). Cut the curl example first, then the admin demo (keep the one line in `admin.py`). Time check: if lesson 1 isn't done by 7:45, paste lesson 2's code from the cheat sheet instead of typing it.
--->
-
----
-plan: 22
----
-
-# What's still broken?
-
-<div class="broken">
-<span class="muted">Works</span><span>Clients can create, list, read, edit, and delete questions.</span>
-<span class="muted">Doesn't work</span><span>Clients can't change <code>votes</code> or <code>answered</code>, because both fields are read-only.</span>
-</div>
-
-<p class="lead accent">How should voting work?</p>
-
-<style>
-.broken {
-  display: grid;
-  grid-template-columns: 170px 1fr;
-  gap: 14px 20px;
-  align-items: baseline;
-}
-</style>
-
-<!--
-[7:41 · 1 min] [SLIDES]
-
-- Recap: we have a CRUD API and an admin, from five short files.
-- `votes` and `answered` are read-only, so no client can vote or mark a question answered.
-
-Ask: "How should voting work? Should the client send the new vote count?" Take one or two answers. The next slide starts from them.
+If behind: anyone stuck can switch to `checkpoint-1-crud` with the line on the next slide. Cut the curl example first, then the admin demo (keep the one line in `admin.py`). Time check: if lesson 1 isn't done by 7:45, paste lesson 2's code from the cheat sheet instead of typing it.
 -->

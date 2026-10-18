@@ -8,20 +8,17 @@ import { computed } from 'vue'
  *   <RequestMap />                          the whole map, file labels under each box
  *   <RequestMap :build="1" />               boxes appear left to right from click 1, then the return path
  *   <RequestMap mini highlight="model" />   a one-line strip with one box in focus
- *   <RequestMap permission />               a permission check inside the ViewSet box (lesson 3)
  */
 const props = withDefaults(defineProps<{
   /** Box ids in focus: client, router, viewset, serializer, model, db. */
   highlight?: string | string[]
   /** First click of a left-to-right build (boxes, then the return path). */
   build?: number
-  /** Show the permission check inside ViewSet; a number reveals it on that click. */
-  permission?: boolean | number
   /** One-line strip: box names only. */
   mini?: boolean
   /** Show the return path (full map only). */
   back?: boolean
-}>(), { highlight: () => [], build: undefined, permission: false, mini: false, back: true })
+}>(), { highlight: () => [], build: undefined, mini: false, back: true })
 
 const BOXES = [
   { id: 'client', name: 'Client', file: 'browser, curl' },
@@ -35,8 +32,7 @@ const BOXES = [
 const W = 900
 const SLOT = W / BOXES.length
 const BOX_W = 124
-const showPermission = computed(() => props.permission !== false)
-const BOX_H = computed(() => (props.mini ? (showPermission.value ? 64 : 40) : showPermission.value ? 86 : 64))
+const BOX_H = computed(() => (props.mini ? 40 : 64))
 const H = computed(() => (props.mini ? BOX_H.value + 2 : BOX_H.value + (props.back ? 82 : 40)))
 
 const focus = computed(() => new Set(Array.isArray(props.highlight) ? props.highlight : [props.highlight].filter(Boolean)))
@@ -50,11 +46,9 @@ const boxes = computed(() => BOXES.map((b, i) => {
 /** Click on which box i (and the arrow into it) appears; `false` means always shown (no click). */
 const clickFor = (i: number) => (props.build == null || i === 0 ? false : props.build + i - 1)
 const backClick = computed(() => (props.build == null ? false : props.build + BOXES.length - 1))
-const permissionClick = computed(() => (typeof props.permission === 'number' ? props.permission : false))
 
-const arrowY = computed(() => (props.mini ? (showPermission.value ? 18 : 20) : 32))
-const nameY = computed(() => (showPermission.value ? (props.mini ? 18 : 28) : BOX_H.value / 2 + 1))
-const permY = computed(() => (props.mini ? 30 : 44))
+const arrowY = computed(() => (props.mini ? 20 : 32))
+const nameY = computed(() => BOX_H.value / 2 + 1)
 const backY = computed(() => BOX_H.value + 56)
 const client = computed(() => boxes.value[0])
 const db = computed(() => boxes.value.at(-1)!)
@@ -81,10 +75,6 @@ const db = computed(() => boxes.value.at(-1)!)
       <rect :x="b.x" y="1" :width="BOX_W" :height="BOX_H - 2" rx="5" class="box" />
       <text :x="b.cx" :y="nameY" class="name">{{ b.name }}</text>
       <text v-if="!mini" :x="b.cx" :y="BOX_H + 24" class="file">{{ b.file }}</text>
-      <g v-if="b.id === 'viewset' && showPermission" v-click="permissionClick" class="perm">
-        <rect :x="b.x + 7" :y="permY" :width="BOX_W - 14" height="28" rx="4" />
-        <text :x="b.cx" :y="permY + 15">permissions</text>
-      </g>
     </g>
 
     <g v-if="back && !mini" v-click="backClick" class="back">
@@ -143,19 +133,6 @@ const db = computed(() => boxes.value.at(-1)!)
 }
 .node.on .name {
   fill: var(--accent);
-}
-.perm rect {
-  fill: var(--surface);
-  stroke: var(--accent);
-  stroke-width: var(--stroke-w);
-}
-.perm text {
-  fill: var(--accent);
-  font-family: var(--font-mono);
-  font-size: var(--fs-label);
-  font-weight: 600;
-  text-anchor: middle;
-  dominant-baseline: middle;
 }
 .label-bg {
   fill: var(--bg);

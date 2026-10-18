@@ -31,7 +31,7 @@ selectable: false
 contextMenu: false
 remoteAssets: false
 wakeLock: true
-src: ./pages/00-preshow.md
+src: ./pages/00-setup.md
 ---
 
 ---
@@ -47,21 +47,17 @@ src: ./pages/03-lesson-2.md
 ---
 
 ---
-src: ./pages/04-checkpoint.md
+src: ./pages/04-lesson-3.md
 ---
 
 ---
-src: ./pages/05-lesson-3.md
+src: ./pages/05-lesson-4.md
 ---
 
 ---
-src: ./pages/06-lesson-4.md
+src: ./pages/06-wrap-up.md
 ---
 
 ---
-src: ./pages/07-wrap-up.md
----
-
----
-src: ./pages/08-appendix.md
+src: ./pages/07-appendix.md
 ---

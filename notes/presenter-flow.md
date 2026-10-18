@@ -1,103 +1,104 @@
 # Presenter flow
 
-The whole night, minute by minute. **Slide** is the deck's own number (what the presenter view shows and what you type after `g`). **Plan** lists the `PLAN.md` slides it stands for; the presenter view shows the same tag in the top right corner of each slide.
+The whole night, minute by minute. **Slide** is the deck's own number (what the presenter view shows and what you type after `g`). **Part** is the slide's `part:` tag, which the presenter view shows in the top right corner.
 
-This version of the deck has no slides about code. The slides carry the ideas; the code happens in VS Code. Each concept slide's notes include the coding that follows it, with a clock time on every `→ SWITCH TO` line, so the presenter view keeps showing the right notes while the projector shows VS Code, the terminal, or the browser. Everything you type is in `notes/cheat-sheet.md`, in order.
+## How the night is built
 
-Modes: **SLIDES**, **VS CODE**, **TERMINAL**, **BROWSER**. Every row that leaves the slides says where to go and what has to be true before you come back.
+The night has five parts:
 
-| Clock | Slide | Plan | Mode | What happens | Transition cue | If behind |
+1. **Setup** (6:30–7:00): one slide on the projector while people arrive.
+2. **Opening** (7:00–7:04): welcome, then a check that everyone has the login page and a second terminal.
+3. **API basics** (7:04–7:17): what an API is, REST (resources and URLs, methods, the parts of a request), and the parts of our Django API.
+4. **Four lessons** (7:17–8:25), with a five-minute break after lesson 2.
+5. **Wrap-up** (8:25–8:30).
+
+Every lesson follows the same pattern. One or two slides come first. Then you write the code in VS Code and try it in the browser until the lesson's checkpoint works, with no slides in between. Each lesson's browser check ends by showing the problem the next lesson fixes, and the next lesson's first slide starts from that problem. The first slide of lessons 2–4 ends with the one line to run if you're behind.
+
+The presenter view keeps showing the lesson's first slide while you're in VS Code, so its notes hold the whole coding stretch, with a clock time on every `→ SWITCH TO` line. Everything you type is in `notes/cheat-sheet.md`, in order.
+
+Modes: **SLIDES**, **VS CODE**, **TERMINAL**, **BROWSER**.
+
+| Clock | Slide | Part | Mode | What happens | Transition cue | If behind |
 |---|---|---|---|---|---|---|
-| 6:30 | 1 | 0 | SLIDES | Setup slide on the projector. People arrive, eat, clone the repo, and run the commands. Helpers walk the room. | Say the setup line at 6:40 and 6:50. | Start at 6:55 anyway. Helpers keep helping. |
-| 6:50 | 1 | 0 | TERMINAL | Your own project: `main`, a fresh `db.sqlite3`, `runserver` running. Browser tabs open (see screen-setup.md). | Back to the slides window. | |
-| 6:55 | 2 | 1 | SLIDES | Title. Welcome, thank the club and helpers, say what we build, show of hands, how checkpoints and helpers work. | → | |
-| 6:58 | 3 | 3 | SLIDES | What a backend does. | 3 clicks. | |
-| 6:59 | 4 | 4 | SLIDES | What the backend is responsible for. | 3 clicks. | |
-| 7:01 | 5 | 5 | SLIDES | Video V1 loops. Talk over it. | → | |
-| 7:03 | 6 | 6 | SLIDES | Why build an API? | 3 clicks. | |
-| 7:04 | 7 | 9 | SLIDES | Resources and URLs: the collection and one question. | 3 clicks. | |
-| 7:05 | 8 | 8 | SLIDES | HTTP methods: the six routes, row by row. PUT vs. PATCH. | 4 clicks. | |
-| 7:07 | 9 | 7 | SLIDES | Anatomy of a request: method and URL, headers, the JSON body, the status code and its first digit (2xx, 4xx, 5xx), the response body. | 5 clicks. | |
-| 7:10 | 10 | 10 | SLIDES | The parts of our API, from the client to SQLite. "We build from the right, starting with the model." | 7 clicks. | |
-| 7:12 | 11 | 11 | SLIDES | Video V2, stepped: 6 clicks, one per stop (0:04, 0:11, 0:15, 0:19.5, 0:23.5, 0:29). | 6 clicks. | |
-| 7:14 | 12 | 12 | SLIDES | Your starter repo: files, checkpoint branches, and how to switch. | → | |
-| 7:15 | 13 | 13 | SLIDES | Lesson 1 section slide. | → | |
-| 7:16 | 14 | 14–15 | SLIDES | A model becomes a database table: one column for each field. | 6 clicks. | |
-| 7:18 | 14 | | VS CODE | Write the model in `questions/models.py` (cheat sheet 1). | → SWITCH TO VS CODE. | Leave `models.py` on the projector for people to copy. |
-| 7:20 | 14 | | TERMINAL | `makemigrations questions`, `migrate`. Expect `Applying questions.0001_initial... OK`. | Back when most people have the OK. | |
-| 7:23 | 15 | 16–17 | SLIDES | A serializer converts and validates data: 9999 is ignored, blank text gets a 400. The first time you name a 4xx code. | 3 clicks. | |
-| 7:25 | 15 | | VS CODE | Write `questions/serializers.py` (cheat sheet 2). Point at `read_only_fields`. | → SWITCH TO VS CODE. | Paste from the cheat sheet. |
-| 7:28 | 16 | 18–21 | SLIDES | One ViewSet handles six routes: slide 8's table plus the ViewSet method names. 404 for a missing question. `AllowAny` for now. | 2 clicks. | |
-| 7:30 | 16 | | VS CODE | `views.py`, then `config/urls.py` (cheat sheet 3, 4). | → SWITCH TO VS CODE. | `git switch checkpoint-1-crud` for anyone stuck. |
-| 7:34 | 16 | | BROWSER | `/api/questions/` shows "Question List". | | |
-| 7:35 | 16 | | VS CODE → TERMINAL → BROWSER | `admin.py` (cheat sheet 5), `createsuperuser` (`mod`), log in to `/admin/`, add a question, and show it in the API. | | **Cut 2:** skip the admin demo, but keep the line in `admin.py`. |
-| 7:37 | 16 | | BROWSER | Try it: create → 201, blank → 400, `/999/` → 404. Optional curl example. | Back when most people have a 201 and a 400. | **Cut 1:** skip the curl example. |
-| 7:41 | 17 | 22 | SLIDES | What's still broken? Ask how voting should work. | → | |
+| 6:30 | 1 | Setup | SLIDES | *Set up while you wait* on the projector. People arrive, eat, install Git, uv, and VS Code, clone the repo, and run the commands. Walk the room. | Say the setup line at 6:40 and 6:50. | Start at 7:00 anyway. |
+| 6:50 | 1 | Setup | TERMINAL | Your own project: `main`, a fresh `db.sqlite3`, `runserver` running. Browser tabs open (see screen-setup.md). | Back to the slides window. | |
+| 7:00 | 2 | Opening | SLIDES | Title. Welcome, thank the club, say what we build, show of hands, how the night works. | → | |
+| 7:02 | 3 | Opening | SLIDES → VS CODE → SLIDES | *Check your setup*: hands up for the login page. Show `runserver` and a second terminal in VS Code. Checkpoints. | 2 clicks. | Anyone still installing keeps going; the next 15 minutes are slides. |
+| 7:04 | 4 | API basics | SLIDES | What a backend does. | 3 clicks. | |
+| 7:05 | 5 | API basics | SLIDES | Video V1 loops. Talk over it. | → | |
+| 7:07 | 6 | API basics | SLIDES | Resources and URLs. Names REST. | 3 clicks. | |
+| 7:08 | 7 | API basics | SLIDES | HTTP methods: the six routes, row by row. PUT vs. PATCH. | 4 clicks. | |
+| 7:10 | 8 | API basics | SLIDES | Anatomy of a request: method and URL, headers, the JSON body, the status code family, the response body. Ends with the one-sentence summary of REST. | 5 clicks. | |
+| 7:13 | 9 | API basics | SLIDES | The parts of our API, from the client to SQLite, and the file for each. "We build from the right, starting with the model." | 7 clicks. | |
+| 7:15 | 10 | API basics | SLIDES | Video V2, stepped: 6 clicks, one per stop (0:04, 0:11, 0:15, 0:19.5, 0:23.5, 0:29). | 6 clicks. | |
+| 7:17 | 11 | Lesson 1 | SLIDES | *Lesson 1: A model becomes a table*: one column for each field, then the migration commands. | 6 clicks. | |
+| 7:19 | 11 | | VS CODE | Write the model in `questions/models.py` (cheat sheet 1). | → SWITCH TO VS CODE. | Leave `models.py` on the projector for people to copy. |
+| 7:21 | 11 | | TERMINAL | `makemigrations questions`, `migrate`. Expect `Applying questions.0001_initial... OK`. | | |
+| 7:23 | 11 | | VS CODE | `serializers.py` (cheat sheet 2). Point at `read_only_fields`. | | Paste from the cheat sheet. |
+| 7:26 | 11 | | VS CODE | `views.py`, then `config/urls.py` (cheat sheet 3, 4). Say what a ViewSet and the router do. | | |
+| 7:30 | 11 | | BROWSER | `/api/questions/` shows "Question List". | | |
+| 7:31 | 11 | | VS CODE → TERMINAL → BROWSER | `admin.py` (cheat sheet 5), `createsuperuser` (`mod`), log in to `/admin/`, add a question, and show it in the API. | | **Cut 2:** skip the admin demo, but keep the line in `admin.py`. |
+| 7:35 | 11 | | BROWSER | Try it: create → 201, blank → 400, `/999/` → 404. Optional curl example. Last: `"votes": 9999` → 201 with `"votes": 0`. | Back when most people have a 201 and a 400 (7:42). | **Cut 1:** skip the curl example. |
+| 7:42 | 12 | Lesson 2 | SLIDES | *Lesson 2: How should voting work?* Ask the room first. PATCH vs. an action URL. Catch-up line for `checkpoint-1-crud`. | 3 clicks. | |
 | **7:45** | | | | **Time check: if lesson 1 isn't finished by 7:45, paste lesson 2's code instead of typing it.** | | |
-| 7:42 | 18 | 23–25, 27 | SLIDES | Lesson 2. Why not let clients PATCH the vote count? Actions and `detail=True`. | 3 clicks. | |
-| 7:45 | 18 | | VS CODE | Imports, `upvote`, and `toggle_answered` in `views.py` (cheat sheet 6). | → SWITCH TO VS CODE. | Paste both methods. |
-| 7:51 | 18 | | BROWSER | Try it: POST to `upvote` twice and to `toggle_answered` twice. | Back at 7:55. | Do it once yourself. |
-| 7:55 | 19 | 28 | SLIDES | You built a REST API. Catch-up: `git switch checkpoint-2-actions`. | Back at 7:58 at the latest. | |
-| 7:58 | 20 | 29 | BROWSER → SLIDES | Ask first, then upvote ten times while logged out. Show the three problems. | 3 clicks. | |
-| **8:05** | | | | **Time check: if the checkpoint pause didn't start by 8:05, lesson 4 becomes a 3-minute demo from `checkpoint-4-m2m`.** | | |
-| 8:02 | 21 | 30 | SLIDES | Authentication and authorization. A failed check gets 403. | 4 clicks. | |
-| 8:03 | 22 | 31, 34 | SLIDES | Who can do what: the rules table, then staff status vs. superuser status. | 1 click. | |
-| 8:05 | 23 | 32–33, 35 | SLIDES | How DRF checks permissions. The permission check appears on the diagram. | 3 clicks. | |
-| 8:07 | 23 | | VS CODE | Permissions in `views.py`, then the `api-auth/` line in `config/urls.py` (cheat sheet 7, 8). | → SWITCH TO VS CODE. | Paste from the cheat sheet. |
-| 8:09 | 23 | | TERMINAL → BROWSER | `createsuperuser` if needed. Create `sam` (no staff, no superuser) on `/admin/auth/user/add/`. | | **Cut 3:** describe the second user instead. |
-| 8:11 | 23 | | BROWSER | Try it as logged out, `sam`, and `mod`. Optional `curl -u sam:…` for the 403 on an edit. | Back at 8:13. | **Cut 3:** show only `mod`. |
-| 8:13 | 24 | 36, 38 | SLIDES | What's still broken? sam upvotes three times. Click: lesson 4 stores who voted. Explain the join table and why the totals reset. | 1 click. | |
-| 8:15 | 24 | | VS CODE → TERMINAL | Change the field (cheat sheet 9), `makemigrations questions --name votes_many_to_many`, `migrate`. | → SWITCH TO VS CODE. | **Cut 4:** demo from `checkpoint-4-m2m` (switch, `migrate`). |
-| 8:18 | 24 | | BROWSER | `/api/questions/` shows `"votes": []`: the JSON changed. | Back at 8:19. | Skip this when demoing from the branch. |
-| 8:19 | 25 | 39–41 | SLIDES | Keep the JSON compatible: `votes` is still a number, `has_voted` is new, `/upvote/` is gone. | 2 clicks. | Show this slide even when lesson 4 is a demo. |
-| 8:21 | 25 | | VS CODE | Serializer (`votes`, `has_voted`), then `upvote` becomes `toggle_vote` (cheat sheet 10, 11). | → SWITCH TO VS CODE. | Paste both. |
-| 8:23 | 25 | | BROWSER | sam toggles to 1, then 0. mod votes: 1. | Back at 8:25. | Show it yourself. |
+| 7:45 | 12 | | VS CODE | Imports, `upvote`, and `toggle_answered` in `views.py` (cheat sheet 6). | → SWITCH TO VS CODE. | Paste both methods. |
+| 7:50 | 12 | | BROWSER | Try it: POST to `upvote` twice and to `toggle_answered` twice. Last: upvote again while logged out, and ask what else anyone can do. | Back at 7:55. | Do it once yourself. |
+| 7:55 | 13 | Halfway | SLIDES | Halfway break. Catch-up line for `checkpoint-2-actions`. Go to raised hands. | Back at 8:00 at the latest. | |
+| **8:05** | | | | **Time check: if the break didn't start by 8:05, lesson 4 becomes a 3-minute demo from `checkpoint-4-m2m`.** | | |
+| 8:00 | 14 | Lesson 3 | SLIDES | *Lesson 3: Who can do what*: authentication and authorization, the rules with their permission classes, 403. Catch-up line for `checkpoint-2-actions`. | 2 clicks. | |
+| 8:03 | 14 | | VS CODE | Permissions in `views.py`, then the `api-auth/` line in `config/urls.py` (cheat sheet 7, 8). | → SWITCH TO VS CODE. | Paste from the cheat sheet. |
+| 8:06 | 14 | | TERMINAL → BROWSER | `createsuperuser` if needed. Create `sam` (no staff, no superuser) on `/admin/auth/user/add/`. | | **Cut 3:** describe the second user instead. |
+| 8:08 | 14 | | BROWSER | Try it as logged out, `sam`, and `mod`. Optional `curl -u sam:…` for the 403 on an edit. Last: sam upvotes three times. | Back at 8:13. | **Cut 3:** show only `mod`. |
+| 8:13 | 15 | Lesson 4 | SLIDES | *Lesson 4: One vote per user*: the join table, and why the vote counts reset. Catch-up line for `checkpoint-3-auth`. | 2 clicks. | |
+| 8:15 | 16 | Lesson 4 | SLIDES | *Keep the JSON compatible*: `votes` stays a number, `has_voted` is new, `/upvote/` is gone. | 2 clicks. | Show both lesson 4 slides even when lesson 4 is a demo. |
+| 8:17 | 16 | | VS CODE → TERMINAL | Change the field (cheat sheet 9), `makemigrations questions --name votes_many_to_many`, `migrate`. | → SWITCH TO VS CODE. | **Cut 4:** demo from `checkpoint-4-m2m` (switch, `migrate`). |
+| 8:19 | 16 | | BROWSER | `/api/questions/` shows `"votes": []`: the problem the slide described. | | Skip this when demoing from the branch. |
+| 8:20 | 16 | | VS CODE | Serializer (`votes`, `has_voted`), then `upvote` becomes `toggle_vote` (cheat sheet 10, 11). | | Paste both. |
+| 8:23 | 16 | | BROWSER | sam toggles to 1, then 0. mod votes: 1. `/upvote/` is 404. | Back at 8:25. | Show it yourself. |
 | **8:25** | | | | **Time check: the wrap-up starts at 8:25, even if people are still typing.** | | |
-| 8:25 | 26 | 42 | SLIDES | What you built: the real names next to each part. | 1 click. | |
-| 8:26 | 27 | 43 | SLIDES | Where to go next. QR code. | → | |
-| 8:27 | 28 | 44–45 | SLIDES | Questions, thanks, the next event, and the repo QR code. Never cut this. Leave it up. | End. | |
+| 8:25 | 17 | Wrap-up | SLIDES | What you built: the real names next to each part. | 1 click. | |
+| 8:26 | 18 | Wrap-up | SLIDES | Where to go next. QR code. | → | |
+| 8:27 | 19 | Wrap-up | SLIDES | Questions, thanks, the next event, and the repo QR code. Never cut this. Leave it up. | End. | |
 
 ## Cut list, in order
 
-1. The curl example in lesson 1 (slide 16's notes).
-2. The admin registration demo (slide 16's notes). Keep the one line in `admin.py`.
-3. The second-user test in lesson 3 (slide 23's notes). Describe it instead.
-4. Lesson 4 coding: demo it from `checkpoint-4-m2m` in about 3 minutes, but still show *Keep the JSON compatible* (slide 25).
+1. The curl example in lesson 1 (slide 11's notes).
+2. The admin registration demo (slide 11's notes). Keep the one line in `admin.py`.
+3. The second-user test in lesson 3 (slide 14's notes). Describe it instead.
+4. Lesson 4 coding: demo it from `checkpoint-4-m2m` in about 3 minutes, but still show both lesson 4 slides (15 and 16).
 
 Never cut lessons 1–2 or the closing questions.
 
-## What changed from the plan's slide list
+## What changed from the dev deck
 
-`PLAN.md` section 7 has 46 slides, including a "write it" code slide, a Magic Move, or a "try it" results slide for every coding step. This deck drops the slides whose main job was showing code, and three slides the presenter cut:
+The `dev` deck had 28 show slides and went back to the slides in the middle of lessons 1 and 4. This deck has 19:
 
-| Gone as a slide | Where it went |
+| Gone | Where its content went |
 |---|---|
-| Write the model, Write the serializer, Write the view and routes, See it in the admin (plan 15, 17, 19, 20) | VS Code, run from the notes of slides 14–16 |
-| Add the actions, Add permissions, Change the field, Upvote becomes toggle (plan 25, 33, 38, 40) | VS Code, run from the notes of slides 18, 23, 24, 25 |
-| The four "Try it" result slides (plan 21, 27, 35, 41) | The browser, with the expected results in the notes |
-| Lesson 2 section slide (plan 23) | Said aloud at the start of slide 18 |
-| Staff, not superuser (plan 34) | The last click on *Who can do what* (slide 22) |
-| Thanks (plan 45) | Merged into *Questions?* (slide 28) |
-| Tonight (plan 2) | Cut. The show of hands and how checkpoints work are in the title slide's notes. |
-| Your turn: `toggle_answered` with a timer (plan 26) | Cut. You type `toggle_answered` with the room right after `upvote`. |
-| Video V3, From a count to a list of voters (plan 37) | Cut. Slide 24's notes explain the join table and why the totals reset. |
-| Final code in the appendix | The `checkpoint-4-m2m` branch and the cheat sheet |
+| What the backend is responsible for, Why build an API? | Cut. Their one useful line each is in the notes of *What a backend does* and video V1. Validation and permissions are taught in lessons 1 and 3. |
+| Your starter repo | The files are on *The parts of our API* (slide 9). Checkpoints are on *Check your setup* (slide 3) and the catch-up line on each lesson's first slide. |
+| Lesson 1 section slide | Each lesson's first slide has "Lesson N" in its title. |
+| A serializer converts and validates data, One ViewSet handles six routes | Video V2 shows what the serializer and router do. The notes for slide 11 say what each file does while you type it. The 400 and 404 show up in the browser. |
+| The three "What's still broken?" slides | Each lesson's browser check ends by showing the next problem live, and the next lesson's first slide starts from it. |
+| Why not let clients PATCH the vote count? | Now *Lesson 2: How should voting work?* (slide 12). |
+| You built a REST API | The halfway break (slide 13). The diagram with every part comes once, at the end. |
+| Authentication and authorization, Who can do what, How DRF checks permissions | One slide, *Lesson 3: Who can do what* (slide 14): the two definitions, each rule with its permission class, and 403. Where each rule goes in the code is in the notes. |
 
-The concept slides that used to show code now show the idea: *A model becomes a database table* maps each field to its column, *One ViewSet handles six routes* lists the routes the router creates, *Why not let clients PATCH the vote count?* introduces actions without the decorator code, and *Keep the JSON compatible* compares the JSON before and after lesson 4.
+New: *Check your setup* (slide 3) and *Lesson 4: One vote per user* (slide 15), which shows the join table that video V3 would have shown.
 
-The HTTP slides go from the smallest idea to the whole message: a URL names the data (slide 7), a method says what to do with it (slide 8), and then slide 9 takes apart one full request and response. Specific status codes come in when the room first sees them: 400 on slide 15, 404 on slide 16, 405 in lesson 2's browser check, and 403 on slide 21. Slide 35 lists them all.
+The HTTP slides go from the smallest idea to the whole message: a URL names the data (slide 6), a method says what to do with it (slide 7), and slide 8 takes apart one full request and response. Specific status codes come up in the browser: 201, 400, and 404 in lesson 1, 405 in lesson 2, and 403 in lesson 3 (also on slide 14). Slide 26 lists them all.
 
-The diagram of the API's parts (slide 10, the small versions on later slides, and video V2) follows the request: the client on the left, SQLite on the right. We build it from right to left, starting with the model.
+The diagram of the API's parts (slide 9, the small version on slide 11, and video V2) follows the request: the client on the left, SQLite on the right. We build it from right to left, starting with the model.
 
 ## Backstage slides (press `g`, type the number)
 
 | Slide | What |
 |---|---|
-| 29 | Appendix index (the numbers update automatically) |
-| 30 | Switching checkpoints, including going back from `checkpoint-4-m2m` |
-| 31 | Troubleshooting: port in use, no such table, uv not found |
-| 32–33 | Final-frame stills of V1 and V2 (use them if a video won't play) |
-| 34 | Projector check |
-| 35 | Status codes in our API: every code the workshop shows, and when you get it |
+| 20 | Appendix index (the numbers update automatically) |
+| 21 | Switching checkpoints, including going back from `checkpoint-4-m2m` |
+| 22 | Troubleshooting: Git or uv not found, port in use, no such table |
+| 23–24 | Final-frame stills of V1 and V2 (use them if a video won't play) |
+| 25 | Projector check |
+| 26 | Status codes in our API: every code the workshop shows, and when you get it |
 
 The clicker and arrow keys never land on these. To get back, press `g` and type the slide you came from.

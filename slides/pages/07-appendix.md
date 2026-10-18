@@ -1,7 +1,7 @@
 ---
 backstage: true
 backstageIndex: true
-plan: A
+part: Appendix
 ---
 
 # Appendix
@@ -18,7 +18,7 @@ plan: A
 
 ---
 backstage: true
-plan: A1
+part: Appendix
 ---
 
 # Switching checkpoints
@@ -28,7 +28,7 @@ plan: A1
 <div class="file-label">Save your work, switch branches, and update the database:</div>
 
 ```bash
-git stash push -u -m "my work"
+git stash -u
 git switch checkpoint-3-auth
 uv run manage.py migrate
 ```
@@ -57,16 +57,17 @@ git switch checkpoint-3-auth
 
 ---
 backstage: true
-plan: A2
+part: Appendix
 ---
 
 # Troubleshooting
 
 <div class="trouble">
-<div><span class="muted">That port is already in use</span><code>uv run manage.py runserver 8001</code></div>
-<div><span class="muted">no such table</span><code>uv run manage.py migrate</code></div>
+<div><span class="muted">git: command not found</span><code>install Git from git-scm.com (macOS: run git --version)</code></div>
 <div><span class="muted">uv: command not found (macOS, Linux)</span><code>curl -LsSf https://astral.sh/uv/install.sh | sh</code></div>
 <div><span class="muted">uv: command not found (Windows PowerShell)</span><code>powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"</code></div>
+<div><span class="muted">That port is already in use</span><code>uv run manage.py runserver 8001</code></div>
+<div><span class="muted">no such table</span><code>uv run manage.py migrate</code></div>
 <div><span class="muted">No module named django</span><code>use uv run manage.py …, not python manage.py …</code></div>
 </div>
 
@@ -95,14 +96,15 @@ plan: A2
 
 - Port in use: another runserver is still running, often in another terminal. Use port 8001 and open http://127.0.0.1:8001/.
 - no such table: the database doesn't have the tables the code expects. Run `migrate`. If they wrote the model themselves, run `makemigrations questions` first.
+- git not found: Windows needs Git for Windows from git-scm.com; the default options are fine. On macOS, `git --version` offers to install the Command Line Tools, which include Git. Open a new terminal afterwards.
 - uv not found: install it, then open a new terminal so the PATH includes it.
 - No module named django or rest_framework: they ran the system Python. `uv run` uses the project's environment.
-- Anything else: `uv run manage.py check` names the file and line with the error. Helpers can switch them to the last checkpoint.
+- Anything else: `uv run manage.py check` names the file and line with the error. If that doesn't help, they can switch to the last checkpoint with the line on that lesson's first slide.
 -->
 
 ---
 backstage: true
-plan: A3
+part: Appendix
 ---
 
 # Video still: one backend, many clients
@@ -117,7 +119,7 @@ plan: A3
 
 ---
 backstage: true
-plan: A4
+part: Appendix
 ---
 
 # Video still: life of a POST request
@@ -127,12 +129,12 @@ plan: A4
 <!--
 [backstage] [SLIDES]
 
-- Final frame of video V2 (slide 11). It shows the request and the response together. Use it if the video won't play.
+- Final frame of video V2 (slide 10). It shows the request and the response together. Use it if the video won't play.
 -->
 
 ---
 backstage: true
-plan: A5
+part: Appendix
 ---
 
 # Projector check
@@ -159,7 +161,7 @@ class Question(models.Model):
 
 ---
 backstage: true
-plan: A6
+part: Appendix
 ---
 
 # Status codes in our API

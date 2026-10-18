@@ -4,13 +4,13 @@ The deck and presenter notes for the Developer Club backend workshop, **Build a 
 
 [`PLAN.md`](PLAN.md) is the source of truth: run of show, code at each checkpoint, every slide, visual and motion rules, and the build phases.
 
-**This is the `dev` branch: the slim version of the deck.** With one projector, the slides are the presentation aid between coding stretches, not a second place to read code. So no slide's main job is showing code: the slides cover the opening, the concepts each lesson needs, and the close, and the code happens in VS Code. Each concept slide's notes run the coding stretch that follows it, and `notes/cheat-sheet.md` has every line to type. The full plan-by-plan deck (46 slides, with code slides and Magic Move) is on `main`. `notes/presenter-flow.md` lists what moved where.
+**This is the `next` branch.** The deck follows the night in order: setup while people arrive, a short opening, the API basics, four lessons, and the wrap-up. Each lesson has one or two slides. Then the code happens in VS Code until the lesson's checkpoint works, with no slides in between, and the lesson's first slide has the notes for the whole coding stretch. `notes/cheat-sheet.md` has every line to type. The `dev` branch has the earlier 28-slide version, and `main` has the full plan-by-plan deck (46 slides, with code slides and Magic Move). `notes/presenter-flow.md` lists what changed from `dev`.
 
 ## What's here
 
 | Path | What |
 |---|---|
-| `slides/` | The Slidev deck: `slides.md` (settings) and `pages/` (28 show slides plus a 7-slide hidden appendix), components, styles, and the rendered videos in `public/media/videos/`. |
+| `slides/` | The Slidev deck: `slides.md` (settings) and `pages/` (19 show slides plus a 7-slide hidden appendix), components, styles, and the rendered videos in `public/media/videos/`. |
 | `slides/questions-api-workshop.pdf` | PDF backup: every slide at its final state, videos as their final frames. |
 | `slides/snippets/` | Real files from each checkpoint branch, plus each checkpoint's diff. Generated; don't edit. |
 | `animations/` | Sources for the three explainer videos (HTML + GSAP) and the script that renders them. |
@@ -41,9 +41,9 @@ pnpm serve      # serves dist/ offline at http://localhost:3031
 
 Present from the built copy: projector window at `http://localhost:3031/#/1`, presenter view on the laptop at `http://localhost:3031/#/presenter/1`, both in the same browser so they stay in sync. Everything (fonts, videos, QR codes) is local; the deck runs with Wi-Fi off.
 
-Keys: `→`/`Space`/clicker for the next click, `←` back, `g` then a number to jump, `o` for the overview. The clicker and arrow keys skip the hidden appendix (slides 29–35); reach it with `g` (slide 29 lists it). `?projector` in the URL (or `p` in `pnpm dev`) applies the weak-projector simulation from plan section 5.1.
+Keys: `→`/`Space`/clicker for the next click, `←` back, `g` then a number to jump, `o` for the overview. The clicker and arrow keys skip the hidden appendix (slides 20–26); reach it with `g` (slide 20 lists it). `?projector` in the URL (or `p` in `pnpm dev`) applies the weak-projector simulation from plan section 5.1.
 
-Each slide's `plan:` frontmatter lists the `PLAN.md` slides it stands for: `13`, or `14–15` when a concept slide's notes now carry the code slide that followed it. The presenter view shows the tag in each slide's corner, and `pnpm qa` checks that every plan slide from 0 to 45 is covered exactly once.
+Each slide's `part:` frontmatter names the part of the night it belongs to: Setup, Opening, API basics, Lesson 1 to Lesson 4, Halfway, or Wrap-up (Appendix for the hidden slides). The presenter view shows it in each slide's corner, and `pnpm qa` checks that each part starts at its time in the run of show (`PLAN.md` section 3).
 
 Why not `hide: true` for the appendix: Slidev 53 removes hidden slides when it parses the deck, so they couldn't be shown during the talk. Appendix slides use `backstage: true` and a keyboard guard in `slides/setup/shortcuts.ts` instead.
 
@@ -80,7 +80,7 @@ node scripts/check-code.mjs      # snippets match the branches; generated blocks
 scripts/verify-responses.sh      # runs every request from plan section 2 against each checkpoint, plus
                                  # lesson 4's in-between state ("votes": [] before the serializer line)
 cd slides && pnpm build && pnpm serve   # then, in another terminal:
-pnpm qa                          # plan coverage, notes format and clock, video stops, plan 5.2 style rules,
+pnpm qa                          # parts and start times, notes format and clock, video stops, plan 5.2 style rules,
                                  # offline, navigation, click counts vs. [click] markers, appendix, presenter view
 pnpm shots --projector           # screenshots of every slide with the projector simulation, in shots/
                                  # (against pnpm dev; add --url http://localhost:3031 for the build)

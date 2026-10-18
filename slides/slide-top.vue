@@ -3,22 +3,22 @@ import { useSlideContext } from '@slidev/client'
 import { computed } from 'vue'
 
 /**
- * Presenter-only tag with the plan slides this slide stands for: "13",
- * "14–15", "31, 34" (merged slides), or A1… in the appendix. Never shown on
- * the projector or in exports.
+ * Presenter-only tag with the part of the night this slide belongs to
+ * ("API basics", "Lesson 3", "Appendix"), from its `part:` frontmatter.
+ * Never shown on the projector or in exports.
  */
 const { $frontmatter, $renderContext } = useSlideContext()
-const show = computed(() => ['presenter', 'previewNext'].includes($renderContext.value) && $frontmatter.plan != null)
+const show = computed(() => ['presenter', 'previewNext'].includes($renderContext.value) && $frontmatter.part != null)
 </script>
 
 <template>
-  <div v-if="show" class="plan-tag">
-    plan {{ $frontmatter.plan }}
+  <div v-if="show" class="part-tag">
+    {{ $frontmatter.part }}
   </div>
 </template>
 
 <style scoped>
-.plan-tag {
+.part-tag {
   position: absolute;
   top: 6px;
   right: 8px;

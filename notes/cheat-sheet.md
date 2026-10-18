@@ -2,7 +2,7 @@
 
 # Cheat sheet
 
-Everything you type or paste during the workshop, in order. No slide shows this code: each slide's notes say which step to type after it. Code comes from the checkpoint branches of [joshualent/questions-api](https://github.com/joshualent/questions-api):
+Everything you type or paste during the workshop, in order. No slide shows this code. Each lesson's first slide has the notes for the whole lesson, and they name these step numbers. Code comes from the checkpoint branches of [joshualent/questions-api](https://github.com/joshualent/questions-api):
 
 - `checkpoint-0-setup` at `fa53e5b`: Initialize Django workshop project
 - `checkpoint-1-crud` at `aa49eea`: Add public question CRUD
@@ -30,7 +30,7 @@ Check <http://127.0.0.1:8000/admin/> shows the login page.
 
 ### 1. `questions/models.py`
 
-Replace the stub. After slide 14, *A model becomes a database table*.
+Replace the stub. After slide 11, *Lesson 1: A model becomes a table*.
 
 The whole file, to paste if you fall behind:
 
@@ -59,7 +59,7 @@ Expect `questions/migrations/0001_initial.py` and `Applying questions.0001_initi
 
 ### 2. `questions/serializers.py`
 
-The file exists but is empty. After slide 15, *A serializer converts and validates data*.
+The file exists but is empty. Right after the migration.
 
 The whole file, to paste if you fall behind:
 
@@ -78,7 +78,7 @@ class QuestionSerializer(serializers.ModelSerializer):
 
 ### 3. `questions/views.py`
 
-Replace the stub. After slide 16, *One ViewSet handles six routes*.
+Replace the stub. Right after the serializer.
 
 The whole file, to paste if you fall behind:
 
@@ -160,13 +160,14 @@ uv run manage.py createsuperuser
 
 Use username `mod`. Any email is fine; Django asks for the password twice.
 
-**Try it** (still on slide 16) at <http://127.0.0.1:8000/api/questions/>, in the browsable API's form at the bottom of the page:
+**Try it** (still in lesson 1) at <http://127.0.0.1:8000/api/questions/>, in the browsable API's form at the bottom of the page:
 
 | Send | Expect |
 |---|---|
 | `POST /api/questions/` with `{"text": "What does a serializer do?"}` | `201 Created`, `"votes": 0` |
 | `POST /api/questions/` with `{"text": ""}` | `400 Bad Request`, `{"text": ["This field may not be blank."]}` |
 | Open `/api/questions/999/` | `404 Not Found`, `{"detail": "No Question matches the given query."}` |
+| `POST /api/questions/` with `{"text": "hi", "votes": 9999}` (last: the problem lesson 2 fixes) | `201 Created`, `"votes": 0` |
 
 Optional curl example (cut this first if you're behind):
 
@@ -180,7 +181,7 @@ curl -i -X POST http://127.0.0.1:8000/api/questions/ \
 
 ### 6. `questions/views.py`
 
-Two new imports at the top, then two methods at the end of `QuestionViewSet`, indented one level. After slide 18, *Why not let clients PATCH the vote count?* The repo has two blank lines between the methods.
+Two new imports at the top, then two methods at the end of `QuestionViewSet`, indented one level. After slide 12, *Lesson 2: How should voting work?* The repo has two blank lines between the methods.
 
 What changes (`+` lines are new, `-` lines go away):
 
@@ -248,23 +249,21 @@ class QuestionViewSet(viewsets.ModelViewSet):
 
 No migration: the fields already exist.
 
-**Try it** (still on slide 18): open <http://127.0.0.1:8000/api/questions/1/upvote/> and press **POST** twice (votes 1, then 2); open `/api/questions/1/toggle_answered/` and press **POST** twice (`answered` true, then false). A plain GET on an action URL shows `405 Method Not Allowed`; that's expected, use the POST button.
+**Try it** (still in lesson 2): open <http://127.0.0.1:8000/api/questions/1/upvote/> and press **POST** twice (votes 1, then 2); open `/api/questions/1/toggle_answered/` and press **POST** twice (`answered` true, then false). A plain GET on an action URL shows `405 Method Not Allowed`; that's expected, use the POST button. Last, the problem lesson 3 fixes: nobody logged in, so press **POST** on `upvote` a few more times.
 
-## Checkpoint pause
+## Halfway break
 
-Anyone behind:
+Anyone behind runs the line on the slide:
 
 ```bash
-git stash push -u -m "my workshop progress"
-git switch checkpoint-2-actions
-uv run manage.py migrate
+git stash -u; git switch checkpoint-2-actions; uv run manage.py migrate
 ```
 
 ## Lesson 3: authentication and staff moderation (ends at `checkpoint-3-auth`)
 
 ### 7. `questions/views.py`
 
-One import line changes, `get_permissions` goes right after `permission_classes`, and each `@action` gets a `permission_classes` argument. After slide 23, *How DRF checks permissions*.
+One import line changes, `get_permissions` goes right after `permission_classes`, and each `@action` gets a `permission_classes` argument. After slide 14, *Lesson 3: Who can do what*.
 
 What changes (`+` lines are new, `-` lines go away):
 
@@ -385,7 +384,7 @@ uv run manage.py createsuperuser
 
 Then at <http://127.0.0.1:8000/admin/auth/user/add/> create `sam` with a password. Leave **Staff status** and **Superuser status** unchecked.
 
-**Try it** (still on slide 23): log in with the browsable API's **Log in** link (top right), as nobody, `sam`, then `mod`:
+**Try it** (still in lesson 3): log in with the browsable API's **Log in** link (top right), as nobody, `sam`, then `mod`:
 
 | | `POST …/1/upvote/` | `POST …/1/toggle_answered/` | `PATCH /api/questions/1/` |
 |---|---|---|---|
@@ -393,11 +392,13 @@ Then at <http://127.0.0.1:8000/admin/auth/user/add/> create `sam` with a passwor
 | `sam` | 200 | 403 You do not have permission to perform this action. | 403 You do not have permission to perform this action. |
 | `mod` | 200 | 200 | 200 |
 
+Last, the problem lesson 4 fixes: as `sam`, press **POST** on `/api/questions/1/upvote/` three times. The count goes up every time.
+
 ## Lesson 4: many-to-many voting (ends at `checkpoint-4-m2m`)
 
 ### 9. `questions/models.py`
 
-Import `settings`, and change `votes` to a `ManyToManyField`. After slide 24, *What's still broken?*
+Import `settings`, and change `votes` to a `ManyToManyField`. After slide 16, *Keep the JSON compatible*.
 
 What changes (`+` lines are new, `-` lines go away):
 
@@ -440,11 +441,11 @@ uv run manage.py migrate
 
 Expect `0002_votes_many_to_many.py` with `- Remove field votes from question` and `+ Add field votes to question`. Existing vote totals reset to zero.
 
-Before the next step, show <http://127.0.0.1:8000/api/questions/>: `"votes": []`. DRF shows the many-to-many field as a list of user ids, so every client expecting a number would break. Slide 25 explains the fix.
+Before the next step, show <http://127.0.0.1:8000/api/questions/>: `"votes": []`. DRF shows the many-to-many field as a list of user ids, so every client expecting a number would break. The next step fixes it, as *Keep the JSON compatible* (slide 16) said.
 
 ### 10. `questions/serializers.py`
 
-Two fields above `class Meta`, `has_voted` in `fields`, and the `get_has_voted` method. After slide 25, *Keep the JSON compatible*.
+Two fields above `class Meta`, `has_voted` in `fields`, and the `get_has_voted` method. Right after the browser shows `"votes": []`.
 
 What changes (`+` lines are new, `-` lines go away):
 
@@ -562,14 +563,12 @@ class QuestionViewSet(viewsets.ModelViewSet):
         return Response(self.get_serializer(question).data)
 ```
 
-**Try it** (still on slide 25): as `sam`, POST `/api/questions/1/toggle_vote/` twice (`"votes": 1, "has_voted": true`, then `"votes": 0, "has_voted": false`); as `mod`, once (`"votes": 1, "has_voted": true`). `/upvote/` no longer exists, so it returns 404.
+**Try it** (still in lesson 4): as `sam`, POST `/api/questions/1/toggle_vote/` twice (`"votes": 1, "has_voted": true`, then `"votes": 0, "has_voted": false`); as `mod`, once (`"votes": 1, "has_voted": true`). `/upvote/` no longer exists, so it returns 404.
 
 ## If you need the finished project
 
 ```bash
-git stash push -u -m "my workshop progress"
-git switch checkpoint-4-m2m
-uv run manage.py migrate
+git stash -u; git switch checkpoint-4-m2m; uv run manage.py migrate
 ```
 
 Going backward from `checkpoint-4-m2m`: run `uv run manage.py migrate questions 0001` **before** switching branches, or delete `db.sqlite3` and run `migrate` for a fresh start.

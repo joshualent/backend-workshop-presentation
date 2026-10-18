@@ -6,14 +6,12 @@
  *   pnpm qa                      # in another; or: node scripts/qa-deck.mjs --url http://localhost:3030
  *
  * Source checks:
- *   - every plan slide (0–45) is covered by exactly one show slide: `plan:` lists
- *     the plan slides each one stands for ("14–15", "31, 34"), since this deck
- *     merges the code slides into the concept slides' notes. CUT lists the plan
- *     slides the presenter removed from this version.
+ *   - every show slide has a `part:` from the run of show (plan section 3), and
+ *     the parts come in order
  *   - every slide has notes; show slides start with "[H:MM · N min] [MODE]" (plan 8.1),
  *     and slides whose mode isn't SLIDES have an explicit "→ SWITCH TO" line
- *   - the clock adds up: each slide starts when the previous one ends, and the
- *     sections start on the run of show's times (plan section 3)
+ *   - the clock adds up: each slide starts when the previous one ends, each part
+ *     starts on the run of show's time, and the show ends at 8:30
  *   - stepped videos: `clicks:` matches the rendered stops, and the notes give a
  *     timestamp for every stop
  *   - none of the plan 5.2 patterns (gradients, shadows, all-caps, emoji, …) in the sources
@@ -53,7 +51,7 @@ for (const f of files) {
     slides.push({
       no: slides.length + 1,
       file: f,
-      plan: (fm.match(/^plan: (.+)$/m) || [])[1],
+      part: (fm.match(/^part: (.+)$/m) || [])[1],
       backstage: /^backstage: true$/m.test(fm),
       clicksFm: Number((fm.match(/^clicks: (\d+)$/m) || [])[1] ?? Number.NaN),
       title: (body.match(/^# (.+)$/m) || [])[1] ?? '',
@@ -64,41 +62,39 @@ for (const f of files) {
   }
 }
 const show = slides.filter(s => !s.backstage)
-const where = s => `slide ${s.no} (plan ${s.plan}, "${s.title}")`
+const where = s => `slide ${s.no} (${s.part ?? 'no part'}, "${s.title}")`
 
-// The plan slides a show slide stands for: "13", "14–15", "32–33, 35".
-const planNumbers = (tag = '') => String(tag).split(',').flatMap((part) => {
-  const [a, b = a] = part.trim().split(/[–-]/).map(Number)
-  return Array.from({ length: b - a + 1 }, (_, i) => a + i)
-})
-const firstPlan = s => planNumbers(s.plan)[0]
-const covered = new Map()
+// The parts of the night and when each starts (plan section 3), in order.
+const PARTS = {
+  'Setup': '6:30',
+  'Opening': '7:00',
+  'API basics': '7:04',
+  'Lesson 1': '7:17',
+  'Lesson 2': '7:42',
+  'Halfway': '7:55',
+  'Lesson 3': '8:00',
+  'Lesson 4': '8:13',
+  'Wrap-up': '8:25',
+}
+const order = Object.keys(PARTS)
+let lastPart = -1
 for (const s of show) {
-  for (const n of planNumbers(s.plan)) {
-    if (Number.isNaN(n))
-      problems.push(`${where(s)}: can't read its plan tag`)
-    else if (covered.has(n))
-      problems.push(`plan slide ${n} is on both slide ${covered.get(n)} and slide ${s.no}`)
-    else
-      covered.set(n, s.no)
-  }
+  const i = order.indexOf(s.part)
+  if (i === -1)
+    problems.push(`${where(s)}: part: should be one of ${order.join(', ')}`)
+  else if (i < lastPart)
+    problems.push(`${where(s)}: part "${s.part}" comes after "${order[lastPart]}"`)
+  else
+    lastPart = i
 }
-// Plan slides the presenter cut from this version: 2 "Tonight", 26 the "your turn"
-// exercise, 37 the V3 video. Their content isn't on any slide.
-const CUT = new Set([2, 26, 37])
-for (const n of CUT) {
-  if (covered.has(n))
-    problems.push(`plan slide ${n} was cut from this deck but is on slide ${covered.get(n)}`)
+for (const part of order) {
+  if (!show.some(s => s.part === part))
+    problems.push(`no show slide has part: ${part}`)
 }
-for (let n = 0; n <= 45; n++) {
-  if (!covered.has(n) && !CUT.has(n))
-    problems.push(`plan slide ${n} isn't covered by any show slide (add it to a slide's plan tag)`)
-}
+const firstOfPart = new Set(order.map(part => show.find(s => s.part === part)).filter(Boolean))
 
 // Notes format and the clock.
 const toMin = hm => Number(hm.split(':')[0]) * 60 + Number(hm.split(':')[1])
-// Lesson 4 (plan 37 at 8:14) starts inside slide "What's still broken?" (plan 36, 38), so it has no entry.
-const SECTIONS = { 1: '6:55', 13: '7:15', 23: '7:42', 28: '7:55', 30: '8:02', 42: '8:25' }
 let clock = null
 for (const s of slides) {
   if (!s.notes) {
@@ -117,11 +113,11 @@ for (const s of slides) {
     continue
   }
   const [, at, mins, mode] = m
-  if (clock != null && firstPlan(s) !== 0 && toMin(at) !== clock)
+  if (clock != null && toMin(at) !== clock)
     problems.push(`${where(s)} starts at ${at}, but the previous slide ends at ${Math.floor(clock / 60)}:${String(clock % 60).padStart(2, '0')}`)
-  if (SECTIONS[firstPlan(s)] && SECTIONS[firstPlan(s)] !== at)
-    problems.push(`${where(s)} should start at ${SECTIONS[firstPlan(s)]} (plan section 3), notes say ${at}`)
-  clock = firstPlan(s) === 0 ? toMin('6:55') : toMin(at) + Number(mins)
+  if (firstOfPart.has(s) && PARTS[s.part] !== at)
+    problems.push(`${where(s)} starts ${s.part}, which should start at ${PARTS[s.part]} (plan section 3); notes say ${at}`)
+  clock = toMin(at) + Number(mins)
   if (mode !== 'SLIDES' && !/→ SWITCH TO /.test(s.notes))
     problems.push(`${where(s)} is in ${mode} mode but its notes have no "→ SWITCH TO" line`)
   if (/SWITCH TO/.test(s.notes) && !/→ SWITCH TO (VS CODE|TERMINAL|BROWSER|SLIDES)/.test(s.notes))
@@ -217,7 +213,7 @@ async function position() {
 await page.goto(`${base}/#/1`, { waitUntil: 'networkidle' })
 await page.waitForTimeout(1200)
 const maxClicks = new Map()
-const order = []
+const visited = []
 let last = ''
 let stuck = 0
 for (let i = 0; i < 600 && stuck < 3; i++) {
@@ -228,8 +224,8 @@ for (let i = 0; i < 600 && stuck < 3; i++) {
   }
   else {
     stuck = 0
-    if (order.at(-1) !== w.no)
-      order.push(w.no)
+    if (visited.at(-1) !== w.no)
+      visited.push(w.no)
     maxClicks.set(w.no, Math.max(maxClicks.get(w.no) ?? 0, w.clicks))
   }
   last = key
@@ -237,8 +233,8 @@ for (let i = 0; i < 600 && stuck < 3; i++) {
   await page.waitForTimeout(w.clicks === 0 ? 350 : 150)
 }
 const expectedOrder = show.map(s => s.no)
-if (order.join(',') !== expectedOrder.join(','))
-  problems.push(`→ visited ${order.join(',')} but the show is ${expectedOrder.join(',')}`)
+if (visited.join(',') !== expectedOrder.join(','))
+  problems.push(`→ visited ${visited.join(',')} but the show is ${expectedOrder.join(',')}`)
 for (const s of show) {
   const got = maxClicks.get(s.no) ?? 0
   if (got !== s.markers)
@@ -265,7 +261,7 @@ for (const s of slides.filter(x => x.backstage)) {
 // 4. presenter view shows notes; projector simulation switches on
 await page.goto(`${base}/#/presenter/2`, { waitUntil: 'networkidle' })
 await page.waitForTimeout(1500)
-if (!(await page.evaluate(() => document.body.innerText)).includes('[6:55 · 3 min]'))
+if (!(await page.evaluate(() => document.body.innerText)).includes('[7:00 · 2 min]'))
   problems.push('presenter view did not show slide 2\'s notes')
 await page.goto(`${base}/?projector#/1`, { waitUntil: 'networkidle' })
 await page.waitForTimeout(500)
