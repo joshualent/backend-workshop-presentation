@@ -2,7 +2,7 @@
 
 This plan is the source of truth for the slide deck and presenter notes. Read all of it before writing code. Build in the phases in section 10 and stop at each review checkpoint.
 
-This version of the plan describes the `next` branch: 19 show slides built around the run of show, with no slides in the middle of a coding stretch. The 46-slide version of section 7, with code slides and Magic Move, is in `PLAN.md` on `main`.
+This version of the plan describes the `next` branch: 15 show slides built around the run of show, with no slides in the middle of a coding stretch. The 46-slide version of section 7, with code slides and Magic Move, is in `PLAN.md` on `main`.
 
 The workshop code lives in a separate repo, [joshualent/questions-api](https://github.com/joshualent/questions-api). Every line of code that appears on a slide comes from that repo's checkpoint branches (section 2).
 
@@ -20,16 +20,16 @@ The workshop code lives in a separate repo, [joshualent/questions-api](https://g
 | Format | Live code-along. The presenter switches between slides, VS Code, a terminal, and the browser. Attendees type along on their own laptops. |
 | Stack | Python 3.14, Django 6.1, Django REST Framework 3.18, SQLite, uv |
 
-**What attendees build:** an API where people submit questions, vote on them, and mark them answered. It grows across four lessons. Each lesson ends at a checkpoint branch that attendees can switch to if they fall behind.
+**What attendees build:** an API where people submit questions, vote on them, and mark them answered. It grows across four parts. Each part ends at a checkpoint branch that attendees can switch to if they fall behind.
 
-**The story of the night is a ladder of flaws.** Each lesson fixes a problem the previous one left behind. Each lesson's browser check ends by showing that problem live, and the next lesson's first slide starts from it:
+**The story of the night is a ladder of flaws.** Each part fixes a problem the previous one left behind. Each part's browser check ends by showing that problem live, and the next part's first slide starts from it:
 
-| After | What works | What's still broken (motivates the next lesson) |
+| After | What works | What's still broken (motivates the next part) |
 |---|---|---|
-| Lesson 1 | Create, list, read, edit, delete questions | `votes` and `answered` are read-only, so nothing can change them |
-| Lesson 2 | Upvote and toggle answered | Anyone can upvote forever, mark answered, edit, or delete |
-| Lesson 3 | Login; only staff can moderate; voting needs login | A logged-in user can still upvote the same question again and again |
-| Lesson 4 | One vote per user, toggleable | Done |
+| Part 1 | Create, list, read, edit, delete questions | `votes` and `answered` are read-only, so nothing can change them |
+| Part 2 | Upvote and toggle answered | Anyone can upvote forever, mark answered, edit, or delete |
+| Part 3 | Login; only staff can moderate; voting needs login | A logged-in user can still upvote the same question again and again |
+| Part 4 | One vote per user, toggleable | Done |
 
 ---
 
@@ -74,7 +74,7 @@ The branches share one linear history, one commit per checkpoint. `main` equals 
 - `get_permissions()` returns `[IsAdminUser()]` for `update`, `partial_update`, and `destroy`; otherwise the viewset default (`AllowAny`).
 - `upvote` gets `permission_classes=[IsAuthenticated]`; `toggle_answered` gets `permission_classes=[IsAdminUser]`.
 - `IsAdminUser` checks **staff status**, not superuser. There is no question ownership.
-- Setup during the lesson: `uv run manage.py createsuperuser` (the moderator), then a second, non-staff user created on the admin Users page.
+- Setup during the part: `uv run manage.py createsuperuser` (the moderator), then a second, non-staff user created on the admin Users page.
 
 | Operation | Who can do it |
 |---|---|
@@ -103,7 +103,7 @@ Use these exact bodies and status codes; they came from running the checkpoints.
 | `POST /api/questions/` `{"text": "hi", "votes": 9999}` | anyone | 201 | `"votes":0`. The read-only field is silently ignored. |
 | `GET /api/questions/999/` | anyone | 404 | `{"detail":"No Question matches the given query."}` |
 | `POST …/1/upvote/` (cp3) or `…/1/toggle_vote/` (cp4) | logged out | 403 | `{"detail":"Authentication credentials were not provided."}` |
-| `POST …/1/upvote/` three times (cp3) | same user | 200 ×3 | votes 1, 2, 3. This is the flaw lesson 4 fixes. |
+| `POST …/1/upvote/` three times (cp3) | same user | 200 ×3 | votes 1, 2, 3. This is the flaw part 4 fixes. |
 | `POST …/1/toggle_vote/` twice (cp4) | same user | 200 ×2 | votes 1, then 0 |
 | `POST …/1/toggle_answered/` | non-staff user | 403 | `{"detail":"You do not have permission to perform this action."}` |
 | `DELETE /api/questions/1/` | non-staff user | 403 | `{"detail":"You do not have permission to perform this action."}` |
@@ -115,30 +115,31 @@ Logged-out requests get 403 (not 401) because the browsable API uses session aut
 
 ## 3. Run of show
 
-| Clock | Part | Mode | Ends at branch |
+| Clock | Section | Mode | Ends at branch |
 |---|---|---|---|
 | 6:30–7:00 | Setup: arrival, food, installing | The setup slide on the projector; the presenter walks the room | `checkpoint-0-setup` running |
 | 7:00–7:04 | Opening: welcome, check your setup | Slides | |
 | 7:04–7:17 | API basics: what an API is, REST, the parts of our API | Slides | |
-| 7:17–7:42 | Lesson 1: CRUD | One slide, then VS Code and the browser until the checkpoint works | `checkpoint-1-crud` |
-| 7:42–7:55 | Lesson 2: custom actions | Same pattern | `checkpoint-2-actions` |
-| 7:55–8:00 | Halfway break | One slide with the catch-up line | |
-| 8:00–8:13 | Lesson 3: auth and moderation | Same pattern | `checkpoint-3-auth` |
-| 8:13–8:25 | Lesson 4: many-to-many voting | Two slides, then the same pattern; code may be pasted | `checkpoint-4-m2m` |
-| 8:25–8:30 | Wrap-up and questions | Slides | |
+| 7:17–7:42 | Part 1: CRUD | One slide, then VS Code and the browser until the checkpoint works | `checkpoint-1-crud` |
+| 7:42–7:55 | Part 2: custom actions | Same pattern | `checkpoint-2-actions` |
+| 7:55–8:10 | Part 3: auth and moderation | Same pattern; five minutes of slack for a break, if the room needs one | `checkpoint-3-auth` |
+| 8:10–8:25 | Part 4: many-to-many voting | Two slides, then the same pattern; code may be pasted | `checkpoint-4-m2m` |
+| 8:25–8:30 | Wrap-up and questions | *What you built* stays up | |
 
-**Cut list if running long, in order:** the curl aside in lesson 1 → the admin registration demo (keep the one line of code) → the second-user test in lesson 3 (describe it) → lesson 4 coding (demo it from `checkpoint-4-m2m` in about 3 minutes, still showing both lesson 4 slides). Never cut lessons 1–2 or the closing questions.
+There's no break slide. If the room needs a break, the presenter takes five minutes after part 2.
 
-**Time checks:** lesson 1 not finished by 7:45 → paste lesson 2's code instead of typing it. Break not started by 8:05 → lesson 4 becomes a demo. Wrap-up starts at 8:25 regardless.
+**Cut list if running long, in order:** the curl aside in part 1 → the admin registration demo (keep the one line of code) → the second-user test in part 3 (describe it) → part 4 coding (demo it from `checkpoint-4-m2m` in about 3 minutes, still showing both part 4 slides). Never cut parts 1–2 or the closing questions.
+
+**Time checks:** part 1 not finished by 7:45 → paste part 2's code instead of typing it. Part 3 not started by 8:05 → part 4 becomes a demo. Wrap-up starts at 8:25 regardless.
 
 ---
 
 ## 4. Deck philosophy
 
-1. **Slides come before the code, never in the middle of it.** Each lesson has one or two slides. Then the presenter and the room write the code in VS Code and try it in the browser until the lesson's checkpoint works, with no slides in between. Going back and forth between the slides and the editor costs the room its attention every time.
+1. **Slides come before the code, never in the middle of it.** Each part has one or two slides. Then the presenter and the room write the code in VS Code and try it in the browser until the part's checkpoint works, with no slides in between. Going back and forth between the slides and the editor costs the room its attention every time.
 2. **Each slide has one job, and no slide repeats another.** If two slides make the same point, cut one. A recap is spoken, not a slide, except for the final diagram.
-3. **Front-loading stays at about 20 minutes and at most 12 slides** before the first code. Only teach up front what the first coding stretch needs. Everything else is taught just in time, on the next lesson's first slide.
-4. **One recurring map.** The request-flow diagram (Client → URL router → ViewSet → Serializer → Model → SQLite, JSON back) is built in the API basics, appears small on lesson 1's first slide, and returns at the end with the real names next to each part.
+3. **Front-loading stays at about 20 minutes and at most 12 slides** before the first code. Only teach up front what the first coding stretch needs. Everything else is taught just in time, on the next part's first slide.
+4. **One recurring map.** The request-flow diagram (Client → URL router → ViewSet → Serializer → Model → SQLite, JSON back) is built in the API basics, appears small on part 1's first slide, and returns at the end with the real names next to each part.
 5. **No slide presents code.** The code happens in VS Code, and `notes/cheat-sheet.md` has every line. Small inline identifiers are fine, and any code, status code, or JSON on a slide is real (section 2).
 
 ---
@@ -203,15 +204,15 @@ Use a pre-rendered video only when the concept is about **something moving or ch
 
 | Video | Slide | What it shows | Why motion helps |
 |---|---|---|---|
-| **V1. One backend, many clients** (~15 s) | Intro: server-rendered pages vs. an API | Left half: a server builds a full HTML page and sends it to one browser, which reloads. Right half: the same server sends small JSON payloads that go to a web app, a phone, and a terminal at once. | The difference is what travels over the wire, and how often. Seeing heavy pages versus light data move makes "one backend, many clients" concrete. |
+| **V1. Server-rendered pages vs. an API** (~13 s, stepped) | Intro: server-rendered pages vs. an API | Left half: the browser asks for `/questions/`, and the server builds the whole page, with the data in it, and sends it. Right half: the browser is labelled as running a frontend app. The app draws the page with grey bars where the data goes (the label lights up, so the skeleton clearly comes from the app), asks for `/api/questions/`, gets JSON back, and fills in the bars. | The difference is what travels from the server: a whole page, or only the data that a frontend app puts into its own page. Watching the empty page fill in shows where each piece comes from. |
 | **V2. Life of a POST** (~30 s, stepped) | Intro, right after the request map | Follows `POST /api/questions/` with `{"text": "What does a serializer do?", "votes": 9999}` through every layer, showing how the data changes shape: raw HTTP text → URL router picks `QuestionViewSet.create` → serializer validates (the `votes` key fades away as read-only; a side branch shows `""` bouncing back as a 400 with `This field may not be blank.`) → a `Question` object → an `INSERT` row appearing in a SQLite table → serialized back to JSON → `201 Created` with `"votes": 0`. | This is the central mental model of the night. The data's changing shape at each layer is exactly what a static diagram can't show. |
-| **V3. From a count to a list of voters** (~25 s, stepped) | Lesson 4 opener | The `votes` integer column in `questions_question` disappears (the migration's `RemoveField`). A `questions_question_votes` join table appears with `question_id` and `user_id` columns, and rows connect question 1 to `sam` and `mod`. `sam` calls `toggle_vote` and their row is removed. Finally, the JSON response stays `"votes": 1` because the serializer reads `votes.count`. | Many-to-many and join tables are abstract until you watch rows link two tables. The final beat, where storage changes but the API response doesn't, is the lesson's main idea. |
+| **V3. From a count to a list of voters** (~25 s, stepped) | Part 4 opener | The `votes` integer column in `questions_question` disappears (the migration's `RemoveField`). A `questions_question_votes` join table appears with `question_id` and `user_id` columns, and rows connect question 1 to `sam` and `mod`. `sam` calls `toggle_vote` and their row is removed. Finally, the JSON response stays `"votes": 1` because the serializer reads `votes.count`. | Many-to-many and join tables are abstract until you watch rows link two tables. The final beat, where storage changes but the API response doesn't, is the part's main idea. |
 
-In this deck, V3 is cut: lesson 4's first slide shows the join table as a click build instead.
+In this deck, V3 is cut: part 4's first slide shows the join table as a click build instead. The earlier V1, one backend sending JSON to three clients, is still in `animations/v1-one-backend-many-clients/` but not on a slide.
 
 **Video rules:**
 - **Tool:** Motion Canvas is preferred for these code-and-diagram explainers (precise timelines, built-in code and layout primitives). HyperFrames (HTML + GSAP rendered to MP4) is fine if it's faster for you. Don't add Remotion. Sources live in `animations/<video-name>/` and render reproducibly from a script.
-- **Presenter-controlled.** V2 and V3 are stepped: render one clip and build a `StepVideo` component that plays to the next timestamp on each click and holds there. A reverse click jumps back to the previous stop. This keeps the presenter's narration in charge and adds no waiting time. V1 can loop silently while the presenter talks.
+- **Presenter-controlled.** V1, V2, and V3 are stepped: render one clip and build a `StepVideo` component that plays to the next timestamp on each click and holds there. A reverse click jumps back to the previous stop. This keeps the presenter's narration in charge and adds no waiting time.
 - **Same visual language as the slides:** the same colors, fonts, box style, and arrowheads, with no extra effects.
 - **Content must match the real code and responses in section 2.**
 - **Output:** 1920×1080, 30 fps, no audio, H.264 MP4 + WebM, plus a PNG of the final frame. The final frame is a complete static summary, used as the poster and in the PDF export.
@@ -233,61 +234,52 @@ Asset key: **S** static, **C** click build, **V** video. Slide numbers are the d
 
 | # | Slide | Content | Asset |
 |---|---|---|---|
-| 2 | Title | Workshop title, Developer Club, date, room. Notes: welcome, what we build, show of hands, how the night works (a slide or two per lesson, then code until it works). | S |
-| 3 | Check your setup | The login page at `/admin/`. Keep `runserver` in one terminal and open a second terminal for every other command. Each lesson ends on a checkpoint branch, and the next lesson's first slide shows the line to catch up. Notes: hands up; show the two terminals in VS Code. | C |
+| 2 | Check your setup | The login page at `/admin/`. Keep `runserver` in one terminal and open a second terminal for every other command. Each part ends on a checkpoint branch, and the next part's first slide shows the line to catch up. Notes: welcome, what we build, show of hands, how the night works; hands up for the login page; show the two terminals in VS Code. There's no title slide. | C |
 
 ### 7.3 API basics (7:04–7:17)
 
 | # | Slide | Content | Asset |
 |---|---|---|---|
-| 4 | What a backend does | Client sends a request; the server reads and writes data and checks the rules; a response comes back. | C |
-| 5 | Server-rendered pages vs. an API | Video V1 | V |
-| 6 | Resources and URLs | A REST API organizes its data as resources with URLs. `/api/questions/` is the collection and `/api/questions/1/` is one question. A URL says which data, not what to do. | C |
-| 7 | HTTP methods | The six routes, built row by row; PUT vs. PATCH. | C |
-| 8 | Anatomy of a request | The real `POST /api/questions/` request and its 201 response, part by part. Status code families: 2xx, 4xx, 5xx. Notes end on the one-sentence summary of REST. | C |
-| 9 | The parts of our API | The request-flow map, built left to right, with each part's file. "We build these parts from right to left, starting with the model." | C |
-| 10 | Life of a POST request | Video V2 (stepped) | V |
+| 3 | What a backend does | Client sends a request; the server reads and writes data and checks the rules; a response comes back. | C |
+| 4 | Server-rendered pages vs. an API | Video V1 (stepped) | V |
+| 5 | Resources and URLs | A REST API organizes its data as resources with URLs. `/api/questions/` is the collection and `/api/questions/1/` is one question. A URL says which data, not what to do. | C |
+| 6 | HTTP methods | The six routes, built row by row; PUT vs. PATCH. | C |
+| 7 | Anatomy of a request | "A real request and its response, with a few headers left out." The real `POST /api/questions/` request and its 201 response, one part per click, with one short sentence for each. Status code families: 2xx, 4xx, 5xx. Notes end on the one-sentence summary of REST. | C |
+| 8 | The parts of our API | The request-flow map, built left to right, with each part's file. "We'll build these parts from right to left, starting with the model." | C |
+| 9 | Life of a POST request | Video V2 (stepped) | V |
 
-### 7.4 Lesson 1: CRUD (7:17–7:42)
-
-| # | Slide | Content | Asset |
-|---|---|---|---|
-| 11 | Lesson 1: A model becomes a table | Each field of `Question` becomes a column; `makemigrations` and `migrate`; the small map with Model highlighted. Notes run the whole lesson: model, migrations, serializer, ViewSet and URLs, admin, and the browser check (201, 400, 404), ending with `"votes": 9999` coming back as 0. | C |
-
-### 7.5 Lesson 2: custom actions (7:42–7:55)
+### 7.4 Part 1: CRUD (7:17–7:42)
 
 | # | Slide | Content | Asset |
 |---|---|---|---|
-| 12 | Lesson 2: How should voting work? | `votes` and `answered` are read-only. A client sending `PATCH {"votes": 9999}` would let clients pick any number; `POST /api/questions/1/upvote/` lets the server own the rule. DRF calls these actions. Catch-up line for `checkpoint-1-crud`. Notes run the lesson and end by upvoting while logged out. | C |
+| 10 | Part 1: A model becomes a table | Each field of `Question` becomes a column; `makemigrations` and `migrate`; the small map with Model highlighted. Notes run the whole part: model, migrations, serializer, ViewSet and URLs, admin, and the browser check (201, 400, 404), ending with `"votes": 9999` coming back as 0. | C |
 
-### 7.6 Halfway break (7:55–8:00)
-
-| # | Slide | Content | Asset |
-|---|---|---|---|
-| 13 | Halfway break | Take five minutes; put your hand up if something doesn't work. Catch-up line for `checkpoint-2-actions`. | S |
-
-### 7.7 Lesson 3: authentication and moderation (8:00–8:13)
+### 7.5 Part 2: custom actions (7:42–7:55)
 
 | # | Slide | Content | Asset |
 |---|---|---|---|
-| 14 | Lesson 3: Who can do what | Authentication and authorization, one sentence each. The rules from section 2 with the DRF permission class for each. A failed check gets 403. Catch-up line for `checkpoint-2-actions`. Notes: where each rule goes in the code, staff vs. superuser, the optional 401 aside; they run the lesson and end with sam upvoting three times. | C |
+| 11 | Part 2: How should voting work? | `votes` and `answered` are read-only. A client sending `PATCH {"votes": 9999}` would let clients pick any number; `POST /api/questions/1/upvote/` lets the server own the rule. DRF calls these actions. Catch-up line for `checkpoint-1-crud`. Notes run the part and end by upvoting while logged out, then an optional break. | C |
 
-### 7.8 Lesson 4: many-to-many voting (8:13–8:25)
-
-| # | Slide | Content | Asset |
-|---|---|---|---|
-| 15 | Lesson 4: One vote per user | `votes` is a number, so the server can't tell who voted. A many-to-many field stores one row per vote in `questions_question_votes` (id, question_id, user_id). The migration deletes the old vote counts. Catch-up line for `checkpoint-3-auth`. | C |
-| 16 | Keep the JSON compatible | Before and after JSON: `votes` stays a number through `source="votes.count"`, and `has_voted` is new. Renaming `upvote` to `toggle_vote` changes the URL, so `/upvote/` gets a 404. Notes run the lesson, including the `"votes": []` moment in the browser. | C |
-
-### 7.9 Wrap-up (8:25–8:30)
+### 7.6 Part 3: authentication and moderation (7:55–8:10)
 
 | # | Slide | Content | Asset |
 |---|---|---|---|
-| 17 | What you built | The map with real code names next to each part (`DefaultRouter`, `QuestionViewSet`, `get_permissions`, `toggle_vote`, `QuestionSerializer`, `Question`, `questions_question`, `questions_question_votes`). | C |
-| 18 | Where to go next | The DRF tutorial · tests with DRF's `APITestCase` · pagination and ordering · a frontend that calls your API · deploying. QR code to a resource list. | S |
-| 19 | Questions? | Thanks, the finished code is on `checkpoint-4-m2m`, the next Developer Club event, repo QR code. | S |
+| 12 | Part 3: Who can do what | Authentication and authorization, one sentence each. The rules from section 2 with the DRF permission class for each. A failed check gets 403. Catch-up line for `checkpoint-2-actions`. Notes: where each rule goes in the code, staff vs. superuser, the optional 401 aside; they run the part and end with sam upvoting three times. | C |
 
-### 7.10 Hidden appendix
+### 7.7 Part 4: many-to-many voting (8:10–8:25)
+
+| # | Slide | Content | Asset |
+|---|---|---|---|
+| 13 | Part 4: One vote per user | `votes` is a number, so the server can't tell who voted. A many-to-many field stores one row per vote in `questions_question_votes` (id, question_id, user_id). The migration deletes the old vote counts. Catch-up line for `checkpoint-3-auth`. | C |
+| 14 | Keep the JSON compatible | Before and after JSON: `votes` stays a number through `source="votes.count"`, and `has_voted` is new. Renaming `upvote` to `toggle_vote` changes the URL, so `/upvote/` gets a 404. Notes run the part, including the `"votes": []` moment in the browser. | C |
+
+### 7.8 Wrap-up (8:25–8:30)
+
+| # | Slide | Content | Asset |
+|---|---|---|---|
+| 15 | What you built | The map with real code names next to each part (`DefaultRouter`, `QuestionViewSet`, `get_permissions`, `toggle_vote`, `QuestionSerializer`, `Question`, `questions_question`, `questions_question_votes`). The last slide: it stays up for thanks and questions. A closing slide may come later; the presenter will decide. | C |
+
+### 7.9 Hidden appendix
 
 Use `backstage: true` (Slidev 53 drops `hide: true` slides):
 - Appendix index.
@@ -319,7 +311,7 @@ If behind: what to skip
 - Mode tag is one of `SLIDES`, `VS CODE`, `TERMINAL`, `BROWSER`.
 - Use Slidev's `[click]` markers so notes stay in sync with click builds.
 - Every switch away from the slides is an explicit `→ SWITCH TO …` line. The next slide's notes say what should be true when you return.
-- Each lesson's first slide holds the notes for the whole coding stretch: every switch with a clock time, the exact commands, and the expected visible result, so the presenter can check the room before moving on.
+- Each part's first slide holds the notes for the whole coding stretch: every switch with a clock time, the exact commands, and the expected visible result, so the presenter can check the room before moving on.
 - Video slides include a timestamped narration line for each stop.
 
 ### 8.2 `notes/presenter-flow.md`
@@ -328,7 +320,7 @@ One minute-by-minute table for the whole night: clock, slide numbers, mode, what
 
 ### 8.3 `notes/cheat-sheet.md`
 
-Every snippet the presenter will type or paste, in order, grouped by lesson. Each one names its file and where it goes. Generate it from the checkpoint diffs (section 9) so it can't drift from the real code.
+Every snippet the presenter will type or paste, in order, grouped by part. Each one names its file and where it goes. Generate it from the checkpoint diffs (section 9) so it can't drift from the real code.
 
 ### 8.4 `notes/screen-setup.md`
 
@@ -374,7 +366,5 @@ Every snippet the presenter will type or paste, in order, grouped by lesson. Eac
 ## 11. Inputs to ask the presenter for
 
 Use clearly marked placeholders until you have these:
-- Developer Club logo or wordmark files (title and closing slides only)
-- Next club event details for the closing slide
-- The resource-list link for the "where to go next" QR code
+- Only if a closing slide comes back: the Developer Club logo, the next club event, and a resource-list link for a "where to go next" QR code
 - Whether there will be a public, deployed instance for the audience to use. If so, get its URL and which checkpoint it runs. It's shown by switching to a browser tab, never in an iframe.

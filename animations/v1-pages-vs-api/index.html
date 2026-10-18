@@ -1,0 +1,149 @@
+<!doctype html>
+<!--
+  V1. Server-rendered pages vs. an API (slide 4, stepped).
+  Left: the browser asks for a page, and the server builds the whole page,
+  with the data in it, and sends it. Right: a frontend app that's already
+  running in the browser draws the page without data (a skeleton), asks the
+  API for the data, gets JSON back, and fills in the empty spots. The
+  browser's label says the frontend app is running there, and lights up while
+  the app draws, so the skeleton clearly comes from the app, not the server.
+  Stops: 0 both empty · 5 the server-rendered page · 8 the skeleton ·
+  12.5 the JSON and the filled page (the poster).
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=1920, height=1080">
+  <link rel="stylesheet" href="../shared/stage.css">
+  <script src="../node_modules/gsap/dist/gsap.min.js"></script>
+  <script src="../shared/stage.js"></script>
+  <style>
+    .heading { position: absolute; top: 40px; font-size: 52px; font-weight: 650; color: var(--text-2); }
+    .divider { position: absolute; left: 958px; top: 130px; width: 5px; height: 910px; background: var(--rule); }
+    .browser { position: absolute; border: var(--stroke-w) solid var(--stroke); border-radius: 12px; background: var(--bg); }
+    .browser .who { position: absolute; left: 24px; top: 14px; font-size: 40px; font-weight: 600; color: var(--text-2); white-space: nowrap; }
+    .page { position: absolute; padding: 26px 32px; border-radius: 10px; background: var(--surface); }
+    .page h1 { font-size: 50px; font-weight: 700; margin-bottom: 22px; }
+    .page .item { font-size: 44px; font-weight: 600; height: 56px; }
+    .page .votes { font-size: 40px; color: var(--text-2); margin-top: 10px; height: 50px; }
+    .bar { position: absolute; border-radius: 8px; background: var(--rule); }
+    .fill { position: absolute; }
+    .url { position: absolute; font-family: var(--mono); font-size: 40px; font-weight: 600; color: var(--text-2); white-space: nowrap; }
+    .url .get { color: var(--get); font-weight: 700; }
+    .json { position: absolute; padding: 14px 24px; border-radius: 12px; background: var(--surface); font-family: var(--mono); font-size: 40px; font-weight: 500; line-height: 56px; white-space: pre; }
+    .note { position: absolute; top: 900px; width: 820px; font-size: 46px; font-weight: 650; line-height: 1.25; }
+  </style>
+</head>
+<body>
+  <div id="stage">
+    <svg class="lines" id="lines"></svg>
+  </div>
+
+  <script>
+    const tl = gsap.timeline({ paused: true })
+    const ACCENT = '#4fd1b5'
+    const TEXT = '#f2f0eb'
+    const TEXT_2 = '#c5c9d0'
+
+    // ---------- layout: two halves, each with a server and a browser ----------
+    el('div', 'heading', { left: 60 }, 'Server-rendered page')
+    el('div', 'heading', { left: 1020 }, 'An API')
+    el('div', 'divider')
+    el('div', 'box', { left: 300, top: 130, width: 360, height: 116 }, '<span class="name">Server</span>')
+    el('div', 'box', { left: 1260, top: 130, width: 360, height: 116 }, '<span class="name">Server</span>')
+
+    const leftBrowser = el('div', 'browser', { left: 100, top: 470, width: 760, height: 400 })
+    el('div', 'who', {}, 'Browser', leftBrowser)
+    const rightBrowser = el('div', 'browser', { left: 1060, top: 470, width: 760, height: 400 })
+    const appLabel = el('div', 'who', {}, 'Browser, running the frontend app', rightBrowser)
+
+    // Both pages show the same thing in the end.
+    const PAGE = { width: 700, height: 290 }
+    const pageHtml = '<h1>Questions</h1><div class="item">What is an API?</div><div class="votes">3 votes</div>'
+
+    // Left: the whole page, built on the server.
+    el('div', 'page', { left: 130, top: 550, ...PAGE })
+    const sentPage = el('div', 'page', { left: 130, top: 550, ...PAGE }, pageHtml)
+
+    // Right: the page the frontend app draws, then fills.
+    el('div', 'page', { left: 1090, top: 550, ...PAGE })
+    const appHeading = el('div', 'abs', { left: 1122, top: 576, fontSize: 50, fontWeight: 700 }, 'Questions')
+    const barItem = el('div', 'bar', { left: 1122, top: 659, width: 380, height: 46 })
+    const barVotes = el('div', 'bar', { left: 1122, top: 728, width: 170, height: 40 })
+    const fillItem = el('div', 'fill', { left: 1122, top: 652, fontSize: 44, fontWeight: 600 }, 'What is an API?')
+    const fillVotes = el('div', 'fill', { left: 1122, top: 722, fontSize: 40, color: TEXT_2 }, '3 votes')
+    const json = el('div', 'json', { left: 1110, top: 290 }, '[{"text": "What is an API?",\n  "votes": 3, …}]')
+
+    // Requests: an arrow from the browser up to its server, with the URL beside it.
+    const svg = document.getElementById('lines')
+    const NS = 'http://www.w3.org/2000/svg'
+    svg.innerHTML = `<defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="head"/></marker></defs>`
+    function arrow(d) {
+      const p = document.createElementNS(NS, 'path')
+      p.setAttribute('d', d)
+      p.setAttribute('class', 'edge')
+      p.setAttribute('marker-end', 'url(#arrow)')
+      svg.appendChild(p)
+      return p
+    }
+    const reqLeft = arrow('M 360 462 V 258')
+    const reqRight = arrow('M 1320 462 V 258')
+    const urlLeft = el('div', 'url', { left: 384, top: 330 }, '<span class="get">GET</span> /questions/')
+    const urlRight = el('div', 'url', { left: 1344, top: 330 }, '<span class="get">GET</span> /api/questions/')
+
+    const leftNote = el('div', 'note', { left: 100 }, 'The server builds the whole page, with the data in it, and sends it.')
+    const drawNote = el('div', 'note', { left: 1060 }, 'The frontend app draws the page. It has no data yet.')
+    const fillNote = el('div', 'note', { left: 1060 }, 'The server sends only the data, as JSON. The app fills it in.')
+
+    // ---------- frame 0: both browsers empty ----------
+    gsap.set([sentPage, appHeading, barItem, barVotes, fillItem, fillVotes, json, urlLeft, urlRight, leftNote, drawNote, fillNote], { opacity: 0 })
+    for (const p of [reqLeft, reqRight]) {
+      const len = p.getTotalLength()
+      // Hidden, arrowhead included, until it's drawn.
+      gsap.set(p, { strokeDasharray: len, strokeDashoffset: len, opacity: 0 })
+    }
+    // The page starts small, under the server, and travels to the browser.
+    gsap.set(sentPage, { y: -365, scale: 0.45 })
+    gsap.set(json, { y: -110, scale: 0.6 })
+
+    const drawArrow = (p, label, t) => {
+      tl.set(p, { opacity: 1 }, t)
+      tl.to(p, { strokeDashoffset: 0, duration: 0.6, ease: 'power2.out' }, t)
+      tl.to(label, { opacity: 1, duration: 0.3 }, t + 0.2)
+    }
+    const eraseArrow = (p, label, t) => {
+      tl.to([p, label], { opacity: 0, duration: 0.3 }, t)
+      tl.set(p, { strokeDashoffset: p.getTotalLength() }, t + 0.35)
+    }
+
+    // ---------- 0 → 5: the server sends a whole page ----------
+    drawArrow(reqLeft, urlLeft, 0.4)
+    eraseArrow(reqLeft, urlLeft, 1.5)
+    tl.to(sentPage, { opacity: 1, duration: 0.4 }, 1.9)
+    tl.fromTo(sentPage.children, { opacity: 0 }, { opacity: 1, duration: 0.3, stagger: 0.25, immediateRender: false }, 2.0)
+    tl.to(sentPage, { y: 0, scale: 1, duration: 1.3, ease: 'power1.inOut' }, 2.9)
+    tl.to(leftNote, { opacity: 1, duration: 0.4 }, 4.3)
+
+    // ---------- 5 → 8: the frontend app draws the page without data ----------
+    tl.to(appLabel, { color: ACCENT, duration: 0.3 }, 5.2)
+    tl.to(appHeading, { opacity: 1, duration: 0.4 }, 5.5)
+    tl.to([barItem, barVotes], { opacity: 1, duration: 0.4, stagger: 0.25 }, 5.9)
+    tl.to(drawNote, { opacity: 1, duration: 0.4 }, 6.8)
+    tl.to(appLabel, { color: TEXT_2, duration: 0.4 }, 7.4)
+
+    // ---------- 8 → 12.5: the app asks for the data and fills it in ----------
+    drawArrow(reqRight, urlRight, 8.3)
+    eraseArrow(reqRight, urlRight, 9.4)
+    tl.to(json, { opacity: 1, duration: 0.3 }, 9.8)
+    tl.to(json, { y: 0, scale: 1, duration: 1.0, ease: 'power2.out' }, 9.8)
+    tl.to([barItem, barVotes], { opacity: 0, duration: 0.35 }, 11.0)
+    tl.fromTo([fillItem, fillVotes], { opacity: 0, color: ACCENT }, { opacity: 1, duration: 0.35, immediateRender: false }, 11.05)
+    tl.to(fillItem, { color: TEXT, duration: 0.5 }, 11.7)
+    tl.to(fillVotes, { color: TEXT_2, duration: 0.5 }, 11.7)
+    tl.to(drawNote, { opacity: 0, duration: 0.3 }, 11.2)
+    tl.to(fillNote, { opacity: 1, duration: 0.4 }, 11.5)
+
+    registerVideo(tl, { duration: 13, stops: [0, 5, 8, 12.5] })
+  </script>
+</body>
+</html>

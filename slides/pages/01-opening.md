@@ -1,28 +1,5 @@
 ---
-layout: cover
-part: Opening
----
-
-<ClubMark :height="56" />
-
-# Build a Q&A API with Python & Django
-
-<p class="lead muted">Backend workshop · Developer Club, WMU</p>
-
-<p class="small muted">Monday, October 19, 2026 · Floyd Hall D-109</p>
-
-<!--
-[7:00 · 2 min] [SLIDES]
-
-- Welcome. Say your name and one line about what you do.
-- Thank the club. If other people are helping tonight, introduce them.
-- Say what we build: "You're going to build an API where people ask questions, vote on them, and mark them answered. When you leave, it runs on your laptop."
-- Ask for a show of hands: "Who has written Python?" "Who has used Django?" "Who has called an API, from code or with curl?" Adjust your pace to the answers.
-- How the night works: "There are four lessons. Each one starts with a slide or two. Then we write the code together in VS Code until it works, with no slides in between. Each lesson ends on a checkpoint branch, so you can catch up if you fall behind."
--->
-
----
-part: Opening
+section: Opening
 clicks: 2
 ---
 
@@ -31,23 +8,28 @@ clicks: 2
 <div class="stack">
 <p>At <code>http://127.0.0.1:8000/admin/</code> you should see the Django login page.</p>
 <p v-click="1">Leave <code>runserver</code> running in its terminal. Open a second terminal for every other command. In VS Code, choose New Terminal from the Terminal menu.</p>
-<p v-click="2">Each lesson ends on a checkpoint branch with the finished code. If you fall behind, the first slide of the next lesson shows one line to run.</p>
+<p v-click="2">Each part ends on a checkpoint branch with the finished code. If you fall behind, the first slide of the next part shows one line to run.</p>
 </div>
 
 <!--
-[7:02 · 2 min] [SLIDES]
+[7:00 · 4 min] [SLIDES]
+
+- Welcome. Say your name and one line about what you do. Thank the club. If other people are helping tonight, introduce them.
+- Say what we build: "You're going to build an API where people ask questions, vote on them, and mark them answered. When you leave, it runs on your laptop."
+- Ask for a show of hands: "Who has written Python?" "Who has used Django?" "Who has called an API, from code or with curl?" Adjust your pace to the answers.
+- How the night works: "There are four parts. Each one starts with a slide or two. Then we write the code together in VS Code until it works, with no slides in between. Each part ends on a checkpoint branch, so you can catch up if you fall behind."
 
 Ask: "Hands up if you see the Django login page."
 
-- If some hands stay down: "Keep going with the steps from the setup slide. The README has them too. The next 15 minutes are slides, so you won't miss any code." Ask the people next to them to help.
+- If some hands stay down: "Keep going with the steps from the setup slide. The README has them too. The next 13 minutes are slides, so you won't miss any code." Ask the people next to them to help.
 
 [click] → SWITCH TO VS CODE: show the terminal panel, with `runserver` in the first terminal. Click + to open a second one. Say: "runserver keeps running all night. Type every other command in the second terminal." → SWITCH TO SLIDES
 
-[click] Say: "Every lesson ends on a checkpoint branch with the finished code. If you fall behind, run the line on the next lesson's first slide. It saves your own work and switches you to the finished code."
+[click] Say: "Every part ends on a checkpoint branch with the finished code. If you fall behind, run the line on the next part's first slide. It saves your own work and switches you to the finished code."
 -->
 
 ---
-part: API basics
+section: API basics
 ---
 
 # What a backend does
@@ -69,25 +51,31 @@ part: API basics
 -->
 
 ---
-part: API basics
+section: API basics
+clicks: 3
 ---
 
 # Server-rendered pages vs. an API
 
-<StepVideo name="v1-one-backend-many-clients" loop alt="Left: a server builds a whole HTML page for one browser, which reloads. Right: the same server sends small JSON to a web app, a phone, and a terminal." />
+<StepVideo name="v1-pages-vs-api" alt="Left: the browser asks the server for a page, and the server sends the whole page with the data in it. Right: a frontend app in the browser draws the page with empty spots, asks the server's API for the data, gets JSON back, and fills in the empty spots." />
 
 <!--
 [7:05 · 2 min] [SLIDES]
 
-- The video loops on its own. Talk over it.
-- Left: the server builds the whole HTML page and sends it to one browser. Every click loads a new page.
-- Right: an API sends only the data, as JSON. A web app, a phone app, and a terminal all use the same responses.
-- Say: "We're going to build the right half: a backend that sends data, not pages."
+- Two ways a backend can work. Both browsers end up showing the same page.
+- 0:00 (hold): each side has a server and a browser with an empty page.
+
+[click] 0:00–0:05: left. The browser asks for `/questions/`. The server builds the whole page, with the data already in it, as HTML, and sends it. Every click on a link loads a new page this way.
+
+[click] 0:05–0:08: right. This browser is running a frontend app, for example a React app it loaded earlier. The app draws the page itself, with grey bars where the data will go. Say: "The server didn't send this layout. The frontend app drew it."
+
+[click] 0:08–0:12.5: the app asks the API for `/api/questions/`. The server sends only the data, as JSON, and the app puts it into the page. Say: "We're going to build the right half: the server that sends JSON. A web app, a phone app, or a terminal can all use the same JSON."
+
 - If anyone asks: Django can also render HTML pages, and for many sites that is simpler. This workshop is about APIs.
 -->
 
 ---
-part: API basics
+section: API basics
 ---
 
 # Resources and URLs
@@ -137,7 +125,7 @@ part: API basics
 -->
 
 ---
-part: API basics
+section: API basics
 clicks: 4
 ---
 
@@ -168,7 +156,7 @@ clicks: 4
 -->
 
 ---
-part: API basics
+section: API basics
 clicks: 5
 ---
 
@@ -179,30 +167,30 @@ clicks: 5
 <!--
 [7:10 · 3 min] [SLIDES]
 
-- We send this exact request in lesson 1, and the server sends back this response.
+- We send this exact request in part 1, and the server sends back this response.
 
-[click] The first line has the method and the URL: a POST to the collection, which creates a question. `HTTP/1.1` is the version of HTTP. You can ignore it.
+[click] The first line has the method, `POST`, and the URL of the collection. A POST to the collection creates a question. `HTTP/1.1` is the version of HTTP. You don't need it today.
 
-[click] The headers describe the message. `Content-Type` says the body is JSON.
+[click] Each header is a name and a value. `Host` names the server. `Content-Type` says the body is JSON.
 
-[click] The body is the data we send. We send only `text`. JSON is a text format for data, and most APIs use it. It looks like a Python dictionary: names in quotes, a colon, and a value.
+[click] The body is the data we send. We send only `text`. Most APIs send JSON, a text format for data. It looks like a Python dictionary: each name is in quotes, and a colon separates it from its value.
 
-[click] The response status is `201 Created`. The first digit says what kind of result it is. 2xx means success: the request worked. 4xx is a client error: something is wrong with the request, such as invalid data or a missing login. 5xx is a server error: the server itself failed, for example because of a bug in our code. Say: "You'll see specific 4xx codes in the browser during the lessons."
+[click] The response starts with the status code, `201 Created`. The first digit says what kind of result it is. 2xx means the request worked. 4xx means the request has a problem, such as invalid data or a missing login. 5xx means the server failed, for example because of a bug in our code. Say: "You'll see specific 4xx codes in the browser later."
 
-[click] The response body: the server filled in `id`, `votes`, `answered`, and `created_at`. We sent only `text`.
+[click] The response body: the server added `id`, `votes`, `answered`, and `created_at`. We sent only `text`.
 
 - Say: "That's a REST API: each resource has a URL, the method says what to do with it, and the status code says what happened."
 -->
 
 ---
-part: API basics
+section: API basics
 ---
 
 # The parts of our API
 
 <div class="stack">
 <RequestMap :build="1" />
-<p v-click="7" class="small">We build these parts from right to left, starting with the model.</p>
+<p v-click="7" class="small">We'll build these parts from right to left, starting with the model.</p>
 </div>
 
 <!--
@@ -224,11 +212,11 @@ part: API basics
 
 [click] The response goes back to the client as JSON, along the bottom arrow.
 
-[click] Say: "We build from the right. The model comes first, because every other part uses it."
+[click] Say: "We'll build from the right. The model comes first, because every other part uses it."
 -->
 
 ---
-part: API basics
+section: API basics
 clicks: 6
 ---
 
@@ -239,7 +227,7 @@ clicks: 6
 <!--
 [7:15 · 2 min] [SLIDES]
 
-- Say: "In lesson 1 you write every part in this video. By the end of the lesson, your API handles this request."
+- Say: "In part 1 you write the code for every box in this video. By the end of part 1, your API handles this request."
 - This is the same POST request as on the anatomy slide, but the client also sends `"votes": 9999`. The video shows what each part does with it. The highlighted box moves from the client toward SQLite.
 - 0:00 (hold): the client sends the request as text: the method, URL, headers, and JSON body.
 

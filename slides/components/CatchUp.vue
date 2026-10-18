@@ -1,8 +1,8 @@
 <script setup lang="ts">
 /**
- * The one line to run if you fall behind, at the bottom of each lesson's first
- * slide and on the halfway break: stash your work, switch to the last
- * checkpoint, and update the database. `;` separates commands in bash, zsh,
+ * The one line to run if you fall behind, at the bottom of the first slide of
+ * parts 2–4: stash your work, switch to the last checkpoint, and update the
+ * database. `;` separates commands in bash, zsh,
  * and PowerShell alike.
  */
 defineProps<{ branch: string }>()

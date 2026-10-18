@@ -1,14 +1,14 @@
 ---
-part: Lesson 4
+section: Part 4
 ---
 
-# Lesson 4: One vote per user
+# Part 4: One vote per user
 
 <div class="voters">
 <p><code>votes</code> is a number, so the server can't tell who voted.</p>
 
 <div v-click="1" class="join-wrap">
-<p>Lesson 4 makes <code>votes</code> a many-to-many field. Django stores each vote as a row in a new table:</p>
+<p>Part 4 makes <code>votes</code> a many-to-many field. Django stores each vote as a row in a new table:</p>
 <div>
 <div class="file-label">questions_question_votes</div>
 <table class="join">
@@ -63,7 +63,7 @@ part: Lesson 4
 </style>
 
 <!--
-[8:13 · 2 min] [SLIDES]
+[8:10 · 2 min] [SLIDES]
 
 - Start from the browser: sam voted three times, and the count went up each time.
 - `votes` is a number. Ask: "When sam clicks again, how would the server know that sam already voted?" It can't. The server needs to store who voted, not how many votes there are.
@@ -74,11 +74,11 @@ part: Lesson 4
 
 [click] Say: "The migration deletes the old vote counts. A count like 3 doesn't say which three users voted, so Django can't turn it into rows. Questions and accounts stay." In production, you write migrations that keep your data.
 
-- Point at the last line: "If you're behind, run this line now. It switches you to the finished code for lesson 3."
+- Point at the last line: "If you're behind, run this line now. It switches you to the finished code for part 3."
 -->
 
 ---
-part: Lesson 4
+section: Part 4
 clicks: 2
 ---
 
@@ -134,7 +134,7 @@ clicks: 2
 </style>
 
 <!--
-[8:15 · 10 min] [SLIDES]
+[8:12 · 13 min] [SLIDES]
 
 - If we change only the model, DRF sends `votes` as a list of user ids, such as `"votes": []`. A client that reads `"votes": 3` as a number would break.
 - Every client depends on the JSON's field names and types. We can change how we store votes, as long as the JSON keeps the same fields.
@@ -145,27 +145,27 @@ clicks: 2
 
 [click] `upvote` becomes `toggle_vote`: if you already voted, it removes your vote, and otherwise it adds it. The new name changes the URL, so this change does break clients. Say: "In an API with real users, you'd keep the old URL working for a while, or release a new version of the API."
 
-- Say: "Now we write all of lesson 4."
+- Say: "Now we write all of part 4."
 
-→ SWITCH TO VS CODE (8:17): questions/models.py (cheat sheet step 9)
+→ SWITCH TO VS CODE (8:14): questions/models.py (cheat sheet step 9)
 
 - Import `settings` (`from django.conf import settings`). Change `votes` to `models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)`. The field keeps its name and gets a new type. `blank=True` allows a question with no votes. Save.
 
-→ SWITCH TO TERMINAL (8:18)
+→ SWITCH TO TERMINAL (8:15)
 
 - `uv run manage.py makemigrations questions --name votes_many_to_many` → expect `0002_votes_many_to_many.py` with `- Remove field votes from question` and `+ Add field votes to question`.
 - `uv run manage.py migrate` → expect `Applying questions.0002_votes_many_to_many... OK`.
 
-→ SWITCH TO BROWSER (8:19): http://127.0.0.1:8000/api/questions/
+→ SWITCH TO BROWSER (8:16): http://127.0.0.1:8000/api/questions/
 
 - Point at `"votes": []`. Say: "This is the problem from the slide. The JSON changed, and a client that expects a number in `votes` now breaks. The serializer fixes it."
 
-→ SWITCH TO VS CODE (8:20): questions/serializers.py, then questions/views.py (cheat sheet steps 10 and 11)
+→ SWITCH TO VS CODE (8:17): questions/serializers.py, then questions/views.py (cheat sheet steps 10 and 11)
 
 - Serializer: add the `votes` and `has_voted` lines above `class Meta`, add `"has_voted"` to `fields`, and add `get_has_voted` below `Meta`. A `SerializerMethodField` calls the method named `get_<field name>`. `self.context["request"].user` is the user who sent the request. Save. Refresh `/api/questions/`: `"votes"` is a number again.
 - Views: replace `upvote` with `toggle_vote`. If this user already voted, remove their vote. Otherwise, add it. There's no `save()`, because `add` and `remove` write to the join table directly. The action still requires `IsAuthenticated`, so `request.user` is always a real user. Save. Paste both files if you're short on time.
 
-→ SWITCH TO BROWSER (8:23): http://127.0.0.1:8000/api/questions/1/toggle_vote/ (logged in as sam)
+→ SWITCH TO BROWSER (8:21): http://127.0.0.1:8000/api/questions/1/toggle_vote/ (logged in as sam)
 
 - sam presses POST: `"votes": 1, "has_voted": true`. Again: `"votes": 0, "has_voted": false`. The second click removes the vote.
 - Log in as mod and press POST: `"votes": 1, "has_voted": true`. Each user can add one vote.
@@ -173,5 +173,5 @@ clicks: 2
 
 Back here when: 8:25. The wrap-up starts then, even if people are still typing.
 
-If behind: run `git switch checkpoint-4-m2m`, then `uv run manage.py migrate`. The branch already has the migration and the serializer fix, so skip the `[]` step. Time check: if the break didn't start by 8:05, demo the whole lesson from `checkpoint-4-m2m` in about 3 minutes (cut list item 4), but still show both lesson 4 slides.
+If behind: run `git switch checkpoint-4-m2m`, then `uv run manage.py migrate`. The branch already has the migration and the serializer fix, so skip the `[]` step. Time check: if part 3 didn't start by 8:05, demo all of part 4 from `checkpoint-4-m2m` in about 3 minutes (cut list item 4), but still show both part 4 slides.
 -->

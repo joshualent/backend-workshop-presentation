@@ -9,20 +9,8 @@ export const workshop = {
   date: 'Monday, October 19, 2026',
   room: 'Floyd Hall D-109',
 
-  /** The repo attendees clone (QR codes on the setup and closing slides). */
+  /** The repo attendees clone (the QR code on the setup slide). */
   repoUrl: 'https://github.com/joshualent/questions-api',
-
-  /**
-   * Developer Club logo, as a file in slides/public/ (for example '/media/club-logo.svg').
-   * Set to null to show the club name as plain text instead.
-   */
-  logo: '{{LOGO_FILE}}' as string | null,
-
-  /** Next club event for the thanks slide: one short line, for example 'Git workshop · Nov 2 · Floyd D-109'. */
-  nextEvent: '{{NEXT_EVENT}}',
-
-  /** Resource list for the "where to go next" QR code. */
-  resourceListUrl: '{{RESOURCE_LIST_URL}}',
 
   /**
    * A public, deployed instance for the audience, if there is one. Only used

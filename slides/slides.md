@@ -39,19 +39,19 @@ src: ./pages/01-opening.md
 ---
 
 ---
-src: ./pages/02-lesson-1.md
+src: ./pages/02-part-1.md
 ---
 
 ---
-src: ./pages/03-lesson-2.md
+src: ./pages/03-part-2.md
 ---
 
 ---
-src: ./pages/04-lesson-3.md
+src: ./pages/04-part-3.md
 ---
 
 ---
-src: ./pages/05-lesson-4.md
+src: ./pages/05-part-4.md
 ---
 
 ---

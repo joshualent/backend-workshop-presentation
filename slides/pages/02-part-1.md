@@ -1,9 +1,9 @@
 ---
-part: Lesson 1
+section: Part 1
 clicks: 6
 ---
 
-# Lesson 1: A model becomes a table
+# Part 1: A model becomes a table
 
 <div class="models">
 <p>Each model becomes a database table, and each field becomes a column.</p>
@@ -27,7 +27,7 @@ clicks: 6
 <!--
 [7:17 · 25 min] [SLIDES]
 
-- Lesson 1 is CRUD: create, read, update, and delete. We write the model, the serializer, the ViewSet, and the URLs, from right to left on the diagram. By 7:42 your API handles the request from the video.
+- Part 1 is CRUD: create, read, update, and delete. We write the model, the serializer, the ViewSet, and the URLs, from right to left on the diagram. By 7:42 your API handles the request from the video.
 - A model describes one kind of data we store. We write one class, `Question`, with four fields.
 
 [click] `text` is a CharField, stored as a `varchar(300)` column. A CharField needs a `max_length`.
@@ -42,7 +42,7 @@ clicks: 6
 
 [click] Say: "makemigrations writes a file that describes the change. migrate changes the database to match. Run both every time you change a model."
 
-- Say: "Now we write all of lesson 1 in VS Code. The slides come back when the lesson works."
+- Say: "Now we write all of part 1 in VS Code. The slides come back when it works."
 
 → SWITCH TO VS CODE (7:19): questions/models.py (cheat sheet step 1)
 
@@ -64,7 +64,7 @@ clicks: 6
 Still in VS Code (7:26): questions/views.py, then config/urls.py (cheat sheet steps 3 and 4)
 
 - Say: "A ViewSet is one class that handles every route for a resource. `ModelViewSet` already has a method for each of the six routes from the HTTP methods slide: list, create, retrieve, update, partial_update, and destroy."
-- `views.py`: replace the stub. The imports, then `QuestionViewSet` with three attributes: `queryset` (which rows), `serializer_class` (how to convert them to JSON), and `permission_classes`. Say: "For now, `AllowAny` lets anyone call every route. Lesson 3 replaces it." Save.
+- `views.py`: replace the stub. The imports, then `QuestionViewSet` with three attributes: `queryset` (which rows), `serializer_class` (how to convert them to JSON), and `permission_classes`. Say: "For now, `AllowAny` lets anyone call every route. Part 3 replaces it." Save.
 - `config/urls.py`: two imports, a `DefaultRouter`, `router.register("questions", QuestionViewSet, basename="question")`, and the `api/` line. Save. Say: "The router creates the six routes from the ViewSet, under `/api/questions/`."
 - Watch the runserver terminal. It reloads when you save, and it shows typos there first.
 
@@ -78,7 +78,7 @@ Still in VS Code (7:26): questions/views.py, then config/urls.py (cheat sheet st
 
 → SWITCH TO TERMINAL
 
-- Run `uv run manage.py createsuperuser` with the username `mod`. This is the moderator account for lesson 3. Attendees can create theirs now or in lesson 3.
+- Run `uv run manage.py createsuperuser` with the username `mod`. This is the moderator account for part 3. Attendees can create theirs now or in part 3.
 
 → SWITCH TO BROWSER: http://127.0.0.1:8000/admin/
 
@@ -91,9 +91,9 @@ Still in VS Code (7:26): questions/views.py, then config/urls.py (cheat sheet st
 - Blank text: `{"text": ""}` → `HTTP 400 Bad Request` and `"This field may not be blank."`. Nothing was saved.
 - Not found: open http://127.0.0.1:8000/api/questions/999/ → `HTTP 404 Not Found` and `"No Question matches the given query."`.
 - Optional curl example (cut this first if you're behind): `curl -i -X POST http://127.0.0.1:8000/api/questions/ -H "Content-Type: application/json" -d '{"text": "What does a serializer do?"}'` → `HTTP/1.1 201 Created`. Say: "curl calls the same API without a browser."
-- Last, the problem lesson 2 fixes. Send `{"text": "hi", "votes": 9999}` → `HTTP 201 Created` with `"votes": 0`. Say: "The server ignored our vote count. `votes` and `answered` are read-only, so no client can vote or mark a question answered yet."
+- Last, the problem part 2 fixes. Send `{"text": "hi", "votes": 9999}` → `HTTP 201 Created` with `"votes": 0`. Say: "The server ignored our vote count. `votes` and `answered` are read-only, so no client can vote or mark a question answered yet."
 
 Back here when: most of the room has a 201 and a 400 of their own (7:42).
 
-If behind: anyone stuck can switch to `checkpoint-1-crud` with the line on the next slide. Cut the curl example first, then the admin demo (keep the one line in `admin.py`). Time check: if lesson 1 isn't done by 7:45, paste lesson 2's code from the cheat sheet instead of typing it.
+If behind: anyone stuck can switch to `checkpoint-1-crud` with the line on the next slide. Cut the curl example first, then the admin demo (keep the one line in `admin.py`). Time check: if part 1 isn't done by 7:45, paste part 2's code from the cheat sheet instead of typing it.
 -->

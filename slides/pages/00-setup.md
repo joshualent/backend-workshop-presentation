@@ -1,6 +1,6 @@
 ---
 layout: default
-part: Setup
+section: Setup
 ---
 
 # Set up while you wait
@@ -31,13 +31,13 @@ uv run manage.py runserver
 </li>
 <li><p>Open <code>http://127.0.0.1:8000/admin/</code>. You should see the Django login page.</p></li>
 </ol>
-<QrCode :url="$workshop.repoUrl" :size="150" />
+<QrCode :url="$workshop.repoUrl" :size="180" />
 </div>
 
 <style>
 .setup {
   display: grid;
-  grid-template-columns: 1fr 160px;
+  grid-template-columns: 1fr 190px;
   gap: 24px;
   align-items: start;
 }
@@ -73,14 +73,14 @@ uv run manage.py runserver
 Installing the tools:
 
 - Git on Windows: Git for Windows from git-scm.com, with the default options. On macOS, running `git --version` offers to install it. On Linux, use the package manager.
-- uv: the install command for each system is on uv's page and on the Troubleshooting slide (`g` 22). After installing, open a new terminal so it can find `uv`.
+- uv: the install command for each system is on uv's page and on the Troubleshooting slide (`g` 18). After installing, open a new terminal so it can find `uv`.
 - VS Code: Terminal → New Terminal (or Ctrl+backtick) opens a terminal in the project folder.
 
-Common snags (details on the Troubleshooting slide, `g` 22):
+Common snags (details on the Troubleshooting slide, `g` 18):
 
 - `uv: command not found` → open a new terminal. If it's still missing, install uv again.
 - "That port is already in use" → `uv run manage.py runserver 8001`.
 - `no such table` → they skipped `uv run manage.py migrate`.
 
-If behind: start at 7:00 anyway. The first 17 minutes are slides, so people can finish installing while you talk.
+If behind: start at 7:00 anyway. The first 17 minutes after 7:00 are slides, so people can finish installing while you talk.
 -->

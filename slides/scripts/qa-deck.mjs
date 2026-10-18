@@ -6,12 +6,12 @@
  *   pnpm qa                      # in another; or: node scripts/qa-deck.mjs --url http://localhost:3030
  *
  * Source checks:
- *   - every show slide has a `part:` from the run of show (plan section 3), and
- *     the parts come in order
+ *   - every show slide has a `section:` from the run of show (plan section 3),
+ *     and the sections come in order
  *   - every slide has notes; show slides start with "[H:MM · N min] [MODE]" (plan 8.1),
  *     and slides whose mode isn't SLIDES have an explicit "→ SWITCH TO" line
- *   - the clock adds up: each slide starts when the previous one ends, each part
- *     starts on the run of show's time, and the show ends at 8:30
+ *   - the clock adds up: each slide starts when the previous one ends, each
+ *     section starts on the run of show's time, and the show ends at 8:30
  *   - stepped videos: `clicks:` matches the rendered stops, and the notes give a
  *     timestamp for every stop
  *   - none of the plan 5.2 patterns (gradients, shadows, all-caps, emoji, …) in the sources
@@ -51,7 +51,7 @@ for (const f of files) {
     slides.push({
       no: slides.length + 1,
       file: f,
-      part: (fm.match(/^part: (.+)$/m) || [])[1],
+      section: (fm.match(/^section: (.+)$/m) || [])[1],
       backstage: /^backstage: true$/m.test(fm),
       clicksFm: Number((fm.match(/^clicks: (\d+)$/m) || [])[1] ?? Number.NaN),
       title: (body.match(/^# (.+)$/m) || [])[1] ?? '',
@@ -62,36 +62,35 @@ for (const f of files) {
   }
 }
 const show = slides.filter(s => !s.backstage)
-const where = s => `slide ${s.no} (${s.part ?? 'no part'}, "${s.title}")`
+const where = s => `slide ${s.no} (${s.section ?? 'no section'}, "${s.title}")`
 
-// The parts of the night and when each starts (plan section 3), in order.
-const PARTS = {
+// The sections of the night and when each starts (plan section 3), in order.
+const SECTIONS = {
   'Setup': '6:30',
   'Opening': '7:00',
   'API basics': '7:04',
-  'Lesson 1': '7:17',
-  'Lesson 2': '7:42',
-  'Halfway': '7:55',
-  'Lesson 3': '8:00',
-  'Lesson 4': '8:13',
+  'Part 1': '7:17',
+  'Part 2': '7:42',
+  'Part 3': '7:55',
+  'Part 4': '8:10',
   'Wrap-up': '8:25',
 }
-const order = Object.keys(PARTS)
-let lastPart = -1
+const order = Object.keys(SECTIONS)
+let lastSection = -1
 for (const s of show) {
-  const i = order.indexOf(s.part)
+  const i = order.indexOf(s.section)
   if (i === -1)
-    problems.push(`${where(s)}: part: should be one of ${order.join(', ')}`)
-  else if (i < lastPart)
-    problems.push(`${where(s)}: part "${s.part}" comes after "${order[lastPart]}"`)
+    problems.push(`${where(s)}: section: should be one of ${order.join(', ')}`)
+  else if (i < lastSection)
+    problems.push(`${where(s)}: section "${s.section}" comes after "${order[lastSection]}"`)
   else
-    lastPart = i
+    lastSection = i
 }
-for (const part of order) {
-  if (!show.some(s => s.part === part))
-    problems.push(`no show slide has part: ${part}`)
+for (const section of order) {
+  if (!show.some(s => s.section === section))
+    problems.push(`no show slide has section: ${section}`)
 }
-const firstOfPart = new Set(order.map(part => show.find(s => s.part === part)).filter(Boolean))
+const firstOfSection = new Set(order.map(section => show.find(s => s.section === section)).filter(Boolean))
 
 // Notes format and the clock.
 const toMin = hm => Number(hm.split(':')[0]) * 60 + Number(hm.split(':')[1])
@@ -115,8 +114,8 @@ for (const s of slides) {
   const [, at, mins, mode] = m
   if (clock != null && toMin(at) !== clock)
     problems.push(`${where(s)} starts at ${at}, but the previous slide ends at ${Math.floor(clock / 60)}:${String(clock % 60).padStart(2, '0')}`)
-  if (firstOfPart.has(s) && PARTS[s.part] !== at)
-    problems.push(`${where(s)} starts ${s.part}, which should start at ${PARTS[s.part]} (plan section 3); notes say ${at}`)
+  if (firstOfSection.has(s) && SECTIONS[s.section] !== at)
+    problems.push(`${where(s)} starts ${s.section}, which should start at ${SECTIONS[s.section]} (plan section 3); notes say ${at}`)
   clock = toMin(at) + Number(mins)
   if (mode !== 'SLIDES' && !/→ SWITCH TO /.test(s.notes))
     problems.push(`${where(s)} is in ${mode} mode but its notes have no "→ SWITCH TO" line`)
@@ -261,7 +260,7 @@ for (const s of slides.filter(x => x.backstage)) {
 // 4. presenter view shows notes; projector simulation switches on
 await page.goto(`${base}/#/presenter/2`, { waitUntil: 'networkidle' })
 await page.waitForTimeout(1500)
-if (!(await page.evaluate(() => document.body.innerText)).includes('[7:00 · 2 min]'))
+if (!(await page.evaluate(() => document.body.innerText)).includes('[7:00 · 4 min]'))
   problems.push('presenter view did not show slide 2\'s notes')
 await page.goto(`${base}/?projector#/1`, { waitUntil: 'networkidle' })
 await page.waitForTimeout(500)

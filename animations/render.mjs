@@ -2,7 +2,7 @@
 /**
  * Renders the explainer videos from source and installs them in the deck.
  *
- *   node render.mjs                         # all three
+ *   node render.mjs                         # all of them
  *   node render.mjs v2-life-of-a-post       # one
  *   node render.mjs v2-life-of-a-post --sheet   # also a contact sheet of every stop, for review
  *   node render.mjs v2-life-of-a-post --stops   # only the contact sheet, no video (fast)
@@ -26,7 +26,7 @@ const here = dirname(fileURLToPath(import.meta.url))
 const outDir = join(here, '..', 'slides', 'public', 'media', 'videos')
 const manifest = join(here, '..', 'slides', 'data', 'videos.json')
 const renders = join(here, 'renders')
-const VIDEOS = ['v1-one-backend-many-clients', 'v2-life-of-a-post', 'v3-count-to-voters']
+const VIDEOS = ['v1-pages-vs-api', 'v1-one-backend-many-clients', 'v2-life-of-a-post', 'v3-count-to-voters']
 
 const args = process.argv.slice(2)
 const stopsOnly = args.includes('--stops')

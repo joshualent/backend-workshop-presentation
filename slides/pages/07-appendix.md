@@ -1,7 +1,7 @@
 ---
 backstage: true
 backstageIndex: true
-part: Appendix
+section: Appendix
 ---
 
 # Appendix
@@ -18,7 +18,7 @@ part: Appendix
 
 ---
 backstage: true
-part: Appendix
+section: Appendix
 ---
 
 # Switching checkpoints
@@ -51,13 +51,13 @@ git switch checkpoint-3-auth
 
 - Say: "The stash keeps your own code. `git stash list` shows it. You don't need to apply it to keep going."
 - `git switch` changes the code, not the database. When you move forward, `migrate` updates the database.
-- To go back past lesson 4, reverse migration 0002 before you switch branches, because the earlier branches don't have that migration file. Vote totals come back as zero.
+- To go back past part 4, reverse migration 0002 before you switch branches, because the earlier branches don't have that migration file. Vote totals come back as zero.
 - If someone already switched back: switch to `checkpoint-4-m2m`, run the reversal, and switch again. Or delete `db.sqlite3`. That deletes all questions and accounts, so they need to create `mod` again with `createsuperuser`.
 -->
 
 ---
 backstage: true
-part: Appendix
+section: Appendix
 ---
 
 # Troubleshooting
@@ -99,27 +99,27 @@ part: Appendix
 - git not found: Windows needs Git for Windows from git-scm.com; the default options are fine. On macOS, `git --version` offers to install the Command Line Tools, which include Git. Open a new terminal afterwards.
 - uv not found: install it, then open a new terminal so the PATH includes it.
 - No module named django or rest_framework: they ran the system Python. `uv run` uses the project's environment.
-- Anything else: `uv run manage.py check` names the file and line with the error. If that doesn't help, they can switch to the last checkpoint with the line on that lesson's first slide.
+- Anything else: `uv run manage.py check` names the file and line with the error. If that doesn't help, they can switch to the last checkpoint with the line on that part's first slide.
 -->
 
 ---
 backstage: true
-part: Appendix
+section: Appendix
 ---
 
-# Video still: one backend, many clients
+# Video still: server-rendered pages vs. an API
 
-<StepVideo name="v1-one-backend-many-clients" still alt="Final frame of video V1" />
+<StepVideo name="v1-pages-vs-api" still alt="Final frame of video V1" />
 
 <!--
 [backstage] [SLIDES]
 
-- Final frame of video V1 (slide 5). Use it if the video won't play.
+- Final frame of video V1 (slide 4). It shows both halves finished. Use it if the video won't play.
 -->
 
 ---
 backstage: true
-part: Appendix
+section: Appendix
 ---
 
 # Video still: life of a POST request
@@ -129,12 +129,12 @@ part: Appendix
 <!--
 [backstage] [SLIDES]
 
-- Final frame of video V2 (slide 10). It shows the request and the response together. Use it if the video won't play.
+- Final frame of video V2 (slide 9). It shows the request and the response together. Use it if the video won't play.
 -->
 
 ---
 backstage: true
-part: Appendix
+section: Appendix
 ---
 
 # Projector check
@@ -161,7 +161,7 @@ class Question(models.Model):
 
 ---
 backstage: true
-part: Appendix
+section: Appendix
 ---
 
 # Status codes in our API
@@ -196,6 +196,6 @@ part: Appendix
 - Every status code the API sends during the workshop. Use it if someone asks about a code.
 - 2xx means the request worked. 4xx means a problem with the request.
 - 403: logged out, the message is "Authentication credentials were not provided." Logged in without permission, it's "You do not have permission to perform this action." DRF sends 403 rather than 401 because the browsable API uses session login.
-- 404 also covers `/api/questions/1/upvote/` after lesson 4, because that route no longer exists.
+- 404 also covers `/api/questions/1/upvote/` after part 4, because that route no longer exists.
 - 405 shows when you open an action URL in the browser, because the browser sends a GET. Press the POST button instead.
 -->

@@ -2,7 +2,7 @@
 
 # Cheat sheet
 
-Everything you type or paste during the workshop, in order. No slide shows this code. Each lesson's first slide has the notes for the whole lesson, and they name these step numbers. Code comes from the checkpoint branches of [joshualent/questions-api](https://github.com/joshualent/questions-api):
+Everything you type or paste during the workshop, in order. No slide shows this code. The first slide of each part has the notes for its whole coding stretch, and they name these step numbers. Code comes from the checkpoint branches of [joshualent/questions-api](https://github.com/joshualent/questions-api):
 
 - `checkpoint-0-setup` at `fa53e5b`: Initialize Django workshop project
 - `checkpoint-1-crud` at `aa49eea`: Add public question CRUD
@@ -26,11 +26,11 @@ uv run manage.py runserver
 
 Check <http://127.0.0.1:8000/admin/> shows the login page.
 
-## Lesson 1: CRUD (ends at `checkpoint-1-crud`)
+## Part 1: CRUD (ends at `checkpoint-1-crud`)
 
 ### 1. `questions/models.py`
 
-Replace the stub. After slide 11, *Lesson 1: A model becomes a table*.
+Replace the stub. After slide 10, *Part 1: A model becomes a table*.
 
 The whole file, to paste if you fall behind:
 
@@ -152,7 +152,7 @@ from .models import Question
 admin.site.register(Question)
 ```
 
-To log in to the admin you need an account. For the admin demo, create the moderator now (attendees can wait for lesson 3):
+To log in to the admin you need an account. For the admin demo, create the moderator now (attendees can wait for part 3):
 
 ```bash
 uv run manage.py createsuperuser
@@ -160,14 +160,14 @@ uv run manage.py createsuperuser
 
 Use username `mod`. Any email is fine; Django asks for the password twice.
 
-**Try it** (still in lesson 1) at <http://127.0.0.1:8000/api/questions/>, in the browsable API's form at the bottom of the page:
+**Try it** (still in part 1) at <http://127.0.0.1:8000/api/questions/>, in the browsable API's form at the bottom of the page:
 
 | Send | Expect |
 |---|---|
 | `POST /api/questions/` with `{"text": "What does a serializer do?"}` | `201 Created`, `"votes": 0` |
 | `POST /api/questions/` with `{"text": ""}` | `400 Bad Request`, `{"text": ["This field may not be blank."]}` |
 | Open `/api/questions/999/` | `404 Not Found`, `{"detail": "No Question matches the given query."}` |
-| `POST /api/questions/` with `{"text": "hi", "votes": 9999}` (last: the problem lesson 2 fixes) | `201 Created`, `"votes": 0` |
+| `POST /api/questions/` with `{"text": "hi", "votes": 9999}` (last: the problem part 2 fixes) | `201 Created`, `"votes": 0` |
 
 Optional curl example (cut this first if you're behind):
 
@@ -177,11 +177,11 @@ curl -i -X POST http://127.0.0.1:8000/api/questions/ \
   -d '{"text": "What does a serializer do?"}'
 ```
 
-## Lesson 2: custom actions (ends at `checkpoint-2-actions`)
+## Part 2: custom actions (ends at `checkpoint-2-actions`)
 
 ### 6. `questions/views.py`
 
-Two new imports at the top, then two methods at the end of `QuestionViewSet`, indented one level. After slide 12, *Lesson 2: How should voting work?* The repo has two blank lines between the methods.
+Two new imports at the top, then two methods at the end of `QuestionViewSet`, indented one level. After slide 11, *Part 2: How should voting work?* The repo has two blank lines between the methods.
 
 What changes (`+` lines are new, `-` lines go away):
 
@@ -249,21 +249,21 @@ class QuestionViewSet(viewsets.ModelViewSet):
 
 No migration: the fields already exist.
 
-**Try it** (still in lesson 2): open <http://127.0.0.1:8000/api/questions/1/upvote/> and press **POST** twice (votes 1, then 2); open `/api/questions/1/toggle_answered/` and press **POST** twice (`answered` true, then false). A plain GET on an action URL shows `405 Method Not Allowed`; that's expected, use the POST button. Last, the problem lesson 3 fixes: nobody logged in, so press **POST** on `upvote` a few more times.
+**Try it** (still in part 2): open <http://127.0.0.1:8000/api/questions/1/upvote/> and press **POST** twice (votes 1, then 2); open `/api/questions/1/toggle_answered/` and press **POST** twice (`answered` true, then false). A plain GET on an action URL shows `405 Method Not Allowed`; that's expected, use the POST button. Last, the problem part 3 fixes: nobody logged in, so press **POST** on `upvote` a few more times.
 
-## Halfway break
+## If you take a break after part 2
 
-Anyone behind runs the line on the slide:
+Anyone behind runs the line from the part 2 slide:
 
 ```bash
 git stash -u; git switch checkpoint-2-actions; uv run manage.py migrate
 ```
 
-## Lesson 3: authentication and staff moderation (ends at `checkpoint-3-auth`)
+## Part 3: authentication and staff moderation (ends at `checkpoint-3-auth`)
 
 ### 7. `questions/views.py`
 
-One import line changes, `get_permissions` goes right after `permission_classes`, and each `@action` gets a `permission_classes` argument. After slide 14, *Lesson 3: Who can do what*.
+One import line changes, `get_permissions` goes right after `permission_classes`, and each `@action` gets a `permission_classes` argument. After slide 12, *Part 3: Who can do what*.
 
 What changes (`+` lines are new, `-` lines go away):
 
@@ -376,7 +376,7 @@ urlpatterns = [
 ]
 ```
 
-Accounts (skip `createsuperuser` if you already made `mod` in lesson 1):
+Accounts (skip `createsuperuser` if you already made `mod` in part 1):
 
 ```bash
 uv run manage.py createsuperuser
@@ -384,7 +384,7 @@ uv run manage.py createsuperuser
 
 Then at <http://127.0.0.1:8000/admin/auth/user/add/> create `sam` with a password. Leave **Staff status** and **Superuser status** unchecked.
 
-**Try it** (still in lesson 3): log in with the browsable API's **Log in** link (top right), as nobody, `sam`, then `mod`:
+**Try it** (still in part 3): log in with the browsable API's **Log in** link (top right), as nobody, `sam`, then `mod`:
 
 | | `POST …/1/upvote/` | `POST …/1/toggle_answered/` | `PATCH /api/questions/1/` |
 |---|---|---|---|
@@ -392,13 +392,13 @@ Then at <http://127.0.0.1:8000/admin/auth/user/add/> create `sam` with a passwor
 | `sam` | 200 | 403 You do not have permission to perform this action. | 403 You do not have permission to perform this action. |
 | `mod` | 200 | 200 | 200 |
 
-Last, the problem lesson 4 fixes: as `sam`, press **POST** on `/api/questions/1/upvote/` three times. The count goes up every time.
+Last, the problem part 4 fixes: as `sam`, press **POST** on `/api/questions/1/upvote/` three times. The count goes up every time.
 
-## Lesson 4: many-to-many voting (ends at `checkpoint-4-m2m`)
+## Part 4: many-to-many voting (ends at `checkpoint-4-m2m`)
 
 ### 9. `questions/models.py`
 
-Import `settings`, and change `votes` to a `ManyToManyField`. After slide 16, *Keep the JSON compatible*.
+Import `settings`, and change `votes` to a `ManyToManyField`. After slide 14, *Keep the JSON compatible*.
 
 What changes (`+` lines are new, `-` lines go away):
 
@@ -441,7 +441,7 @@ uv run manage.py migrate
 
 Expect `0002_votes_many_to_many.py` with `- Remove field votes from question` and `+ Add field votes to question`. Existing vote totals reset to zero.
 
-Before the next step, show <http://127.0.0.1:8000/api/questions/>: `"votes": []`. DRF shows the many-to-many field as a list of user ids, so every client expecting a number would break. The next step fixes it, as *Keep the JSON compatible* (slide 16) said.
+Before the next step, show <http://127.0.0.1:8000/api/questions/>: `"votes": []`. DRF shows the many-to-many field as a list of user ids, so every client expecting a number would break. The next step fixes it, as *Keep the JSON compatible* (slide 14) said.
 
 ### 10. `questions/serializers.py`
 
@@ -563,7 +563,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
         return Response(self.get_serializer(question).data)
 ```
 
-**Try it** (still in lesson 4): as `sam`, POST `/api/questions/1/toggle_vote/` twice (`"votes": 1, "has_voted": true`, then `"votes": 0, "has_voted": false`); as `mod`, once (`"votes": 1, "has_voted": true`). `/upvote/` no longer exists, so it returns 404.
+**Try it** (still in part 4): as `sam`, POST `/api/questions/1/toggle_vote/` twice (`"votes": 1, "has_voted": true`, then `"votes": 0, "has_voted": false`); as `mod`, once (`"votes": 1, "has_voted": true`). `/upvote/` no longer exists, so it returns 404.
 
 ## If you need the finished project
 

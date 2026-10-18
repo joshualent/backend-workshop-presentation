@@ -1,8 +1,8 @@
 ---
-part: Lesson 2
+section: Part 2
 ---
 
-# Lesson 2: How should voting work?
+# Part 2: How should voting work?
 
 <div class="why">
 <p><code>votes</code> and <code>answered</code> are read-only, so no client can change them.</p>
@@ -58,9 +58,9 @@ Ask: "How should voting work? Should the client send the new vote count?" Take o
 
 [click] Instead, the client sends a POST to an action URL with no body. The server decides what an upvote does: it adds one.
 
-[click] Lesson 2 adds two custom actions: upvoting and marking a question answered. DRF's `@action` decorator adds the route. `detail=True` means the action works on one question, so the URL includes the question's id: `/api/questions/<id>/upvote/`. We use `methods=["post"]` because the action changes data. The model doesn't change, so there's no migration.
+[click] Part 2 adds two custom actions: upvoting and marking a question answered. DRF's `@action` decorator adds the route. `detail=True` means the action works on one question, so the URL includes the question's id: `/api/questions/<id>/upvote/`. We use `methods=["post"]` because the action changes data. The model doesn't change, so there's no migration.
 
-- Point at the last line: "If you're behind, run this line in your second terminal now. It saves your work and switches you to the finished code for lesson 1."
+- Point at the last line: "If you're behind, run this line in your second terminal now. It saves your work and switches you to the finished code for part 1."
 
 → SWITCH TO VS CODE (7:45): questions/views.py (cheat sheet step 6)
 
@@ -73,35 +73,14 @@ Ask: "How should voting work? Should the client send the new vote count?" Take o
 - The page shows `405 Method Not Allowed`, because the browser sent a GET. That's expected. Press the POST button at the bottom: `"votes": 1`, then `"votes": 2`.
 - Open http://127.0.0.1:8000/api/questions/1/toggle_answered/ and press POST twice: `"answered": true`, then `false`.
 - Open the list at `/api/questions/` to show that the database saved both changes.
-- Last, the problem lesson 3 fixes. Say: "We never logged in." Press POST on `/api/questions/1/upvote/` a few more times; the count goes up every time.
+- Last, the problem part 3 fixes. Say: "We never logged in." Press POST on `/api/questions/1/upvote/` a few more times; the count goes up every time.
 
 Ask: "What else can anyone do without logging in?" Answers: mark a question answered, and edit or delete any question. Show the DELETE button on `/api/questions/1/`, but don't press it.
 
 Back here when: most people have upvoted a question (7:55).
 
+- Optional break: if the room needs one, say "Take five minutes" now. Part 3 has five minutes of slack for it. Anyone who is behind can run the line from this slide during the break.
+
 If behind: paste both methods from the cheat sheet, and do the browser check once yourself.
 -->
 
----
-part: Halfway
----
-
-# Halfway break
-
-<div class="stack">
-<p>Take five minutes. If something doesn't work, put your hand up now.</p>
-<CatchUp branch="checkpoint-2-actions" />
-</div>
-
-<!--
-[7:55 · 5 min] [SLIDES]
-
-- Say: "You've built a REST API: six routes and two actions, from five short files."
-- Anyone who is behind runs the line on the slide. It gets them the finished code for lessons 1 and 2. `migrate` is safe to run even when nothing changed.
-
-Ask: "Stretch for a few minutes. Anyone with an error, put your hand up now." Go to the raised hands.
-
-Back here when: hands are down, or 8:00 at the latest.
-
-If behind: time check. If this break hasn't started by 8:05, lesson 4 becomes a demo from `checkpoint-4-m2m`.
--->

@@ -11,12 +11,12 @@ import { computed } from 'vue'
 const { $clicks } = useSlideContext()
 
 const STEPS = [
-  { parts: [], say: 'A real request and the response it gets. We left out some headers.' },
-  { parts: ['method', 'url'], say: 'The first line has the method and the URL. This request creates a question.' },
-  { parts: ['headers'], say: 'Headers describe the message. Content-Type says the body is JSON.' },
-  { parts: ['body'], say: 'The body is the data you send. JSON writes data as names and values.' },
+  { parts: [], say: 'A real request and its response, with a few headers left out.' },
+  { parts: ['method', 'url'], say: 'The method and the URL come first. This POST creates a question.' },
+  { parts: ['headers'], say: 'Each header is a name and a value. Content-Type says the body is JSON.' },
+  { parts: ['body'], say: 'The body is the data you send. In JSON, each value has a name.' },
   { parts: ['status'], say: 'The status code says what happened. 201 means the server created the question.' },
-  { parts: ['resBody'], say: 'The server filled in id, votes, answered, and created_at.' },
+  { parts: ['resBody'], say: 'The server added id, votes, answered, and created_at.' },
 ]
 
 const step = computed(() => STEPS[Math.min($clicks.value, STEPS.length - 1)])
