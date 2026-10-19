@@ -245,7 +245,7 @@ Asset key: **S** static, **C** click build, **V** video. Slide numbers are the d
 | 5 | Resources and URLs | A REST API organizes its data as resources with URLs. `/api/questions/` is the collection and `/api/questions/1/` is one question. A URL says which data, not what to do. | C |
 | 6 | HTTP methods | The six routes, built row by row; PUT vs. PATCH. | C |
 | 7 | Anatomy of a request | "A real request and its response, with a few headers left out." The real `POST /api/questions/` request and its 201 response, one part per click, with one short sentence for each. Status code families: 2xx, 4xx, 5xx. Notes end on the one-sentence summary of REST. | C |
-| 8 | The parts of our API | The request-flow map, built left to right, with each part's file. "We'll build these parts from right to left, starting with the model." | C |
+| 8 | The parts of our API | The request-flow map, built left to right, with each part's file. The newest part is highlighted, with one or two sentences under the map on what it does. The last click replaces them with "We'll build these parts from right to left, starting with the model." | C |
 | 9 | Life of a POST request | Video V2 (stepped) | V |
 
 ### 7.4 Part 1: CRUD (7:17–7:42)

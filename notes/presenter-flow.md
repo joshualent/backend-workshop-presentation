@@ -30,7 +30,7 @@ Modes: **SLIDES**, **VS CODE**, **TERMINAL**, **BROWSER**.
 | 7:07 | 5 | API basics | SLIDES | Resources and URLs. Names REST. | 3 clicks. | |
 | 7:08 | 6 | API basics | SLIDES | HTTP methods: the six routes, row by row. PUT vs. PATCH. | 4 clicks. | |
 | 7:10 | 7 | API basics | SLIDES | Anatomy of a request: method and URL, headers, the JSON body, the status code family, the response body. Ends with the one-sentence summary of REST. | 5 clicks. | |
-| 7:13 | 8 | API basics | SLIDES | The parts of our API, from the client to SQLite, and the file for each. "We'll build these parts from right to left, starting with the model." | 7 clicks. | |
+| 7:13 | 8 | API basics | SLIDES | The parts of our API, from the client to SQLite, and the file for each. A sentence under the map says what the newest part does. "We'll build these parts from right to left, starting with the model." | 7 clicks. | |
 | 7:15 | 9 | API basics | SLIDES | Video V2, stepped: 6 clicks, one per stop (0:04, 0:11, 0:15, 0:19.5, 0:23.5, 0:29). | 6 clicks. | |
 | 7:17 | 10 | Part 1 | SLIDES | *Part 1: A model becomes a table*: one column for each field, then the migration commands. | 6 clicks. | |
 | 7:19 | 10 | | VS CODE | Write the model in `questions/models.py` (cheat sheet 1). | → SWITCH TO VS CODE. | Leave `models.py` on the projector for people to copy. |

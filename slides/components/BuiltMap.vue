@@ -6,7 +6,7 @@
 withDefaults(defineProps<{ at?: number | false }>(), { at: 1 })
 
 const LAYERS = [
-  { name: 'Client', file: 'browser, curl', code: [] as string[] },
+  { name: 'Client', file: 'browser', code: [] as string[] },
   { name: 'URL router', file: 'config/urls.py', code: ['DefaultRouter'] },
   { name: 'ViewSet', file: 'views.py', code: ['QuestionViewSet', 'get_permissions', 'toggle_vote'] },
   { name: 'Serializer', file: 'serializers.py', code: ['QuestionSerializer'] },

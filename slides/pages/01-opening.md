@@ -16,7 +16,7 @@ clicks: 2
 
 - Welcome. Say your name and one line about what you do. Thank the club. If other people are helping tonight, introduce them.
 - Say what we build: "You're going to build an API where people ask questions, vote on them, and mark them answered. When you leave, it runs on your laptop."
-- Ask for a show of hands: "Who has written Python?" "Who has used Django?" "Who has called an API, from code or with curl?" Adjust your pace to the answers.
+- Ask for a show of hands: "Who has written Python?" "Who has used Django?" "Who has called an API from code?" Adjust your pace to the answers.
 - How the night works: "There are four parts. Each one starts with a slide or two. Then we write the code together in VS Code until it works, with no slides in between. Each part ends on a checkpoint branch, so you can catch up if you fall behind."
 
 Ask: "Hands up if you see the Django login page."
@@ -184,33 +184,31 @@ clicks: 5
 
 ---
 section: API basics
+clicks: 7
 ---
 
 # The parts of our API
 
-<div class="stack">
-<RequestMap :build="1" />
-<p v-click="7" class="small">We'll build these parts from right to left, starting with the model.</p>
-</div>
+<RequestMap :build="1" explain end="We'll build these parts from right to left, starting with the model." />
 
 <!--
 [7:13 · 2 min] [SLIDES]
 
-- Each box between the client and SQLite is a file you'll edit in the repo you cloned. A request goes through the boxes from left to right.
+- Each box between the client and SQLite is a file you'll edit in the repo you cloned. A request goes through the boxes from left to right. The newest box is highlighted, and the sentence under the diagram says what it does. Add to it as you go.
 - `rest_framework` and `questions` are already in `INSTALLED_APPS`, so there's nothing to set up. One line also goes in `admin.py`, so the Django admin can show questions.
-- First box: the client sends the request. It can be a browser, an app, or curl.
+- First box: the client sends the request. In this workshop it's the browser. A phone app or a frontend app would be a client too.
 
-[click] The URL router, in `config/urls.py`, reads the URL and picks the ViewSet method to run.
+[click] The URL router, in `config/urls.py`. It reads the URL and the method, and picks the ViewSet method to run: GET on `/api/questions/` runs `list`, and POST runs `create`.
 
-[click] The ViewSet, in `views.py`, handles each request: list, create, and so on.
+[click] The ViewSet, in `views.py`. It has one method for each action: list, create, retrieve, update, partial update, and destroy. DRF writes these six for us.
 
-[click] The serializer, in `serializers.py`, converts between JSON and Python and validates incoming data.
+[click] The serializer, in `serializers.py`. It checks the incoming JSON, for example that `text` isn't blank, and turns it into a `Question`. It also turns questions back into JSON for the response.
 
-[click] The model, in `models.py`, describes a question as a Python class.
+[click] The model, in `models.py`. A Python class with one attribute for each field. Django turns it into a table and uses it to read and write rows.
 
-[click] SQLite, the file `db.sqlite3`, stores the rows. `migrate` creates its tables.
+[click] SQLite, the file `db.sqlite3`. It stores each question as a row. `migrate` creates its tables.
 
-[click] The response goes back to the client as JSON, along the bottom arrow.
+[click] The response goes back to the client: a status code and a JSON body, along the bottom arrow.
 
 [click] Say: "We'll build from the right. The model comes first, because every other part uses it."
 -->
