@@ -65,10 +65,10 @@ index dc88309..b2cec58 100644
 +        user = self.context["request"].user
 +        return question.votes.filter(pk=user.pk).exists()
 diff --git a/questions/views.py b/questions/views.py
-index c7b2ed9..8737e64 100644
+index 3109934..267b8fb 100644
 --- a/questions/views.py
 +++ b/questions/views.py
-@@ -19,12 +19,16 @@ class QuestionViewSet(viewsets.ModelViewSet):
+@@ -18,12 +18,16 @@ class QuestionViewSet(viewsets.ModelViewSet):
          return super().get_permissions()
  
      @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])

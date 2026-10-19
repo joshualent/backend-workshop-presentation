@@ -195,7 +195,7 @@ clicks: 7
 [7:13 · 2 min] [SLIDES]
 
 - Each box between the client and SQLite is a file you'll edit in the repo you cloned. A request goes through the boxes from left to right. The newest box is highlighted, and the sentence under the diagram says what it does. Add to it as you go.
-- `rest_framework` and `questions` are already in `INSTALLED_APPS`, so there's nothing to set up. One line also goes in `admin.py`, so the Django admin can show questions.
+- `rest_framework` and `questions` are already in `INSTALLED_APPS`, so there's nothing to set up.
 - First box: the client sends the request. In this workshop it's the browser. A phone app or a frontend app would be a client too.
 
 [click] The URL router, in `config/urls.py`. It reads the URL and the method, and picks the ViewSet method to run: GET on `/api/questions/` runs `list`, and POST runs `create`.

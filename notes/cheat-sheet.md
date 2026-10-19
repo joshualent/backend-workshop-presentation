@@ -4,11 +4,11 @@
 
 Everything you type or paste during the workshop, in order. No slide shows this code. The first slide of each part has the notes for its whole coding stretch, and they name these step numbers. Code comes from the checkpoint branches of [joshualent/questions-api](https://github.com/joshualent/questions-api):
 
-- `checkpoint-0-setup` at `fa53e5b`: Initialize Django workshop project
-- `checkpoint-1-crud` at `aa49eea`: Add public question CRUD
-- `checkpoint-2-actions` at `46a2fd2`: Add upvoting and answered toggling
-- `checkpoint-3-auth` at `779ba5e`: Add login and staff moderation
-- `checkpoint-4-m2m` at `ddaaee6`: Track voters and toggle votes
+- `checkpoint-0-setup` at `7ad1d84`: Initialize Django workshop project
+- `checkpoint-1-crud` at `57f99ad`: Add public question CRUD
+- `checkpoint-2-actions` at `fe04df8`: Add upvoting and answered toggling
+- `checkpoint-3-auth` at `4a423f6`: Add login and staff moderation
+- `checkpoint-4-m2m` at `1a91852`: Track voters and toggle votes
 
 Run commands from the folder that contains `manage.py`. Keep `runserver` going in one terminal and use a second one for everything else.
 
@@ -84,7 +84,6 @@ The whole file, to paste if you fall behind:
 
 ```python
 from rest_framework import viewsets
-from rest_framework.permissions import AllowAny
 
 from .models import Question
 from .serializers import QuestionSerializer
@@ -93,7 +92,6 @@ from .serializers import QuestionSerializer
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
-    permission_classes = [AllowAny]
 ```
 
 ### 4. `config/urls.py`
@@ -138,28 +136,6 @@ urlpatterns = [
 ]
 ```
 
-### 5. `questions/admin.py`
-
-Replace the stub. After the browser shows "Question List".
-
-The whole file, to paste if you fall behind:
-
-```python
-from django.contrib import admin
-
-from .models import Question
-
-admin.site.register(Question)
-```
-
-To log in to the admin you need an account. For the admin demo, create the moderator now (attendees can wait for part 3):
-
-```bash
-uv run manage.py createsuperuser
-```
-
-Use username `mod`. Any email is fine; Django asks for the password twice.
-
 **Try it** (still in part 1) at <http://127.0.0.1:8000/api/questions/>, in the browsable API's form at the bottom of the page:
 
 | Send | Expect |
@@ -179,7 +155,7 @@ curl -i -X POST http://127.0.0.1:8000/api/questions/ \
 
 ## Part 2: custom actions (ends at `checkpoint-2-actions`)
 
-### 6. `questions/views.py`
+### 5. `questions/views.py`
 
 Two new imports at the top, then two methods at the end of `QuestionViewSet`, indented one level. After slide 11, *Part 2: How should voting work?* The repo has two blank lines between the methods.
 
@@ -190,13 +166,13 @@ What changes (`+` lines are new, `-` lines go away):
  from rest_framework import viewsets
 +from rest_framework.decorators import action
 +from rest_framework.response import Response
- from rest_framework.permissions import AllowAny
  
  from .models import Question
-@@ -9,3 +11,18 @@ class QuestionViewSet(viewsets.ModelViewSet):
+ from .serializers import QuestionSerializer
+@@ -7,3 +9,18 @@ from .serializers import QuestionSerializer
+ class QuestionViewSet(viewsets.ModelViewSet):
      queryset = Question.objects.all()
      serializer_class = QuestionSerializer
-     permission_classes = [AllowAny]
 +
 +    @action(detail=True, methods=["post"])
 +    def upvote(self, request, pk=None, format=None):
@@ -220,7 +196,6 @@ The whole file afterwards, to paste if you fall behind:
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
 
 from .models import Question
 from .serializers import QuestionSerializer
@@ -229,7 +204,6 @@ from .serializers import QuestionSerializer
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
-    permission_classes = [AllowAny]
 
     @action(detail=True, methods=["post"])
     def upvote(self, request, pk=None, format=None):
@@ -261,25 +235,24 @@ git stash -u; git switch checkpoint-2-actions; uv run manage.py migrate
 
 ## Part 3: authentication and staff moderation (ends at `checkpoint-3-auth`)
 
-### 7. `questions/views.py`
+### 6. `questions/views.py`
 
-One import line changes, `get_permissions` goes right after `permission_classes`, and each `@action` gets a `permission_classes` argument. After slide 12, *Part 3: Who can do what*.
+One new import line, `get_permissions` goes right after `serializer_class`, and each `@action` gets a `permission_classes` argument. After slide 12, *Part 3: Who can do what*.
 
 What changes (`+` lines are new, `-` lines go away):
 
 ```diff
-@@ -1,7 +1,7 @@
+@@ -1,6 +1,7 @@
  from rest_framework import viewsets
  from rest_framework.decorators import action
  from rest_framework.response import Response
--from rest_framework.permissions import AllowAny
-+from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
++from rest_framework.permissions import IsAuthenticated, IsAdminUser
  
  from .models import Question
  from .serializers import QuestionSerializer
-@@ -12,7 +12,13 @@ class QuestionViewSet(viewsets.ModelViewSet):
+@@ -10,7 +11,13 @@ class QuestionViewSet(viewsets.ModelViewSet):
+     queryset = Question.objects.all()
      serializer_class = QuestionSerializer
-     permission_classes = [AllowAny]
  
 -    @action(detail=True, methods=["post"])
 +    def get_permissions(self):
@@ -292,7 +265,7 @@ What changes (`+` lines are new, `-` lines go away):
      def upvote(self, request, pk=None, format=None):
          question = self.get_object()
          question.votes += 1
-@@ -20,7 +26,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
+@@ -18,7 +25,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
          return Response(self.get_serializer(question).data)
  
  
@@ -309,7 +282,7 @@ The whole file afterwards, to paste if you fall behind:
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from .models import Question
 from .serializers import QuestionSerializer
@@ -318,7 +291,6 @@ from .serializers import QuestionSerializer
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
-    permission_classes = [AllowAny]
 
     def get_permissions(self):
         if self.action in ("update", "partial_update", "destroy"):
@@ -342,7 +314,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
         return Response(self.get_serializer(question).data)
 ```
 
-### 8. `config/urls.py`
+### 7. `config/urls.py`
 
 One new line at the end of `urlpatterns`. Right after `views.py`.
 
@@ -376,7 +348,7 @@ urlpatterns = [
 ]
 ```
 
-Accounts (skip `createsuperuser` if you already made `mod` in part 1):
+Accounts. Create the moderator with username `mod`; any email is fine, and Django asks for the password twice:
 
 ```bash
 uv run manage.py createsuperuser
@@ -396,7 +368,7 @@ Last, the problem part 4 fixes: as `sam`, press **POST** on `/api/questions/1/up
 
 ## Part 4: many-to-many voting (ends at `checkpoint-4-m2m`)
 
-### 9. `questions/models.py`
+### 8. `questions/models.py`
 
 Import `settings`, and change `votes` to a `ManyToManyField`. After slide 14, *Keep the JSON compatible*.
 
@@ -443,7 +415,7 @@ Expect `0002_votes_many_to_many.py` with `- Remove field votes from question` an
 
 Before the next step, show <http://127.0.0.1:8000/api/questions/>: `"votes": []`. DRF shows the many-to-many field as a list of user ids, so every client expecting a number would break. The next step fixes it, as *Keep the JSON compatible* (slide 14) said.
 
-### 10. `questions/serializers.py`
+### 9. `questions/serializers.py`
 
 Two fields above `class Meta`, `has_voted` in `fields`, and the `get_has_voted` method. Right after the browser shows `"votes": []`.
 
@@ -490,14 +462,14 @@ class QuestionSerializer(serializers.ModelSerializer):
         return question.votes.filter(pk=user.pk).exists()
 ```
 
-### 11. `questions/views.py`
+### 10. `questions/views.py`
 
 `upvote` becomes `toggle_vote`. Right after the serializer. Paste if short on time.
 
 What changes (`+` lines are new, `-` lines go away):
 
 ```diff
-@@ -19,12 +19,16 @@ class QuestionViewSet(viewsets.ModelViewSet):
+@@ -18,12 +18,16 @@ class QuestionViewSet(viewsets.ModelViewSet):
          return super().get_permissions()
  
      @action(detail=True, methods=["post"], permission_classes=[IsAuthenticated])
@@ -526,7 +498,7 @@ The whole file afterwards, to paste if you fall behind:
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from .models import Question
 from .serializers import QuestionSerializer
@@ -535,7 +507,6 @@ from .serializers import QuestionSerializer
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
-    permission_classes = [AllowAny]
 
     def get_permissions(self):
         if self.action in ("update", "partial_update", "destroy"):

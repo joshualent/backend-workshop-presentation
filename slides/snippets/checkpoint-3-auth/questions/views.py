@@ -1,7 +1,7 @@
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 
 from .models import Question
 from .serializers import QuestionSerializer
@@ -10,7 +10,6 @@ from .serializers import QuestionSerializer
 class QuestionViewSet(viewsets.ModelViewSet):
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
-    permission_classes = [AllowAny]
 
     def get_permissions(self):
         if self.action in ("update", "partial_update", "destroy"):

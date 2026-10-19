@@ -12,7 +12,7 @@ section: Part 3
 <tr><th>Operation</th><th>Who can do it</th><th>Permission class</th></tr>
 </thead>
 <tbody>
-<tr><td>List, read, or create questions</td><td>Anyone</td><td><code>AllowAny</code></td></tr>
+<tr><td>List, read, or create questions</td><td>Anyone</td><td>None (the default)</td></tr>
 <tr><td>Upvote</td><td>Logged-in users</td><td><code>IsAuthenticated</code></td></tr>
 <tr><td>Edit, delete, or toggle answered</td><td>Staff users</td><td><code>IsAdminUser</code></td></tr>
 </tbody>
@@ -64,7 +64,7 @@ section: Part 3
 - Anyone can still ask a question, because that is what a Q&A board is for.
 - Voting needs a login so the server knows who voted. Part 4 uses that.
 - Only staff can moderate: edit, delete, and mark questions answered. Questions don't have an owner in this API, so you can't edit a question you asked.
-- Where each rule goes: `AllowAny` is already the ViewSet's default from part 1. A new method, `get_permissions()`, returns `IsAdminUser` for `update`, `partial_update`, and `destroy` (PUT, PATCH, and DELETE). Each action sets its own `permission_classes`.
+- Where each rule goes: the first row needs no code, because DRF lets anyone call a route that has no permission class. A new method, `get_permissions()`, returns `IsAdminUser` for `update`, `partial_update`, and `destroy` (PUT, PATCH, and DELETE). Each action sets its own `permission_classes`.
 - The name `IsAdminUser` is misleading: it checks the "Staff status" checkbox on the user, not "Superuser status". `createsuperuser` sets both, so `mod` passes. We create `sam` with both boxes unchecked, so sam fails every staff check.
 
 [click] A failed check gets `403 Forbidden`. The message says which check failed: "Authentication credentials were not provided." when you're logged out, and "You do not have permission to perform this action." when you're logged in but not allowed. We see both in the browser in a few minutes.
@@ -72,20 +72,20 @@ section: Part 3
 - Optional, only if someone asks: HTTP also has `401 Unauthorized` for a missing login. DRF sends 403 instead when the API uses session login, as the browsable API does. A React or mobile app usually sends a token instead of a session cookie, and `permission_classes` works the same way with either.
 - Point at the last line: "If you're behind, run this line now. It switches you to the finished code for part 2."
 
-→ SWITCH TO VS CODE (7:58): questions/views.py, then config/urls.py (cheat sheet steps 7 and 8)
+→ SWITCH TO VS CODE (7:58): questions/views.py, then config/urls.py (cheat sheet steps 6 and 7)
 
-- The import line becomes `from rest_framework.permissions import AllowAny, IsAuthenticated, IsAdminUser`.
-- `get_permissions()` goes right under `permission_classes`: `[IsAdminUser()]` for the three actions, otherwise `super().get_permissions()`.
+- Add one import: `from rest_framework.permissions import IsAuthenticated, IsAdminUser`.
+- `get_permissions()` goes right under `serializer_class`: `[IsAdminUser()]` for the three actions, otherwise `super().get_permissions()`.
 - `upvote` gets `permission_classes=[IsAuthenticated]`; `toggle_answered` gets `permission_classes=[IsAdminUser]`. Save.
 - `config/urls.py`: add `path("api-auth/", include("rest_framework.urls"))` at the end of `urlpatterns`. This line adds the Log in link to the browsable API. Save.
 
 → SWITCH TO TERMINAL (8:02)
 
-- Anyone who didn't make `mod` in part 1: `uv run manage.py createsuperuser`.
+- Run `uv run manage.py createsuperuser` with the username `mod`. This is the moderator. Any email is fine, and Django asks for the password twice.
 
 → SWITCH TO BROWSER: http://127.0.0.1:8000/admin/auth/user/add/
 
-- Create `sam` with a password. Leave Staff status and Superuser status unchecked. Save.
+- Log in to the admin as `mod`. Create `sam` with a password. Leave Staff status and Superuser status unchecked. Save.
 
 → SWITCH TO BROWSER (8:04): http://127.0.0.1:8000/api/questions/ to try it as three users
 

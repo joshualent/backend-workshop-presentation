@@ -47,7 +47,7 @@ clicks: 6
 → SWITCH TO VS CODE (7:17): questions/models.py (cheat sheet step 1)
 
 - Replace the stub with the `Question` class. Type it with the room, and say each field name as you type it.
-- Add `__str__`, which returns `self.text`. The admin then shows the question text instead of "Question object (1)". Save.
+- Add `__str__`, which returns `self.text`. Python then shows a question as its text instead of "Question object (1)". Save.
 
 → SWITCH TO TERMINAL (7:19): the second terminal; runserver keeps running in the first
 
@@ -64,7 +64,7 @@ clicks: 6
 Still in VS Code (7:24): questions/views.py, then config/urls.py (cheat sheet steps 3 and 4)
 
 - Say: "A ViewSet is one class that handles every route for a resource. `ModelViewSet` already has a method for each of the six routes from the HTTP methods slide: list, create, retrieve, update, partial_update, and destroy."
-- `views.py`: replace the stub. The imports, then `QuestionViewSet` with three attributes: `queryset` (which rows), `serializer_class` (how to convert them to JSON), and `permission_classes`. Say: "For now, `AllowAny` lets anyone call every route. Part 3 replaces it." Save.
+- `views.py`: replace the stub. The imports, then `QuestionViewSet` with two attributes: `queryset` (which rows) and `serializer_class` (how to convert them to JSON). Say: "There are no permission rules yet, so anyone can call every route. Part 3 adds them." Save.
 - `config/urls.py`: two imports, a `DefaultRouter`, `router.register("questions", QuestionViewSet)`, and the `api/` line. Save. Say: "The router creates the six routes from the ViewSet, under `/api/questions/`."
 - Watch the runserver terminal. It reloads when you save, and it shows typos there first.
 
@@ -72,19 +72,7 @@ Still in VS Code (7:24): questions/views.py, then config/urls.py (cheat sheet st
 
 - Expect the browsable API page "Question List" with `[]` and a form at the bottom.
 
-→ SWITCH TO VS CODE (7:29): questions/admin.py (cheat sheet step 5)
-
-- Replace the stub: import `Question`, then add `admin.site.register(Question)`. Save. Say: "With this line, the Django admin can list, add, edit, and delete questions."
-
-→ SWITCH TO TERMINAL
-
-- Run `uv run manage.py createsuperuser` with the username `mod`. This is the moderator account for part 3. Attendees can create theirs now or in part 3.
-
-→ SWITCH TO BROWSER: http://127.0.0.1:8000/admin/
-
-- Log in as `mod`. Click Questions. Add one question in the admin, then show it at `/api/questions/`. The admin and the API read the same database table.
-
-→ SWITCH TO BROWSER (7:33): http://127.0.0.1:8000/api/questions/ to try it
+Still in the browser (7:29): try it
 
 - Use the form at the bottom of the page (Raw data tab, media type `application/json`). Send each request and read the status code out loud. Remind the room of the first digit: 2 means it worked, 4 means a problem with the request.
 - Create: `{"text": "What does a serializer do?"}` → `HTTP 201 Created` with `"votes": 0`.
@@ -95,7 +83,7 @@ Still in VS Code (7:24): questions/views.py, then config/urls.py (cheat sheet st
 
 Back here when: most of the room has a 201 and a 400 of their own (7:40). The next slide is video V2, which follows that last request through the code.
 
-If behind: anyone stuck can switch to `checkpoint-1-crud` with the line on part 2's slide. Cut the curl example first, then the admin demo (keep the one line in `admin.py`). Time check: if part 1 isn't done by 7:45, paste part 2's code from the cheat sheet instead of typing it.
+If behind: anyone stuck can switch to `checkpoint-1-crud` with the line on part 2's slide. Cut the curl example first. Time check: if part 1 isn't done by 7:45, paste part 2's code from the cheat sheet instead of typing it.
 -->
 
 ---

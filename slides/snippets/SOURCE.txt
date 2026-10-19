@@ -1,6 +1,6 @@
 Source: https://github.com/joshualent/questions-api.git
-checkpoint-0-setup fa53e5b Initialize Django workshop project
-checkpoint-1-crud aa49eea Add public question CRUD
-checkpoint-2-actions 46a2fd2 Add upvoting and answered toggling
-checkpoint-3-auth 779ba5e Add login and staff moderation
-checkpoint-4-m2m ddaaee6 Track voters and toggle votes
+checkpoint-0-setup 7ad1d84 Initialize Django workshop project
+checkpoint-1-crud 57f99ad Add public question CRUD
+checkpoint-2-actions fe04df8 Add upvoting and answered toggling
+checkpoint-3-auth 4a423f6 Add login and staff moderation
+checkpoint-4-m2m 1a91852 Track voters and toggle votes

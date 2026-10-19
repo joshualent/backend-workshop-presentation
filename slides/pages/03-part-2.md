@@ -62,7 +62,7 @@ Ask: "How should voting work? Should the client send the new vote count?" Take o
 
 - Point at the last line: "If you're behind, run this line in your second terminal now. It saves your work and switches you to the finished code for part 1."
 
-→ SWITCH TO VS CODE (7:45): questions/views.py (cheat sheet step 6)
+→ SWITCH TO VS CODE (7:45): questions/views.py (cheat sheet step 5)
 
 - Add two imports at the top: `action` from `rest_framework.decorators` and `Response` from `rest_framework.response`.
 - Type `upvote` at the end of `QuestionViewSet` with the room: `@action(detail=True, methods=["post"])`, then get the question (`get_object` returns a 404 if it doesn't exist), add one, save, and return it through the serializer. Save.

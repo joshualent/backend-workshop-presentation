@@ -147,7 +147,7 @@ clicks: 2
 
 - Say: "Now we write all of part 4."
 
-→ SWITCH TO VS CODE (8:14): questions/models.py (cheat sheet step 9)
+→ SWITCH TO VS CODE (8:14): questions/models.py (cheat sheet step 8)
 
 - Import `settings` (`from django.conf import settings`). Change `votes` to `models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)`. The field keeps its name and gets a new type. `blank=True` allows a question with no votes. Save.
 
@@ -160,7 +160,7 @@ clicks: 2
 
 - Point at `"votes": []`. Say: "This is the problem from the slide. The JSON changed, and a client that expects a number in `votes` now breaks. The serializer fixes it."
 
-→ SWITCH TO VS CODE (8:17): questions/serializers.py, then questions/views.py (cheat sheet steps 10 and 11)
+→ SWITCH TO VS CODE (8:17): questions/serializers.py, then questions/views.py (cheat sheet steps 9 and 10)
 
 - Serializer: add the `votes` and `has_voted` lines above `class Meta`, add `"has_voted"` to `fields`, and add `get_has_voted` below `Meta`. A `SerializerMethodField` calls the method named `get_<field name>`. `self.context["request"].user` is the user who sent the request. Save. Refresh `/api/questions/`: `"votes"` is a number again.
 - Views: replace `upvote` with `toggle_vote`. If this user already voted, remove their vote. Otherwise, add it. There's no `save()`, because `add` and `remove` write to the join table directly. The action still requires `IsAuthenticated`, so `request.user` is always a real user. Save. Paste both files if you're short on time.

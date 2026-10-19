@@ -84,14 +84,6 @@ ${fileStep(3, 'checkpoint-1-crud', 'questions/views.py', 'Replace the stub. Righ
 
 ${fileStep(4, 'checkpoint-1-crud', 'config/urls.py', 'Add the imports, the router, and the `api/` line. Right after `views.py`.')}
 
-${fileStep(5, 'checkpoint-1-crud', 'questions/admin.py', 'Replace the stub. After the browser shows "Question List".', { diff: false })}
-
-To log in to the admin you need an account. For the admin demo, create the moderator now (attendees can wait for part 3):
-
-${sh('uv run manage.py createsuperuser')}
-
-Use username \`mod\`. Any email is fine; Django asks for the password twice.
-
 **Try it** (still in part 1) at <http://127.0.0.1:8000/api/questions/>, in the browsable API's form at the bottom of the page:
 
 | Send | Expect |
@@ -107,7 +99,7 @@ ${sh(`curl -i -X POST http://127.0.0.1:8000/api/questions/ \\`, `  -H "Content-T
 
 ## Part 2: custom actions (ends at \`checkpoint-2-actions\`)
 
-${fileStep(6, 'checkpoint-2-actions', 'questions/views.py', 'Two new imports at the top, then two methods at the end of `QuestionViewSet`, indented one level. After slide 11, *Part 2: How should voting work?* The repo has two blank lines between the methods.')}
+${fileStep(5, 'checkpoint-2-actions', 'questions/views.py', 'Two new imports at the top, then two methods at the end of `QuestionViewSet`, indented one level. After slide 11, *Part 2: How should voting work?* The repo has two blank lines between the methods.')}
 
 No migration: the fields already exist.
 
@@ -121,11 +113,11 @@ ${sh('git stash -u; git switch checkpoint-2-actions; uv run manage.py migrate')}
 
 ## Part 3: authentication and staff moderation (ends at \`checkpoint-3-auth\`)
 
-${fileStep(7, 'checkpoint-3-auth', 'questions/views.py', 'One import line changes, `get_permissions` goes right after `permission_classes`, and each `@action` gets a `permission_classes` argument. After slide 12, *Part 3: Who can do what*.')}
+${fileStep(6, 'checkpoint-3-auth', 'questions/views.py', 'One new import line, `get_permissions` goes right after `serializer_class`, and each `@action` gets a `permission_classes` argument. After slide 12, *Part 3: Who can do what*.')}
 
-${fileStep(8, 'checkpoint-3-auth', 'config/urls.py', 'One new line at the end of `urlpatterns`. Right after `views.py`.')}
+${fileStep(7, 'checkpoint-3-auth', 'config/urls.py', 'One new line at the end of `urlpatterns`. Right after `views.py`.')}
 
-Accounts (skip \`createsuperuser\` if you already made \`mod\` in part 1):
+Accounts. Create the moderator with username \`mod\`; any email is fine, and Django asks for the password twice:
 
 ${sh('uv run manage.py createsuperuser')}
 
@@ -143,7 +135,7 @@ Last, the problem part 4 fixes: as \`sam\`, press **POST** on \`/api/questions/1
 
 ## Part 4: many-to-many voting (ends at \`checkpoint-4-m2m\`)
 
-${fileStep(9, 'checkpoint-4-m2m', 'questions/models.py', 'Import `settings`, and change `votes` to a `ManyToManyField`. After slide 14, *Keep the JSON compatible*.')}
+${fileStep(8, 'checkpoint-4-m2m', 'questions/models.py', 'Import `settings`, and change `votes` to a `ManyToManyField`. After slide 14, *Keep the JSON compatible*.')}
 
 ${sh('uv run manage.py makemigrations questions --name votes_many_to_many', 'uv run manage.py migrate')}
 
@@ -151,9 +143,9 @@ Expect \`0002_votes_many_to_many.py\` with \`- Remove field votes from question\
 
 Before the next step, show <http://127.0.0.1:8000/api/questions/>: \`"votes": []\`. DRF shows the many-to-many field as a list of user ids, so every client expecting a number would break. The next step fixes it, as *Keep the JSON compatible* (slide 14) said.
 
-${fileStep(10, 'checkpoint-4-m2m', 'questions/serializers.py', 'Two fields above `class Meta`, `has_voted` in `fields`, and the `get_has_voted` method. Right after the browser shows `"votes": []`.')}
+${fileStep(9, 'checkpoint-4-m2m', 'questions/serializers.py', 'Two fields above `class Meta`, `has_voted` in `fields`, and the `get_has_voted` method. Right after the browser shows `"votes": []`.')}
 
-${fileStep(11, 'checkpoint-4-m2m', 'questions/views.py', '`upvote` becomes `toggle_vote`. Right after the serializer. Paste if short on time.')}
+${fileStep(10, 'checkpoint-4-m2m', 'questions/views.py', '`upvote` becomes `toggle_vote`. Right after the serializer. Paste if short on time.')}
 
 **Try it** (still in part 4): as \`sam\`, POST \`/api/questions/1/toggle_vote/\` twice (\`"votes": 1, "has_voted": true\`, then \`"votes": 0, "has_voted": false\`); as \`mod\`, once (\`"votes": 1, "has_voted": true\`). \`/upvote/\` no longer exists, so it returns 404.
 
