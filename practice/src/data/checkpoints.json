@@ -1,0 +1,104 @@
+[
+  {
+    "branch": "checkpoint-1-crud",
+    "previous": "checkpoint-0-setup",
+    "commit": "1674761",
+    "title": "Part 1: Our model becomes a table",
+    "steps": [
+      {
+        "id": "checkpoint-1-crud:questions/models.py",
+        "path": "questions/models.py",
+        "hint": "Replace the stub with the Question model.",
+        "before": "from django.db import models\n\n# Create your models here.\n",
+        "after": "from django.db import models\n\n\nclass Question(models.Model):\n    text = models.CharField(max_length=300)\n    votes = models.IntegerField(default=0)\n    answered = models.BooleanField(default=False)\n    created_at = models.DateTimeField(auto_now_add=True)\n"
+      },
+      {
+        "id": "checkpoint-1-crud:questions/serializers.py",
+        "path": "questions/serializers.py",
+        "hint": "The file exists but is empty. Write the serializer.",
+        "before": "",
+        "after": "from rest_framework import serializers\n\nfrom .models import Question\n\n\nclass QuestionSerializer(serializers.ModelSerializer):\n    class Meta:\n        model = Question\n        fields = (\"id\", \"text\", \"votes\", \"answered\", \"created_at\")\n        read_only_fields = (\"id\", \"votes\", \"answered\", \"created_at\")\n"
+      },
+      {
+        "id": "checkpoint-1-crud:questions/views.py",
+        "path": "questions/views.py",
+        "hint": "Replace the stub with the ViewSet.",
+        "before": "from django.shortcuts import render\n\n# Create your views here.\n",
+        "after": "from rest_framework import viewsets\n\nfrom .models import Question\nfrom .serializers import QuestionSerializer\n\n\nclass QuestionViewSet(viewsets.ModelViewSet):\n    queryset = Question.objects.all()\n    serializer_class = QuestionSerializer\n"
+      },
+      {
+        "id": "checkpoint-1-crud:config/urls.py",
+        "path": "config/urls.py",
+        "hint": "Add the imports, the router, and the api/ line.",
+        "before": "from django.contrib import admin\nfrom django.urls import path\n\nurlpatterns = [\n    path(\"admin/\", admin.site.urls),\n]\n",
+        "after": "from django.contrib import admin\nfrom django.urls import include, path\nfrom rest_framework.routers import DefaultRouter\n\nfrom questions.views import QuestionViewSet\n\nrouter = DefaultRouter()\nrouter.register(\"questions\", QuestionViewSet)\n\nurlpatterns = [\n    path(\"admin/\", admin.site.urls),\n    path(\"api/\", include(router.urls)),\n]\n"
+      }
+    ]
+  },
+  {
+    "branch": "checkpoint-2-actions",
+    "previous": "checkpoint-1-crud",
+    "commit": "12adbec",
+    "title": "Part 2: How should voting work?",
+    "steps": [
+      {
+        "id": "checkpoint-2-actions:questions/views.py",
+        "path": "questions/views.py",
+        "hint": "Two new imports at the top, then the upvote and toggle_answered actions at the end of QuestionViewSet.",
+        "before": "from rest_framework import viewsets\n\nfrom .models import Question\nfrom .serializers import QuestionSerializer\n\n\nclass QuestionViewSet(viewsets.ModelViewSet):\n    queryset = Question.objects.all()\n    serializer_class = QuestionSerializer\n",
+        "after": "from rest_framework import viewsets\nfrom rest_framework.decorators import action\nfrom rest_framework.response import Response\n\nfrom .models import Question\nfrom .serializers import QuestionSerializer\n\n\nclass QuestionViewSet(viewsets.ModelViewSet):\n    queryset = Question.objects.all()\n    serializer_class = QuestionSerializer\n\n    @action(detail=True, methods=[\"post\"])\n    def upvote(self, request, pk=None, format=None):\n        question = self.get_object()\n        question.votes += 1\n        question.save()\n        return Response(self.get_serializer(question).data)\n\n\n    @action(detail=True, methods=[\"post\"])\n    def toggle_answered(self, request, pk=None, format=None):\n        question = self.get_object()\n        question.answered = not question.answered\n        question.save()\n        return Response(self.get_serializer(question).data)\n"
+      }
+    ]
+  },
+  {
+    "branch": "checkpoint-3-auth",
+    "previous": "checkpoint-2-actions",
+    "commit": "123c79b",
+    "title": "Part 3: Who can do what",
+    "steps": [
+      {
+        "id": "checkpoint-3-auth:questions/views.py",
+        "path": "questions/views.py",
+        "hint": "One new import line, get_permissions right after serializer_class, and a permission_classes argument on each @action.",
+        "before": "from rest_framework import viewsets\nfrom rest_framework.decorators import action\nfrom rest_framework.response import Response\n\nfrom .models import Question\nfrom .serializers import QuestionSerializer\n\n\nclass QuestionViewSet(viewsets.ModelViewSet):\n    queryset = Question.objects.all()\n    serializer_class = QuestionSerializer\n\n    @action(detail=True, methods=[\"post\"])\n    def upvote(self, request, pk=None, format=None):\n        question = self.get_object()\n        question.votes += 1\n        question.save()\n        return Response(self.get_serializer(question).data)\n\n\n    @action(detail=True, methods=[\"post\"])\n    def toggle_answered(self, request, pk=None, format=None):\n        question = self.get_object()\n        question.answered = not question.answered\n        question.save()\n        return Response(self.get_serializer(question).data)\n",
+        "after": "from rest_framework import viewsets\nfrom rest_framework.decorators import action\nfrom rest_framework.response import Response\nfrom rest_framework.permissions import IsAuthenticated, IsAdminUser\n\nfrom .models import Question\nfrom .serializers import QuestionSerializer\n\n\nclass QuestionViewSet(viewsets.ModelViewSet):\n    queryset = Question.objects.all()\n    serializer_class = QuestionSerializer\n\n    def get_permissions(self):\n        if self.action in (\"update\", \"partial_update\", \"destroy\"):\n            return [IsAdminUser()]\n\n        return super().get_permissions()\n\n    @action(detail=True, methods=[\"post\"], permission_classes=[IsAuthenticated])\n    def upvote(self, request, pk=None, format=None):\n        question = self.get_object()\n        question.votes += 1\n        question.save()\n        return Response(self.get_serializer(question).data)\n\n\n    @action(detail=True, methods=[\"post\"], permission_classes=[IsAdminUser])\n    def toggle_answered(self, request, pk=None, format=None):\n        question = self.get_object()\n        question.answered = not question.answered\n        question.save()\n        return Response(self.get_serializer(question).data)\n"
+      },
+      {
+        "id": "checkpoint-3-auth:config/urls.py",
+        "path": "config/urls.py",
+        "hint": "One new line at the end of urlpatterns, for the browsable API's log in page.",
+        "before": "from django.contrib import admin\nfrom django.urls import include, path\nfrom rest_framework.routers import DefaultRouter\n\nfrom questions.views import QuestionViewSet\n\nrouter = DefaultRouter()\nrouter.register(\"questions\", QuestionViewSet)\n\nurlpatterns = [\n    path(\"admin/\", admin.site.urls),\n    path(\"api/\", include(router.urls)),\n]\n",
+        "after": "from django.contrib import admin\nfrom django.urls import include, path\nfrom rest_framework.routers import DefaultRouter\n\nfrom questions.views import QuestionViewSet\n\nrouter = DefaultRouter()\nrouter.register(\"questions\", QuestionViewSet)\n\nurlpatterns = [\n    path(\"admin/\", admin.site.urls),\n    path(\"api/\", include(router.urls)),\n    path(\"api-auth/\", include(\"rest_framework.urls\")),\n]\n"
+      }
+    ]
+  },
+  {
+    "branch": "checkpoint-4-m2m",
+    "previous": "checkpoint-3-auth",
+    "commit": "a63d17a",
+    "title": "Part 4: One vote per user",
+    "steps": [
+      {
+        "id": "checkpoint-4-m2m:questions/models.py",
+        "path": "questions/models.py",
+        "hint": "Import settings and change votes to a ManyToManyField of users.",
+        "before": "from django.db import models\n\n\nclass Question(models.Model):\n    text = models.CharField(max_length=300)\n    votes = models.IntegerField(default=0)\n    answered = models.BooleanField(default=False)\n    created_at = models.DateTimeField(auto_now_add=True)\n",
+        "after": "from django.conf import settings\nfrom django.db import models\n\n\nclass Question(models.Model):\n    text = models.CharField(max_length=300)\n    votes = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)\n    answered = models.BooleanField(default=False)\n    created_at = models.DateTimeField(auto_now_add=True)\n"
+      },
+      {
+        "id": "checkpoint-4-m2m:questions/serializers.py",
+        "path": "questions/serializers.py",
+        "hint": "Two fields above class Meta, has_voted in fields, and the get_has_voted method.",
+        "before": "from rest_framework import serializers\n\nfrom .models import Question\n\n\nclass QuestionSerializer(serializers.ModelSerializer):\n    class Meta:\n        model = Question\n        fields = (\"id\", \"text\", \"votes\", \"answered\", \"created_at\")\n        read_only_fields = (\"id\", \"votes\", \"answered\", \"created_at\")\n",
+        "after": "from rest_framework import serializers\n\nfrom .models import Question\n\n\nclass QuestionSerializer(serializers.ModelSerializer):\n    votes = serializers.IntegerField(source=\"votes.count\", read_only=True)\n    has_voted = serializers.SerializerMethodField()\n\n    class Meta:\n        model = Question\n        fields = (\"id\", \"text\", \"votes\", \"has_voted\", \"answered\", \"created_at\")\n        read_only_fields = (\"id\", \"votes\", \"answered\", \"created_at\")\n\n    def get_has_voted(self, question):\n        user = self.context[\"request\"].user\n        return question.votes.filter(pk=user.pk).exists()\n"
+      },
+      {
+        "id": "checkpoint-4-m2m:questions/views.py",
+        "path": "questions/views.py",
+        "hint": "upvote becomes toggle_vote, which adds or removes the logged-in user.",
+        "before": "from rest_framework import viewsets\nfrom rest_framework.decorators import action\nfrom rest_framework.response import Response\nfrom rest_framework.permissions import IsAuthenticated, IsAdminUser\n\nfrom .models import Question\nfrom .serializers import QuestionSerializer\n\n\nclass QuestionViewSet(viewsets.ModelViewSet):\n    queryset = Question.objects.all()\n    serializer_class = QuestionSerializer\n\n    def get_permissions(self):\n        if self.action in (\"update\", \"partial_update\", \"destroy\"):\n            return [IsAdminUser()]\n\n        return super().get_permissions()\n\n    @action(detail=True, methods=[\"post\"], permission_classes=[IsAuthenticated])\n    def upvote(self, request, pk=None, format=None):\n        question = self.get_object()\n        question.votes += 1\n        question.save()\n        return Response(self.get_serializer(question).data)\n\n\n    @action(detail=True, methods=[\"post\"], permission_classes=[IsAdminUser])\n    def toggle_answered(self, request, pk=None, format=None):\n        question = self.get_object()\n        question.answered = not question.answered\n        question.save()\n        return Response(self.get_serializer(question).data)\n",
+        "after": "from rest_framework import viewsets\nfrom rest_framework.decorators import action\nfrom rest_framework.response import Response\nfrom rest_framework.permissions import IsAuthenticated, IsAdminUser\n\nfrom .models import Question\nfrom .serializers import QuestionSerializer\n\n\nclass QuestionViewSet(viewsets.ModelViewSet):\n    queryset = Question.objects.all()\n    serializer_class = QuestionSerializer\n\n    def get_permissions(self):\n        if self.action in (\"update\", \"partial_update\", \"destroy\"):\n            return [IsAdminUser()]\n\n        return super().get_permissions()\n\n    @action(detail=True, methods=[\"post\"], permission_classes=[IsAuthenticated])\n    def toggle_vote(self, request, pk=None, format=None):\n        question = self.get_object()\n        has_voted = question.votes.filter(pk=request.user.pk).exists()\n\n        if has_voted:\n            question.votes.remove(request.user)\n        else:\n            question.votes.add(request.user)\n\n        return Response(self.get_serializer(question).data)\n\n    @action(detail=True, methods=[\"post\"], permission_classes=[IsAdminUser])\n    def toggle_answered(self, request, pk=None, format=None):\n        question = self.get_object()\n        question.answered = not question.answered\n        question.save()\n        return Response(self.get_serializer(question).data)\n"
+      }
+    ]
+  }
+]
