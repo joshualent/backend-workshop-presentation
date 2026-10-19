@@ -251,7 +251,7 @@ Asset key: **S** static, **C** click build, **V** video. Slide numbers are the d
 
 | # | Slide | Content | Asset |
 |---|---|---|---|
-| 9 | Part 1: A model becomes a table | Each field of `Question` becomes a column; `makemigrations` and `migrate`; the small map with Model highlighted. Notes run the whole part: model, migrations, serializer, ViewSet and URLs, admin, and the browser check (201, 400, 404), ending with `"votes": 9999` coming back as 0. | C |
+| 9 | Part 1: Our model becomes a table, then push that change | Each field of `Question` becomes a column; `id` is the primary key; `makemigrations` and `migrate`. Notes run the whole part: model, migrations, serializer, ViewSet and URLs, admin, and the browser check (201, 400, 404), ending with `"votes": 9999` coming back as 0. | C |
 | 10 | Life of a POST request | Video V2 (stepped), shown after part 1's code works. It follows the POST with `"votes": 9999` through the code everyone just wrote, and ends on "So how should voting work?" | V |
 
 ### 7.5 Part 2: custom actions (7:42–7:55)

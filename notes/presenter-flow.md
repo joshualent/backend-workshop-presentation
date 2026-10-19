@@ -31,7 +31,7 @@ Modes: **SLIDES**, **VS CODE**, **TERMINAL**, **BROWSER**.
 | 7:08 | 6 | API basics | SLIDES | HTTP methods: the six routes, row by row. PUT vs. PATCH. | 4 clicks. | |
 | 7:10 | 7 | API basics | SLIDES | Anatomy of a request: method and URL, headers, the JSON body, the status code family, the response body. Ends with the one-sentence summary of REST. | 5 clicks. | |
 | 7:13 | 8 | API basics | SLIDES | The parts of our API, from the client to SQLite, and the file for each. A sentence under the map says what the newest part does. "We'll build these parts from right to left, starting with the model." | 7 clicks. | |
-| 7:15 | 9 | Part 1 | SLIDES | *Part 1: A model becomes a table*: one column for each field, then the migration commands. | 6 clicks. | |
+| 7:15 | 9 | Part 1 | SLIDES | *Part 1: Our model becomes a table, then push that change*: one column for each field, `id` as the primary key, then the migration commands. | 6 clicks. | |
 | 7:17 | 9 | | VS CODE | Write the model in `questions/models.py` (cheat sheet 1). | → SWITCH TO VS CODE. | Leave `models.py` on the projector for people to copy. |
 | 7:19 | 9 | | TERMINAL | `makemigrations questions`, `migrate`. Expect `Applying questions.0001_initial... OK`. | | |
 | 7:21 | 9 | | VS CODE | `serializers.py` (cheat sheet 2). Point at `read_only_fields`. | | Paste from the cheat sheet. |
@@ -87,7 +87,7 @@ New: *Check your setup* (slide 2), *Part 4: One vote per user* (slide 13), which
 
 The HTTP slides go from the smallest idea to the whole message: a URL names the data (slide 5), a method says what to do with it (slide 6), and slide 7 takes apart one full request and response. Specific status codes come up in the browser: 201, 400, and 404 in part 1, 405 in part 2, and 403 in part 3 (also on slide 12). Slide 22 lists them all.
 
-The diagram of the API's parts (slide 8, the small version on slide 9, and video V2) follows the request: the client on the left, SQLite on the right. We build it from right to left, starting with the model.
+The diagram of the API's parts (slide 8 and video V2) follows the request: the client on the left, SQLite on the right. We build it from right to left, starting with the model.
 
 ## Backstage slides (press `g`, type the number)
 

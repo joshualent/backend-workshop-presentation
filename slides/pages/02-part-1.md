@@ -3,16 +3,16 @@ section: Part 1
 clicks: 6
 ---
 
-# Part 1: A model becomes a table
+# Part 1: Our model becomes a table, then push that change
 
 <div class="models">
-<p>Each model becomes a database table, and each field becomes a column.</p>
+<p>Each field becomes a column.</p>
 
 <QuestionTable />
 
-<p v-click="6" class="small"><code>makemigrations</code> writes a migration file. <code>migrate</code> applies it.</p>
+<p v-click="5" class="small"><code>id</code> is the primary key, the unique number that identifies each row.</p>
 
-<RequestMap mini highlight="model" class="push-down" />
+<p v-click="6" class="small"><code>makemigrations</code> writes a migration file. <code>migrate</code> applies it.</p>
 </div>
 
 <style>
@@ -38,7 +38,7 @@ clicks: 6
 
 [click] `created_at` has `auto_now_add=True`, so Django sets it when it creates the row.
 
-[click] We don't write `id`. Django adds an `id` primary key to every model and numbers the rows 1, 2, 3.
+[click] We don't write `id`. Django adds an `id` field to every model and numbers the rows 1, 2, 3. It's the primary key: no two rows have the same `id`, so it identifies one row. Say: "The 1 in `/api/questions/1/` is the id."
 
 [click] Say: "makemigrations writes a file that describes the change. migrate changes the database to match. Run both every time you change a model."
 
