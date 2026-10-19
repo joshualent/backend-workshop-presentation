@@ -65,7 +65,7 @@ Still in VS Code (7:24): questions/views.py, then config/urls.py (cheat sheet st
 
 - Say: "A ViewSet is one class that handles every route for a resource. `ModelViewSet` already has a method for each of the six routes from the HTTP methods slide: list, create, retrieve, update, partial_update, and destroy."
 - `views.py`: replace the stub. The imports, then `QuestionViewSet` with three attributes: `queryset` (which rows), `serializer_class` (how to convert them to JSON), and `permission_classes`. Say: "For now, `AllowAny` lets anyone call every route. Part 3 replaces it." Save.
-- `config/urls.py`: two imports, a `DefaultRouter`, `router.register("questions", QuestionViewSet, basename="question")`, and the `api/` line. Save. Say: "The router creates the six routes from the ViewSet, under `/api/questions/`."
+- `config/urls.py`: two imports, a `DefaultRouter`, `router.register("questions", QuestionViewSet)`, and the `api/` line. Save. Say: "The router creates the six routes from the ViewSet, under `/api/questions/`."
 - Watch the runserver terminal. It reloads when you save, and it shows typos there first.
 
 → SWITCH TO BROWSER (7:28): http://127.0.0.1:8000/api/questions/

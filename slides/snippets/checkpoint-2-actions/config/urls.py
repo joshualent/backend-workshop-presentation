@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 from questions.views import QuestionViewSet
 
 router = DefaultRouter()
-router.register("questions", QuestionViewSet, basename="question")
+router.register("questions", QuestionViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),

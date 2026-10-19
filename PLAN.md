@@ -58,7 +58,7 @@ The branches share one linear history, one commit per checkpoint. `main` equals 
 - `Question` model: `text` (CharField, 300), `votes` (IntegerField, default 0), `answered` (BooleanField, default False), `created_at` (auto_now_add), `__str__` returns the text.
 - `QuestionSerializer`: explicit `fields` tuple; `read_only_fields = ("id", "votes", "answered", "created_at")`. Only `text` is writable.
 - `QuestionViewSet(ModelViewSet)` with `permission_classes = [AllowAny]`.
-- `DefaultRouter`, registered as `router.register("questions", QuestionViewSet, basename="question")`, mounted at `api/`.
+- `DefaultRouter`, registered as `router.register("questions", QuestionViewSet)`, mounted at `api/`.
 - `admin.site.register(Question)`.
 - Commands: `uv run manage.py makemigrations questions`, then `uv run manage.py migrate`.
 

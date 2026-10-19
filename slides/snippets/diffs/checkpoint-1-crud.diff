@@ -11,7 +11,7 @@ index 083932c..93d554b 100644
 +from questions.views import QuestionViewSet
 +
 +router = DefaultRouter()
-+router.register("questions", QuestionViewSet, basename="question")
++router.register("questions", QuestionViewSet)
  
  urlpatterns = [
      path("admin/", admin.site.urls),

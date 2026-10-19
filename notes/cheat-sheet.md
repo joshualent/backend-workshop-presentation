@@ -112,7 +112,7 @@ What changes (`+` lines are new, `-` lines go away):
 +from questions.views import QuestionViewSet
 +
 +router = DefaultRouter()
-+router.register("questions", QuestionViewSet, basename="question")
++router.register("questions", QuestionViewSet)
  
  urlpatterns = [
      path("admin/", admin.site.urls),
@@ -130,7 +130,7 @@ from rest_framework.routers import DefaultRouter
 from questions.views import QuestionViewSet
 
 router = DefaultRouter()
-router.register("questions", QuestionViewSet, basename="question")
+router.register("questions", QuestionViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -349,7 +349,7 @@ One new line at the end of `urlpatterns`. Right after `views.py`.
 What changes (`+` lines are new, `-` lines go away):
 
 ```diff
-@@ -10,4 +10,5 @@ router.register("questions", QuestionViewSet, basename="question")
+@@ -10,4 +10,5 @@ router.register("questions", QuestionViewSet)
  urlpatterns = [
      path("admin/", admin.site.urls),
      path("api/", include(router.urls)),
@@ -367,7 +367,7 @@ from rest_framework.routers import DefaultRouter
 from questions.views import QuestionViewSet
 
 router = DefaultRouter()
-router.register("questions", QuestionViewSet, basename="question")
+router.register("questions", QuestionViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),

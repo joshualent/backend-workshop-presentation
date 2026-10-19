@@ -2,7 +2,7 @@ diff --git a/config/urls.py b/config/urls.py
 index 93d554b..9b863d0 100644
 --- a/config/urls.py
 +++ b/config/urls.py
-@@ -10,4 +10,5 @@ router.register("questions", QuestionViewSet, basename="question")
+@@ -10,4 +10,5 @@ router.register("questions", QuestionViewSet)
  urlpatterns = [
      path("admin/", admin.site.urls),
      path("api/", include(router.urls)),
