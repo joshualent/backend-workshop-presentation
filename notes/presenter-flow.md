@@ -8,11 +8,11 @@ The night has five sections:
 
 1. **Setup** (6:30–7:00): one slide on the projector while people arrive.
 2. **Opening** (7:00–7:04): welcome, then a check that everyone has the login page and a second terminal.
-3. **API basics** (7:04–7:17): what an API is, REST (resources and URLs, methods, the parts of a request), and the parts of our Django API.
-4. **Four parts** of coding (7:17–8:25).
+3. **API basics** (7:04–7:15): what an API is, REST (resources and URLs, methods, the parts of a request), and the parts of our Django API.
+4. **Four parts** of coding (7:15–8:25).
 5. **Wrap-up** (8:25–8:30): *What you built* is the last slide, and it stays up during questions.
 
-Every part follows the same pattern. One or two slides come first. Then you write the code in VS Code and try it in the browser until the part's checkpoint works, with no slides in between. Each part's browser check ends by showing the problem the next part fixes, and the next part's first slide starts from that problem. The first slide of parts 2–4 ends with the one line to run if you're behind.
+Every part follows the same pattern. One or two slides come first. Then you write the code in VS Code and try it in the browser until the part's checkpoint works, with no slides in between. Part 1 also has one slide after its code: video V2, which follows a request through the code everyone just wrote. Each part's browser check ends by showing the problem the next part fixes, and the next part's first slide starts from that problem. The first slide of parts 2–4 ends with the one line to run if you're behind.
 
 The presenter view keeps showing the part's first slide while you're in VS Code, so its notes hold the whole coding stretch, with a clock time on every `→ SWITCH TO` line. Everything you type is in `notes/cheat-sheet.md`, in order.
 
@@ -31,15 +31,15 @@ Modes: **SLIDES**, **VS CODE**, **TERMINAL**, **BROWSER**.
 | 7:08 | 6 | API basics | SLIDES | HTTP methods: the six routes, row by row. PUT vs. PATCH. | 4 clicks. | |
 | 7:10 | 7 | API basics | SLIDES | Anatomy of a request: method and URL, headers, the JSON body, the status code family, the response body. Ends with the one-sentence summary of REST. | 5 clicks. | |
 | 7:13 | 8 | API basics | SLIDES | The parts of our API, from the client to SQLite, and the file for each. A sentence under the map says what the newest part does. "We'll build these parts from right to left, starting with the model." | 7 clicks. | |
-| 7:15 | 9 | API basics | SLIDES | Video V2, stepped: 6 clicks, one per stop (0:04, 0:11, 0:15, 0:19.5, 0:23.5, 0:29). | 6 clicks. | |
-| 7:17 | 10 | Part 1 | SLIDES | *Part 1: A model becomes a table*: one column for each field, then the migration commands. | 6 clicks. | |
-| 7:19 | 10 | | VS CODE | Write the model in `questions/models.py` (cheat sheet 1). | → SWITCH TO VS CODE. | Leave `models.py` on the projector for people to copy. |
-| 7:21 | 10 | | TERMINAL | `makemigrations questions`, `migrate`. Expect `Applying questions.0001_initial... OK`. | | |
-| 7:23 | 10 | | VS CODE | `serializers.py` (cheat sheet 2). Point at `read_only_fields`. | | Paste from the cheat sheet. |
-| 7:26 | 10 | | VS CODE | `views.py`, then `config/urls.py` (cheat sheet 3, 4). Say what a ViewSet and the router do. | | |
-| 7:30 | 10 | | BROWSER | `/api/questions/` shows "Question List". | | |
-| 7:31 | 10 | | VS CODE → TERMINAL → BROWSER | `admin.py` (cheat sheet 5), `createsuperuser` (`mod`), log in to `/admin/`, add a question, and show it in the API. | | **Cut 2:** skip the admin demo, but keep the line in `admin.py`. |
-| 7:35 | 10 | | BROWSER | Try it: create → 201, blank → 400, `/999/` → 404. Optional curl example. Last: `"votes": 9999` → 201 with `"votes": 0`. | Back when most people have a 201 and a 400 (7:42). | **Cut 1:** skip the curl example. |
+| 7:15 | 9 | Part 1 | SLIDES | *Part 1: A model becomes a table*: one column for each field, then the migration commands. | 6 clicks. | |
+| 7:17 | 9 | | VS CODE | Write the model in `questions/models.py` (cheat sheet 1). | → SWITCH TO VS CODE. | Leave `models.py` on the projector for people to copy. |
+| 7:19 | 9 | | TERMINAL | `makemigrations questions`, `migrate`. Expect `Applying questions.0001_initial... OK`. | | |
+| 7:21 | 9 | | VS CODE | `serializers.py` (cheat sheet 2). Point at `read_only_fields`. | | Paste from the cheat sheet. |
+| 7:24 | 9 | | VS CODE | `views.py`, then `config/urls.py` (cheat sheet 3, 4). Say what a ViewSet and the router do. | | |
+| 7:28 | 9 | | BROWSER | `/api/questions/` shows "Question List". | | |
+| 7:29 | 9 | | VS CODE → TERMINAL → BROWSER | `admin.py` (cheat sheet 5), `createsuperuser` (`mod`), log in to `/admin/`, add a question, and show it in the API. | | **Cut 2:** skip the admin demo, but keep the line in `admin.py`. |
+| 7:33 | 9 | | BROWSER | Try it: create → 201, blank → 400, `/999/` → 404. Optional curl example. Last: `"votes": 9999` → 201 with `"votes": 0`. | Back when most people have a 201 and a 400 (7:40). | **Cut 1:** skip the curl example. |
+| 7:40 | 10 | Part 1 | SLIDES | *Life of a POST request*: video V2, stepped, follows the POST with `"votes": 9999` through the code everyone just wrote. Stops at 0:04, 0:11, 0:15, 0:19.5, 0:23.5, 0:29. Ends on "So how should voting work?" | 6 clicks. | |
 | 7:42 | 11 | Part 2 | SLIDES | *Part 2: How should voting work?* Ask the room first. PATCH vs. an action URL. Catch-up line for `checkpoint-1-crud`. | 3 clicks. | |
 | **7:45** | | | | **Time check: if part 1 isn't finished by 7:45, paste part 2's code instead of typing it.** | | |
 | 7:45 | 11 | | VS CODE | Imports, `upvote`, and `toggle_answered` in `views.py` (cheat sheet 6). | → SWITCH TO VS CODE. | Paste both methods. |
@@ -60,8 +60,8 @@ Modes: **SLIDES**, **VS CODE**, **TERMINAL**, **BROWSER**.
 
 ## Cut list, in order
 
-1. The curl example in part 1 (slide 10's notes).
-2. The admin registration demo (slide 10's notes). Keep the one line in `admin.py`.
+1. The curl example in part 1 (slide 9's notes).
+2. The admin registration demo (slide 9's notes). Keep the one line in `admin.py`.
 3. The second-user test in part 3 (slide 12's notes). Describe it instead.
 4. Part 4 coding: demo it from `checkpoint-4-m2m` in about 3 minutes, but still show both part 4 slides (13 and 14).
 
@@ -77,7 +77,7 @@ The `dev` deck had 28 show slides and went back to the slides in the middle of l
 | What the backend is responsible for, Why build an API? | Cut. Their one useful line each is in the notes of *What a backend does* and video V1. Validation and permissions are taught in parts 1 and 3. |
 | Your starter repo | The files are on *The parts of our API* (slide 8). Checkpoints are on *Check your setup* (slide 2) and the catch-up line on each part's first slide. |
 | The lesson 1 section slide | Each part's first slide has "Part N" in its title. |
-| A serializer converts and validates data, One ViewSet handles six routes | Video V2 shows what the serializer and router do. The notes for slide 10 say what each file does while you type it. The 400 and 404 show up in the browser. |
+| A serializer converts and validates data, One ViewSet handles six routes | Video V2 shows what the serializer and router do. The notes for slide 9 say what each file does while you type it. The 400 and 404 show up in the browser. |
 | The three "What's still broken?" slides | Each part's browser check ends by showing the next problem live, and the next part's first slide starts from it. |
 | You built a REST API, the halfway break | Cut. Take a break after part 2 only if the room needs one. The diagram with every part comes once, at the end. |
 | Authentication and authorization, Who can do what, How DRF checks permissions | One slide, *Part 3: Who can do what* (slide 12): the two definitions, each rule with its permission class, and 403. Where each rule goes in the code is in the notes. |
@@ -87,7 +87,7 @@ New: *Check your setup* (slide 2), *Part 4: One vote per user* (slide 13), which
 
 The HTTP slides go from the smallest idea to the whole message: a URL names the data (slide 5), a method says what to do with it (slide 6), and slide 7 takes apart one full request and response. Specific status codes come up in the browser: 201, 400, and 404 in part 1, 405 in part 2, and 403 in part 3 (also on slide 12). Slide 22 lists them all.
 
-The diagram of the API's parts (slide 8, the small version on slide 10, and video V2) follows the request: the client on the left, SQLite on the right. We build it from right to left, starting with the model.
+The diagram of the API's parts (slide 8, the small version on slide 9, and video V2) follows the request: the client on the left, SQLite on the right. We build it from right to left, starting with the model.
 
 ## Backstage slides (press `g`, type the number)
 

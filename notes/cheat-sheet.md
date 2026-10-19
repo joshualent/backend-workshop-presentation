@@ -30,7 +30,7 @@ Check <http://127.0.0.1:8000/admin/> shows the login page.
 
 ### 1. `questions/models.py`
 
-Replace the stub. After slide 10, *Part 1: A model becomes a table*.
+Replace the stub. After slide 9, *Part 1: A model becomes a table*.
 
 The whole file, to paste if you fall behind:
 

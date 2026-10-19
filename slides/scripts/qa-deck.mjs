@@ -69,7 +69,7 @@ const SECTIONS = {
   'Setup': '6:30',
   'Opening': '7:00',
   'API basics': '7:04',
-  'Part 1': '7:17',
+  'Part 1': '7:15',
   'Part 2': '7:42',
   'Part 3': '7:55',
   'Part 4': '8:10',

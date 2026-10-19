@@ -60,7 +60,7 @@ Presenter view: <http://localhost:3031/#/presenter/1>. Projector: <http://localh
 ## Pre-talk checklist
 
 - [ ] `pnpm build` done after the last change; `pnpm serve` running.
-- [ ] Wi-Fi off, then: deck loads, fonts look right, both videos play (slides 4 and 9), QR codes show. Wi-Fi back on.
+- [ ] Wi-Fi off, then: deck loads, fonts look right, both videos play (slides 4 and 10), QR codes show. Wi-Fi back on.
 - [ ] `pnpm qa` passed (offline check, navigation, click counts, notes).
 - [ ] Presenter view on the laptop, slides full screen on the projector, synced.
 - [ ] Projector check (`g` 21) from the back row: every swatch distinct, the 16 px line readable.

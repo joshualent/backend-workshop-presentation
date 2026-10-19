@@ -119,8 +119,8 @@ Logged-out requests get 403 (not 401) because the browsable API uses session aut
 |---|---|---|---|
 | 6:30–7:00 | Setup: arrival, food, installing | The setup slide on the projector; the presenter walks the room | `checkpoint-0-setup` running |
 | 7:00–7:04 | Opening: welcome, check your setup | Slides | |
-| 7:04–7:17 | API basics: what an API is, REST, the parts of our API | Slides | |
-| 7:17–7:42 | Part 1: CRUD | One slide, then VS Code and the browser until the checkpoint works | `checkpoint-1-crud` |
+| 7:04–7:15 | API basics: what an API is, REST, the parts of our API | Slides | |
+| 7:15–7:42 | Part 1: CRUD | One slide, then VS Code and the browser until the checkpoint works, then video V2 | `checkpoint-1-crud` |
 | 7:42–7:55 | Part 2: custom actions | Same pattern | `checkpoint-2-actions` |
 | 7:55–8:10 | Part 3: auth and moderation | Same pattern; five minutes of slack for a break, if the room needs one | `checkpoint-3-auth` |
 | 8:10–8:25 | Part 4: many-to-many voting | Two slides, then the same pattern; code may be pasted | `checkpoint-4-m2m` |
@@ -205,7 +205,7 @@ Use a pre-rendered video only when the concept is about **something moving or ch
 | Video | Slide | What it shows | Why motion helps |
 |---|---|---|---|
 | **V1. Server-rendered pages vs. an API** (~13 s, stepped) | Intro: server-rendered pages vs. an API | Left half: the browser asks for `/questions/`, and the server builds the whole page, with the data in it, and sends it. Right half: the browser is labelled as running a frontend app. The app draws the page with grey bars where the data goes (the label lights up, so the skeleton clearly comes from the app), asks for `/api/questions/`, gets JSON back, and fills in the bars. | The difference is what travels from the server: a whole page, or only the data that a frontend app puts into its own page. Watching the empty page fill in shows where each piece comes from. |
-| **V2. Life of a POST** (~30 s, stepped) | Intro, right after the request map | Follows `POST /api/questions/` with `{"text": "What does a serializer do?", "votes": 9999}` through every layer, showing how the data changes shape: raw HTTP text → URL router picks `QuestionViewSet.create` → serializer validates (the `votes` key fades away as read-only; a side branch shows `""` bouncing back as a 400 with `This field may not be blank.`) → a `Question` object → an `INSERT` row appearing in a SQLite table → serialized back to JSON → `201 Created` with `"votes": 0`. | This is the central mental model of the night. The data's changing shape at each layer is exactly what a static diagram can't show. |
+| **V2. Life of a POST** (~30 s, stepped) | End of part 1, after the code works | Follows `POST /api/questions/` with `{"text": "What does a serializer do?", "votes": 9999}` through every layer, showing how the data changes shape: raw HTTP text → URL router picks `QuestionViewSet.create` → serializer validates (the `votes` key fades away as read-only; a side branch shows `""` bouncing back as a 400 with `This field may not be blank.`) → a `Question` object → an `INSERT` row appearing in a SQLite table → serialized back to JSON → `201 Created` with `"votes": 0`. | This is the central mental model of the night. The data's changing shape at each layer is exactly what a static diagram can't show. |
 | **V3. From a count to a list of voters** (~25 s, stepped) | Part 4 opener | The `votes` integer column in `questions_question` disappears (the migration's `RemoveField`). A `questions_question_votes` join table appears with `question_id` and `user_id` columns, and rows connect question 1 to `sam` and `mod`. `sam` calls `toggle_vote` and their row is removed. Finally, the JSON response stays `"votes": 1` because the serializer reads `votes.count`. | Many-to-many and join tables are abstract until you watch rows link two tables. The final beat, where storage changes but the API response doesn't, is the part's main idea. |
 
 In this deck, V3 is cut: part 4's first slide shows the join table as a click build instead. The earlier V1, one backend sending JSON to three clients, is still in `animations/v1-one-backend-many-clients/` but not on a slide.
@@ -236,7 +236,7 @@ Asset key: **S** static, **C** click build, **V** video. Slide numbers are the d
 |---|---|---|---|
 | 2 | Check your setup | The login page at `/admin/`. Keep `runserver` in one terminal and open a second terminal for every other command. Each part ends on a checkpoint branch, and the next part's first slide shows the line to catch up. Notes: welcome, what we build, show of hands, how the night works; hands up for the login page; show the two terminals in VS Code. There's no title slide. | C |
 
-### 7.3 API basics (7:04–7:17)
+### 7.3 API basics (7:04–7:15)
 
 | # | Slide | Content | Asset |
 |---|---|---|---|
@@ -246,13 +246,13 @@ Asset key: **S** static, **C** click build, **V** video. Slide numbers are the d
 | 6 | HTTP methods | The six routes, built row by row; PUT vs. PATCH. | C |
 | 7 | Anatomy of a request | "A real request and its response, with a few headers left out." The real `POST /api/questions/` request and its 201 response, one part per click, with one short sentence for each. Status code families: 2xx, 4xx, 5xx. Notes end on the one-sentence summary of REST. | C |
 | 8 | The parts of our API | The request-flow map, built left to right, with each part's file. The newest part is highlighted, with one or two sentences under the map on what it does. The last click replaces them with "We'll build these parts from right to left, starting with the model." | C |
-| 9 | Life of a POST request | Video V2 (stepped) | V |
 
-### 7.4 Part 1: CRUD (7:17–7:42)
+### 7.4 Part 1: CRUD (7:15–7:42)
 
 | # | Slide | Content | Asset |
 |---|---|---|---|
-| 10 | Part 1: A model becomes a table | Each field of `Question` becomes a column; `makemigrations` and `migrate`; the small map with Model highlighted. Notes run the whole part: model, migrations, serializer, ViewSet and URLs, admin, and the browser check (201, 400, 404), ending with `"votes": 9999` coming back as 0. | C |
+| 9 | Part 1: A model becomes a table | Each field of `Question` becomes a column; `makemigrations` and `migrate`; the small map with Model highlighted. Notes run the whole part: model, migrations, serializer, ViewSet and URLs, admin, and the browser check (201, 400, 404), ending with `"votes": 9999` coming back as 0. | C |
+| 10 | Life of a POST request | Video V2 (stepped), shown after part 1's code works. It follows the POST with `"votes": 9999` through the code everyone just wrote, and ends on "So how should voting work?" | V |
 
 ### 7.5 Part 2: custom actions (7:42–7:55)
 

@@ -129,7 +129,7 @@ section: Appendix
 <!--
 [backstage] [SLIDES]
 
-- Final frame of video V2 (slide 9). It shows the request and the response together. Use it if the video won't play.
+- Final frame of video V2 (slide 10). It shows the request and the response together. Use it if the video won't play.
 -->
 
 ---
