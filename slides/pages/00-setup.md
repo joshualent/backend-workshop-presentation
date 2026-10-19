@@ -29,7 +29,8 @@ uv run manage.py runserver
 ```
 
 </li>
-<li><p>Open <code>http://127.0.0.1:8000/admin/</code>. You should see the Django login page.</p></li>
+<li><p>Open <code>http://127.0.0.1:8000/</code>. You should see "The install worked successfully!"</p>
+<p class="muted">You can also open it as <code>localhost:8000</code>.</p></li>
 </ol>
 <QrCode :url="$workshop.repoUrl" :size="180" />
 </div>
@@ -63,9 +64,9 @@ uv run manage.py runserver
 [6:30 · 30 min] [SLIDES]
 
 - Leave this up while people arrive, eat, and set up. Walk the room and go to raised hands.
-- Say it at 6:40 and again at 6:50: "Install the three tools, then follow the steps on screen until you see the Django login page." If you're stuck, ask the person next to you or put your hand up.
+- Say it at 6:40 and again at 6:50: "Install the three tools, then follow the steps on screen until you see the Django page that says 'The install worked successfully!'" If you're stuck, ask the person next to you or put your hand up.
 - The QR code opens the repo. Its README has the same steps.
-- Expected result in the browser: the Django administration login page at http://127.0.0.1:8000/admin/. Nobody has an account yet; that's fine.
+- Expected result in the browser: Django's welcome page with a rocket and "The install worked successfully! Congratulations!" at http://127.0.0.1:8000/ (or http://localhost:8000/). Django shows it because the starter code has no page at `/` yet; it goes away in part 1 when we add the API's URLs.
 - You don't need to install Python. `uv sync` downloads Python 3.14 if it's missing.
 - Step 3 opens the folder before `runserver` on purpose: opening a folder in VS Code restarts its terminals, which would stop the server.
 - Before 7:00: your own project is on `main` with a fresh `db.sqlite3`, `runserver` is running, and the browser tabs from notes/screen-setup.md are open.

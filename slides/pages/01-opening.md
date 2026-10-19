@@ -6,10 +6,19 @@ clicks: 2
 # Check your setup
 
 <div class="stack">
-<p>At <code>http://127.0.0.1:8000/admin/</code> you should see the Django login page.</p>
+<div>
+<p>At <code>http://127.0.0.1:8000/</code> you should see the page that says "The install worked successfully! Congratulations!"</p>
+<p class="small muted url-note">You can also open it as <code>localhost:8000</code>.</p>
+</div>
 <p v-click="1">Leave <code>runserver</code> running in its terminal. Open a second terminal for every other command. In VS Code, choose New Terminal from the Terminal menu.</p>
 <p v-click="2">Each part ends on a checkpoint branch with the finished code. If you fall behind, the first slide of the next part shows one line to run.</p>
 </div>
+
+<style>
+.url-note {
+  margin-top: 8px;
+}
+</style>
 
 <!--
 [7:00 · 4 min] [SLIDES]
@@ -19,7 +28,7 @@ clicks: 2
 - Ask for a show of hands: "Who has written Python?" "Who has used Django?" "Who has called an API from code?" Adjust your pace to the answers.
 - How the night works: "There are four parts. Each one starts with a slide or two. Then we write the code together in VS Code until it works, with no slides in between. Each part ends on a checkpoint branch, so you can catch up if you fall behind."
 
-Ask: "Hands up if you see the Django login page."
+Ask: "Hands up if you see the Django page with the rocket and 'The install worked successfully!'" Say: "localhost and 127.0.0.1 are two names for your own computer, so either address works."
 
 - If some hands stay down: "Keep going with the steps from the setup slide. The README has them too. The next 13 minutes are slides, so you won't miss any code." Ask the people next to them to help.
 
