@@ -70,7 +70,7 @@ Check <http://127.0.0.1:8000/admin/> shows the login page.
 
 ## Part 1: CRUD (ends at \`checkpoint-1-crud\`)
 
-${fileStep(1, 'checkpoint-1-crud', 'questions/models.py', 'Replace the stub. After slide 9, *Part 1: Our model becomes a table, then push that change*.', { diff: false })}
+${fileStep(1, 'checkpoint-1-crud', 'questions/models.py', 'Replace the stub. After slide 9, *Part 1: Our model becomes a table*.', { diff: false })}
 
 Then, in the second terminal:
 

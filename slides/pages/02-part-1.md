@@ -3,7 +3,7 @@ section: Part 1
 clicks: 6
 ---
 
-# Part 1: Our model becomes a table, then push that change
+# Part 1: Our model becomes a table
 
 <div class="models">
 <p>Each field becomes a column.</p>
