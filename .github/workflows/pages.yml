@@ -1,5 +1,6 @@
 # Builds the deck and publishes it to GitHub Pages on every push to `next`:
-# https://joshualent.github.io/backend-workshop-presentation/
+# https://slides.hyperf.app/ (the custom domain is set in the repo's Pages
+# settings; joshualent.github.io/backend-workshop-presentation/ redirects there)
 name: Deploy slides to GitHub Pages
 
 on:
@@ -33,7 +34,8 @@ jobs:
           cache: pnpm
           cache-dependency-path: slides/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
-      - run: pnpm build --base /${{ github.event.repository.name }}/
+      # The custom domain serves the site from its root.
+      - run: pnpm build --base /
       - uses: actions/upload-pages-artifact@v3
         with:
           path: slides/dist
